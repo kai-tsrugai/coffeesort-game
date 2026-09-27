@@ -22,6 +22,12 @@
       -webkit-user-select: none;
     }
 
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       background-color: var(--bg-color);
       color: var(--text-color);
@@ -29,18 +35,16 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
-      padding-bottom: var(--ad-height);
-      overflow-x: hidden;
     }
 
     .screen {
       display: none;
       width: 100%;
       max-width: 480px;
+      height: calc(100vh - var(--ad-height));
       flex-direction: column;
       align-items: center;
-      flex: 1;
+      position: relative;
     }
 
     .screen.active {
@@ -94,7 +98,10 @@
     .home-btn.bonus { background: #27ae60; }
 
     /* --- 2. ステージ選択画面 --- */
-    #select-screen { padding: 15px; }
+    #select-screen {
+      padding: 15px 15px 10px 15px;
+      height: calc(100vh - var(--ad-height));
+    }
 
     .screen-header {
       width: 100%;
@@ -104,6 +111,7 @@
       padding: 10px 0;
       margin-bottom: 10px;
       border-bottom: 2px solid var(--primary-color);
+      flex-shrink: 0;
     }
 
     .back-btn {
@@ -116,13 +124,21 @@
       cursor: pointer;
     }
 
+    /* スクロール領域の確実な固定と発動 */
+    .stage-grid-container {
+      width: 100%;
+      flex: 1;
+      height: 0; /* Flexbox内で縦伸び・スクロールを有効化するための必須指定 */
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 20px;
+    }
+
     .stage-grid {
       width: 100%;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      overflow-y: auto;
-      max-height: 72vh;
       padding: 5px;
     }
 
@@ -156,6 +172,11 @@
     }
 
     /* --- 3. パズルゲーム画面 --- */
+    #game-screen {
+      justify-content: space-between;
+      padding-bottom: 10px;
+    }
+
     header {
       width: 100%;
       padding: 12px 16px;
@@ -164,6 +185,7 @@
       align-items: center;
       background: linear-gradient(135deg, #5c3a21, #3d2314);
       color: #fff;
+      flex-shrink: 0;
     }
 
     .coin-display {
@@ -189,8 +211,8 @@
       justify-content: center;
       gap: 10px;
       width: 100%;
-      margin: 20px 0;
-      min-height: 230px;
+      margin: auto 0;
+      padding: 10px 0;
     }
 
     .bottle {
@@ -258,6 +280,7 @@
       grid-template-columns: repeat(5, 1fr);
       gap: 4px;
       padding: 10px 0;
+      flex-shrink: 0;
     }
 
     .shop-btn {
@@ -280,7 +303,7 @@
       box-shadow: 0 1px 0 #5c3a21;
     }
 
-    /* 広告表示枠 */
+    /* 忍者AdMax 広告枠 */
     .fixed-bottom-ad {
       position: fixed;
       bottom: 0; left: 0; width: 100%;
@@ -311,7 +334,10 @@
       <h2 style="font-size: 1.1rem;">ステージ選択 (1-1500)</h2>
       <div style="width: 50px;"></div>
     </div>
-    <div class="stage-grid" id="stage-grid"></div>
+    <!-- 独立したスクロールコンテナ -->
+    <div class="stage-grid-container">
+      <div class="stage-grid" id="stage-grid"></div>
+    </div>
   </div>
 
   <!-- 3. パズルゲーム画面 -->
@@ -398,15 +424,13 @@
       document.getElementById('coin-count').innerText = coins;
       localStorage.setItem('roasters_current_stage', currentStage);
 
-      // 570ステージ以上はHARD表示
       const isHard = stageNum >= 570;
       document.getElementById('hard-tag').style.display = isHard ? 'inline-block' : 'none';
 
-      // --- 難易度調整アルゴリズム ---
       let numColors = 3;
       if (stageNum > 10) numColors = 4;
       if (stageNum > 50) numColors = 5;
-      if (stageNum >= 570) numColors = 6; // Lv570以降は最大6色で激高難易度
+      if (stageNum >= 570) numColors = 6;
 
       let blindRate = stageNum >= 570 ? 0.45 : (stageNum >= 5 ? 0.2 : 0);
       let frozenRate = stageNum >= 570 ? 0.35 : (stageNum >= 10 ? 0.15 : 0);
@@ -438,20 +462,17 @@
         lockedBottles.push(false);
       }
       
-      // 空ボトル数（Lv570以上は1つのみにして高難易度化）
       let emptyCount = stageNum >= 570 ? 1 : 2;
       for (let e = 0; e < emptyCount; e++) {
         bottles.push([]);
         lockedBottles.push(false);
       }
 
-      // 鍵付きボトル
       if (stageNum >= 15 && stageNum % 3 === 0) {
         bottles.push([]);
         lockedBottles.push(true);
       }
 
-      // 最上段のブラインド解除
       bottles.forEach(b => {
         if (b.length > 0) b[b.length - 1].isBlind = false;
       });
@@ -630,7 +651,6 @@
       }, 100);
     }
 
-    // 1500ステージ全表示用レンダリング
     function renderStageGrid() {
       const grid = document.getElementById('stage-grid');
       grid.innerHTML = '';
