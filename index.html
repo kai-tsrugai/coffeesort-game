@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -124,11 +124,10 @@
       cursor: pointer;
     }
 
-    /* スクロール領域の確実な固定と発動 */
     .stage-grid-container {
       width: 100%;
       flex: 1;
-      height: 0; /* Flexbox内で縦伸び・スクロールを有効化するための必須指定 */
+      height: 0;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       padding-bottom: 20px;
@@ -155,6 +154,16 @@
       font-size: 0.95rem;
       cursor: pointer;
       box-shadow: 0 3px 0 var(--primary-color);
+      position: relative;
+    }
+
+    .stage-card.cleared::after {
+      content: '✓';
+      position: absolute;
+      top: 2px;
+      right: 6px;
+      color: #27ae60;
+      font-size: 0.8rem;
     }
 
     .stage-card.hard {
@@ -334,7 +343,6 @@
       <h2 style="font-size: 1.1rem;">ステージ選択 (1-1500)</h2>
       <div style="width: 50px;"></div>
     </div>
-    <!-- 独立したスクロールコンテナ -->
     <div class="stage-grid-container">
       <div class="stage-grid" id="stage-grid"></div>
     </div>
@@ -374,14 +382,27 @@
     const ALL_COLORS = ['light', 'medium', 'dark', 'matcha', 'berry', 'milk'];
     const TOTAL_STAGES = 1500;
 
+    // --- セーブデータのロード＆修復ロジック ---
     let currentStage = parseInt(localStorage.getItem('roasters_current_stage')) || 1;
     let maxUnlockedStage = parseInt(localStorage.getItem('roasters_max_stage')) || 1;
     let coins = parseInt(localStorage.getItem('roasters_coins')) || 100;
+
+    // 現在地よりアンロック上限が低い場合の自動整合補正
+    if (currentStage > maxUnlockedStage) {
+      maxUnlockedStage = currentStage;
+      localStorage.setItem('roasters_max_stage', maxUnlockedStage);
+    }
 
     let bottles = [];
     let lockedBottles = [];
     let history = [];
     let selectedBottleIndex = null;
+
+    function saveState() {
+      localStorage.setItem('roasters_current_stage', currentStage);
+      localStorage.setItem('roasters_max_stage', maxUnlockedStage);
+      localStorage.setItem('roasters_coins', coins);
+    }
 
     function showScreen(screenId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -397,7 +418,7 @@
     function updateCoins(amount) {
       coins += amount;
       document.getElementById('coin-count').innerText = coins;
-      localStorage.setItem('roasters_coins', coins);
+      saveState();
     }
 
     function claimDailyBonus() {
@@ -422,7 +443,7 @@
       history = [];
       document.getElementById('stage-display').innerText = stageNum;
       document.getElementById('coin-count').innerText = coins;
-      localStorage.setItem('roasters_current_stage', currentStage);
+      saveState();
 
       const isHard = stageNum >= 570;
       document.getElementById('hard-tag').style.display = isHard ? 'inline-block' : 'none';
@@ -641,12 +662,14 @@
         const isWin = bottles.every(b => b.length === 0 || (b.length === BOTTLE_CAPACITY && b.every(v => v.color === b[0].color && !v.isFrozen)));
         if (isWin) {
           alert(`🎉 Stage ${currentStage} クリア！ 🪙+50獲得！`);
-          updateCoins(50);
+          
           if (currentStage >= maxUnlockedStage && currentStage < TOTAL_STAGES) {
             maxUnlockedStage = currentStage + 1;
-            localStorage.setItem('roasters_max_stage', maxUnlockedStage);
           }
-          initStage(currentStage + 1);
+          currentStage = currentStage + 1;
+          
+          updateCoins(50); // saveState() が内部で呼ばれ進行度とコインを保存
+          initStage(currentStage);
         }
       }, 100);
     }
@@ -659,9 +682,17 @@
       for (let i = 1; i <= TOTAL_STAGES; i++) {
         const card = document.createElement('div');
         let isLocked = i > maxUnlockedStage;
+        let isCleared = i < maxUnlockedStage;
         let isHard = i >= 570;
-        card.className = `stage-card ${isLocked ? 'locked' : ''} ${isHard ? 'hard' : ''}`;
+
+        let classNames = ['stage-card'];
+        if (isLocked) classNames.push('locked');
+        if (isCleared) classNames.push('cleared');
+        if (isHard) classNames.push('hard');
+
+        card.className = classNames.join(' ');
         card.innerText = isLocked ? '🔒' : i;
+
         if (!isLocked) {
           card.onclick = () => {
             initStage(i);
