@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Roasters Sort - レトロカフェ パズル</title>
+  <title>Roasters Sort - レトロカフェ パズル (1500 Stages)</title>
   <style>
     :root {
       --bg-color: #f7f0e6;
@@ -60,7 +60,6 @@
       color: var(--primary-color);
       margin-bottom: 5px;
       text-shadow: 3px 3px 0px #e06d28;
-      letter-spacing: 1px;
     }
 
     .subtitle {
@@ -83,7 +82,7 @@
       color: #fff;
       cursor: pointer;
       box-shadow: 0 5px 0 var(--primary-color);
-      transition: transform 0.1s, box-shadow 0.1s;
+      transition: transform 0.1s;
     }
 
     .home-btn:active {
@@ -91,19 +90,11 @@
       box-shadow: 0 2px 0 var(--primary-color);
     }
 
-    .home-btn.secondary {
-      background: #fff;
-      color: var(--primary-color);
-    }
-
-    .home-btn.bonus {
-      background: #27ae60;
-    }
+    .home-btn.secondary { background: #fff; color: var(--primary-color); }
+    .home-btn.bonus { background: #27ae60; }
 
     /* --- 2. ステージ選択画面 --- */
-    #select-screen {
-      padding: 15px;
-    }
+    #select-screen { padding: 15px; }
 
     .screen-header {
       width: 100%;
@@ -123,7 +114,6 @@
       border-radius: 20px;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 3px 0 rgba(0,0,0,0.2);
     }
 
     .stage-grid {
@@ -146,10 +136,14 @@
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 1.1rem;
+      font-size: 1rem;
       cursor: pointer;
       box-shadow: 0 4px 0 var(--primary-color);
-      position: relative;
+    }
+
+    .stage-card.hard {
+      border-color: #c0392b;
+      color: #c0392b;
     }
 
     .stage-card.locked {
@@ -158,12 +152,6 @@
       color: #7f8c8d;
       box-shadow: none;
       cursor: not-allowed;
-    }
-
-    .stage-card.cleared::after {
-      content: '⭐⭐⭐';
-      font-size: 0.55rem;
-      margin-top: 2px;
     }
 
     /* --- 3. パズルゲーム画面 --- */
@@ -175,7 +163,6 @@
       align-items: center;
       background: linear-gradient(135deg, #5c3a21, #3d2314);
       color: #fff;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
     }
 
     .coin-display {
@@ -184,32 +171,40 @@
       border-radius: 20px;
       font-size: 0.95rem;
       font-weight: bold;
-      box-shadow: inset 0 -2px 0 rgba(0,0,0,0.2);
+    }
+
+    .difficulty-badge {
+      font-size: 0.75rem;
+      background: #e74c3c;
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
     }
 
     .game-board {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
       width: 100%;
       margin: 20px 0;
       min-height: 230px;
     }
 
     .bottle {
-      width: 54px;
-      height: 175px;
+      width: 50px;
+      height: 165px;
       border: 3px solid #5c3a21;
-      border-radius: 0 0 18px 18px;
+      border-radius: 0 0 16px 16px;
       background: rgba(255,255,255,0.85);
       display: flex;
       flex-direction: column-reverse;
       align-items: center;
-      padding: 4px;
+      padding: 3px;
       cursor: pointer;
-      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      position: relative;
+      transition: transform 0.2s;
     }
 
     .bottle.selected {
@@ -218,12 +213,28 @@
       box-shadow: 0 8px 20px rgba(224, 109, 40, 0.4);
     }
 
+    .bottle.locked-bottle {
+      background: #bdc3c7;
+      border-color: #7f8c8d;
+    }
+
+    .bottle.locked-bottle::after {
+      content: '🔒';
+      font-size: 1.3rem;
+      position: absolute;
+      top: 40%;
+    }
+
     .bean {
       width: 100%;
-      height: 38px;
-      border-radius: 10px;
+      height: 36px;
+      border-radius: 8px;
       margin-top: 2px;
-      transition: all 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      color: #fff;
       box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -3px 4px rgba(0,0,0,0.3);
     }
 
@@ -232,13 +243,19 @@
     .bean-dark   { background: linear-gradient(135deg, #5a3825, #2b1810); }
     .bean-matcha { background: linear-gradient(135deg, #8ba832, #556b14); }
     .bean-berry  { background: linear-gradient(135deg, #d9534f, #962d2a); }
-    .bean-milk   { background: linear-gradient(135deg, #f5ebe0, #d5bdaf); }
+    .bean-milk   { background: linear-gradient(135deg, #f5ebe0, #d5bdaf); color: #333; }
+
+    .bean.blind { background: #7f8c8d !important; }
+    .bean.blind::after { content: '❓'; }
+
+    .bean.frozen { border: 2px solid #00d2d3; box-shadow: 0 0 8px #00d2d3; }
+    .bean.frozen::after { content: '❄️'; }
 
     .shop-container {
       width: 100%;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
       padding: 10px 0;
     }
 
@@ -246,14 +263,14 @@
       background: #fff;
       border: 2px solid #5c3a21;
       border-radius: 10px;
-      padding: 8px 2px;
-      font-size: 0.72rem;
+      padding: 6px 2px;
+      font-size: 0.65rem;
       font-weight: bold;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
+      gap: 2px;
       box-shadow: 0 3px 0 #5c3a21;
     }
 
@@ -262,7 +279,7 @@
       box-shadow: 0 1px 0 #5c3a21;
     }
 
-    /* 広告枠 */
+    /* 広告表示枠 */
     .fixed-bottom-ad {
       position: fixed;
       bottom: 0; left: 0; width: 100%;
@@ -272,19 +289,6 @@
       z-index: 9999;
       border-top: 1px solid #ccc;
     }
-
-    /* 紙吹雪アニメーション */
-    .confetti {
-      position: fixed;
-      width: 10px; height: 10px;
-      z-index: 10001;
-      pointer-events: none;
-      animation: fall 2.5s linear forwards;
-    }
-
-    @keyframes fall {
-      to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-    }
   </style>
 </head>
 <body>
@@ -292,10 +296,10 @@
   <!-- 1. ホーム画面 -->
   <div id="home-screen" class="screen active">
     <div class="title-logo">☕ Roasters Sort</div>
-    <div class="subtitle">〜本格自家焙煎パズル〜</div>
+    <div class="subtitle">〜全1500ステージ パズル〜</div>
     
     <button class="home-btn" onclick="continueGame()">▶ 続きから遊ぶ</button>
-    <button class="home-btn secondary" onclick="showScreen('select-screen')">🗺️ ステージ選択 (1-500)</button>
+    <button class="home-btn secondary" onclick="showScreen('select-screen')">🗺️ ステージ選択 (1-1500)</button>
     <button class="home-btn bonus" onclick="claimDailyBonus()">🎁 デイリーボーナス</button>
   </div>
 
@@ -303,7 +307,7 @@
   <div id="select-screen" class="screen">
     <div class="screen-header">
       <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
-      <h2 style="font-size: 1.1rem;">ステージ選択</h2>
+      <h2 style="font-size: 1.1rem;">ステージ選択 (1-1500)</h2>
       <div style="width: 50px;"></div>
     </div>
     <div class="stage-grid" id="stage-grid"></div>
@@ -313,15 +317,19 @@
   <div id="game-screen" class="screen">
     <header>
       <button class="back-btn" onclick="showScreen('select-screen')">🗺️ 一覧</button>
-      <div style="font-weight:bold;">STAGE <span id="stage-display">1</span></div>
+      <div style="font-weight:bold;">
+        STAGE <span id="stage-display">1</span>
+        <span id="hard-tag" class="difficulty-badge" style="display:none;">HARD</span>
+      </div>
       <div class="coin-display">🪙 <span id="coin-count">100</span></div>
     </header>
 
     <div class="game-board" id="game-board"></div>
 
     <div class="shop-container">
-      <button class="shop-btn" onclick="undoMove()"><span>↩️ 1手戻す</span><span>🪙 10</span></button>
+      <button class="shop-btn" onclick="undoMove()"><span>↩️ 戻す</span><span>🪙 10</span></button>
       <button class="shop-btn" onclick="showHint()"><span>💡 ヒント</span><span>🪙 20</span></button>
+      <button class="shop-btn" onclick="stirBottle()"><span>🥄 かき混ぜ</span><span>🪙 25</span></button>
       <button class="shop-btn" onclick="useShuffle()"><span>🔀 シャッフル</span><span>🪙 50</span></button>
       <button class="shop-btn" onclick="addExtraBottle()"><span>🧪 ボトル追加</span><span>🪙 100</span></button>
     </div>
@@ -337,38 +345,16 @@
   <script>
     const BOTTLE_CAPACITY = 4;
     const ALL_COLORS = ['light', 'medium', 'dark', 'matcha', 'berry', 'milk'];
+    const TOTAL_STAGES = 1500;
 
     let currentStage = parseInt(localStorage.getItem('roasters_current_stage')) || 1;
     let maxUnlockedStage = parseInt(localStorage.getItem('roasters_max_stage')) || 1;
     let coins = parseInt(localStorage.getItem('roasters_coins')) || 100;
 
     let bottles = [];
+    let lockedBottles = [];
     let history = [];
     let selectedBottleIndex = null;
-
-    // 簡易効果音（Web Audio API）
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playSound(type) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      if (type === 'tap') {
-        osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.05);
-      } else if (type === 'win') {
-        osc.frequency.setValueAtTime(523, audioCtx.currentTime);
-        osc.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1);
-        osc.frequency.setValueAtTime(783, audioCtx.currentTime + 0.2);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.4);
-      }
-    }
 
     function showScreen(screenId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -389,13 +375,12 @@
 
     function claimDailyBonus() {
       const today = new Date().toDateString();
-      const lastClaim = localStorage.getItem('roasters_last_bonus');
-      if (lastClaim === today) {
-        alert("本日のデイリーボーナスは受取済みです！また明日お越しください！");
+      if (localStorage.getItem('roasters_last_bonus') === today) {
+        alert("本日のデイリーボーナスは受取済みです！");
       } else {
         localStorage.setItem('roasters_last_bonus', today);
         updateCoins(100);
-        alert("🎁 デイリーボーナス！100コインを獲得しました！");
+        alert("🎁 デイリーボーナス！100コイン獲得！");
       }
     }
 
@@ -412,15 +397,30 @@
       document.getElementById('coin-count').innerText = coins;
       localStorage.setItem('roasters_current_stage', currentStage);
 
+      const isHard = stageNum >= 570;
+      document.getElementById('hard-tag').style.display = isHard ? 'inline-block' : 'none';
+
+      // --- 難易度調整アルゴリズム ---
       let numColors = 3;
       if (stageNum > 10) numColors = 4;
       if (stageNum > 50) numColors = 5;
-      if (stageNum > 150) numColors = 6;
+      if (stageNum >= 570) numColors = 6; // Lv570以上で全6色
+
+      let blindRate = stageNum >= 570 ? 0.45 : (stageNum >= 5 ? 0.2 : 0);
+      let frozenRate = stageNum >= 570 ? 0.35 : (stageNum >= 10 ? 0.15 : 0);
 
       let usedColors = ALL_COLORS.slice(0, numColors);
       let allBeans = [];
+
       usedColors.forEach(color => {
-        for (let i = 0; i < BOTTLE_CAPACITY; i++) allBeans.push(color);
+        for (let i = 0; i < BOTTLE_CAPACITY; i++) {
+          let beanObj = {
+            color: color,
+            isBlind: Math.random() < blindRate,
+            isFrozen: Math.random() < frozenRate
+          };
+          allBeans.push(beanObj);
+        }
       });
 
       let seed = stageNum * 8888;
@@ -430,11 +430,29 @@
       }
 
       bottles = [];
+      lockedBottles = [];
       for (let i = 0; i < numColors; i++) {
         bottles.push(allBeans.slice(i * BOTTLE_CAPACITY, (i + 1) * BOTTLE_CAPACITY));
+        lockedBottles.push(false);
       }
-      bottles.push([]);
-      bottles.push([]);
+      
+      // 空ボトル数（Lv570以上は空ボトルを減らし超高難易度化）
+      let emptyCount = stageNum >= 570 ? 1 : 2;
+      for (let e = 0; e < emptyCount; e++) {
+        bottles.push([]);
+        lockedBottles.push(false);
+      }
+
+      // 鍵付きボトル（高難易度帯で発生）
+      if (stageNum >= 15 && stageNum % 3 === 0) {
+        bottles.push([]);
+        lockedBottles.push(true);
+      }
+
+      // 最上段のブラインド解除
+      bottles.forEach(b => {
+        if (b.length > 0) b[b.length - 1].isBlind = false;
+      });
 
       renderBoard();
     }
@@ -445,23 +463,50 @@
 
       bottles.forEach((bottle, bIndex) => {
         const bottleEl = document.createElement('div');
-        bottleEl.className = `bottle ${selectedBottleIndex === bIndex ? 'selected' : ''}`;
+        let isLocked = lockedBottles[bIndex];
+        bottleEl.className = `bottle ${selectedBottleIndex === bIndex ? 'selected' : ''} ${isLocked ? 'locked-bottle' : ''}`;
         bottleEl.onclick = () => handleBottleClick(bIndex);
 
-        bottle.forEach(colorClass => {
-          const beanEl = document.createElement('div');
-          beanEl.className = `bean bean-${colorClass}`;
-          bottleEl.appendChild(beanEl);
-        });
+        if (!isLocked) {
+          bottle.forEach(bean => {
+            const beanEl = document.createElement('div');
+            let extraClass = '';
+            if (bean.isBlind) extraClass += ' blind';
+            if (bean.isFrozen) extraClass += ' frozen';
+            beanEl.className = `bean bean-${bean.color} ${extraClass}`;
+            bottleEl.appendChild(beanEl);
+          });
+        }
 
         board.appendChild(bottleEl);
       });
     }
 
     function handleBottleClick(index) {
-      playSound('tap');
+      if (lockedBottles[index]) {
+        if (confirm("鍵がかかっています！🪙 30 コインで解錠しますか？")) {
+          if (coins >= 30) {
+            updateCoins(-30);
+            lockedBottles[index] = false;
+            renderBoard();
+          } else {
+            alert("コインが足りません！");
+          }
+        }
+        return;
+      }
+
       if (selectedBottleIndex === null) {
-        if (bottles[index].length > 0) selectedBottleIndex = index;
+        if (bottles[index].length > 0) {
+          let topBean = bottles[index][bottles[index].length - 1];
+          if (topBean.isFrozen) {
+            topBean.isFrozen = false;
+            alert("❄️ 氷を割りました！これで動かせます。");
+            renderBoard();
+            return;
+          }
+          selectedBottleIndex = index;
+        }
       } else {
         if (selectedBottleIndex === index) {
           selectedBottleIndex = null;
@@ -482,9 +527,15 @@
       const movingBean = fromBottle[fromBottle.length - 1];
       const targetTopBean = toBottle[toBottle.length - 1];
 
-      if (toBottle.length === 0 || targetTopBean === movingBean) {
-        history.push(JSON.stringify(bottles));
+      if (toBottle.length === 0 || targetTopBean.color === movingBean.color) {
+        history.push(JSON.stringify({ bottles: bottles, locked: lockedBottles }));
+        movingBean.isBlind = false;
         toBottle.push(fromBottle.pop());
+
+        if (fromBottle.length > 0) {
+          fromBottle[fromBottle.length - 1].isBlind = false;
+        }
+
         checkWin();
       }
     }
@@ -493,7 +544,21 @@
       if (history.length === 0) return alert("戻せる手がありません！");
       if (coins >= 10) {
         updateCoins(-10);
-        bottles = JSON.parse(history.pop());
+        let lastState = JSON.parse(history.pop());
+        bottles = lastState.bottles;
+        lockedBottles = lastState.locked;
+        renderBoard();
+      } else {
+        alert("コインが足りません！");
+      }
+    }
+
+    function stirBottle() {
+      if (selectedBottleIndex === null) return alert("かき混ぜたいボトルを先に選択してください！");
+      if (coins >= 25) {
+        updateCoins(-25);
+        bottles[selectedBottleIndex].sort(() => Math.random() - 0.5);
+        selectedBottleIndex = null;
         renderBoard();
       } else {
         alert("コインが足りません！");
@@ -503,11 +568,13 @@
     function showHint() {
       if (coins < 20) return alert("コインが足りません！");
       for (let i = 0; i < bottles.length; i++) {
+        if (lockedBottles[i]) continue;
         for (let j = 0; j < bottles.length; j++) {
+          if (lockedBottles[j]) continue;
           if (i !== j && bottles[i].length > 0 && bottles[j].length < BOTTLE_CAPACITY) {
             let srcBean = bottles[i][bottles[i].length - 1];
             let destBean = bottles[j][bottles[j].length - 1];
-            if (bottles[j].length === 0 || srcBean === destBean) {
+            if (!srcBean.isFrozen && (bottles[j].length === 0 || srcBean.color === destBean.color)) {
               updateCoins(-20);
               selectedBottleIndex = i;
               renderBoard();
@@ -523,10 +590,11 @@
     function useShuffle() {
       if (coins >= 50) {
         updateCoins(-50);
-        let allBeans = bottles.flat().sort(() => Math.random() - 0.5);
+        let allBeans = bottles.flat();
+        allBeans.sort(() => Math.random() - 0.5);
         bottles = bottles.map(() => []);
         allBeans.forEach((bean, idx) => {
-          bottles[idx % (bottles.length - 2)].push(bean);
+          bottles[idx % (bottles.length - 1)].push(bean);
         });
         renderBoard();
       } else {
@@ -538,6 +606,7 @@
       if (coins >= 100) {
         updateCoins(-100);
         bottles.push([]);
+        lockedBottles.push(false);
         renderBoard();
       } else {
         alert("コインが足りません！");
@@ -546,13 +615,11 @@
 
     function checkWin() {
       setTimeout(() => {
-        const isWin = bottles.every(b => b.length === 0 || (b.length === BOTTLE_CAPACITY && b.every(v => v === b[0])));
+        const isWin = bottles.every(b => b.length === 0 || (b.length === BOTTLE_CAPACITY && b.every(v => v.color === b[0].color && !v.isFrozen)));
         if (isWin) {
-          playSound('win');
-          triggerConfetti();
           alert(`🎉 Stage ${currentStage} クリア！ 🪙+50獲得！`);
           updateCoins(50);
-          if (currentStage >= maxUnlockedStage) {
+          if (currentStage >= maxUnlockedStage && currentStage < TOTAL_STAGES) {
             maxUnlockedStage = currentStage + 1;
             localStorage.setItem('roasters_max_stage', maxUnlockedStage);
           }
@@ -561,24 +628,14 @@
       }, 100);
     }
 
-    function triggerConfetti() {
-      for (let i = 0; i < 30; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 100 + 'vw';
-        confetti.style.backgroundColor = ['#e06d28', '#27ae60', '#f1c40f', '#e74c3c', '#9b59b6'][Math.floor(Math.random() * 5)];
-        document.body.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 2500);
-      }
-    }
-
     function renderStageGrid() {
       const grid = document.getElementById('stage-grid');
       grid.innerHTML = '';
-      for (let i = 1; i <= 500; i++) {
+      for (let i = 1; i <= TOTAL_STAGES; i++) {
         const card = document.createElement('div');
         let isLocked = i > maxUnlockedStage;
-        card.className = `stage-card ${isLocked ? 'locked' : ''} ${i < maxUnlockedStage ? 'cleared' : ''}`;
+        let isHard = i >= 570;
+        card.className = `stage-card ${isLocked ? 'locked' : ''} ${isHard ? 'hard' : ''}`;
         card.innerText = isLocked ? '🔒' : i;
         if (!isLocked) {
           card.onclick = () => {
