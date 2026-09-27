@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Roasters Sort - レトロカフェ パズル (1500 Stages)</title>
+  <title>Roasters Sort - 1500 Stages</title>
   <style>
     :root {
       --bg-color: #f7f0e6;
@@ -55,38 +55,38 @@
     }
 
     .title-logo {
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       font-weight: 900;
       color: var(--primary-color);
       margin-bottom: 5px;
-      text-shadow: 3px 3px 0px #e06d28;
+      text-shadow: 2px 2px 0px #e06d28;
     }
 
     .subtitle {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #666;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       font-weight: bold;
     }
 
     .home-btn {
       width: 85%;
       max-width: 300px;
-      padding: 16px;
+      padding: 15px;
       margin: 8px 0;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: bold;
       border: 3px solid var(--primary-color);
       border-radius: 30px;
       background: var(--accent-color);
       color: #fff;
       cursor: pointer;
-      box-shadow: 0 5px 0 var(--primary-color);
+      box-shadow: 0 4px 0 var(--primary-color);
       transition: transform 0.1s;
     }
 
     .home-btn:active {
-      transform: translateY(3px);
+      transform: translateY(2px);
       box-shadow: 0 2px 0 var(--primary-color);
     }
 
@@ -102,7 +102,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px 0;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       border-bottom: 2px solid var(--primary-color);
     }
 
@@ -120,9 +120,9 @@
       width: 100%;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
+      gap: 10px;
       overflow-y: auto;
-      max-height: 70vh;
+      max-height: 72vh;
       padding: 5px;
     }
 
@@ -136,14 +136,15 @@
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 1rem;
+      font-size: 0.95rem;
       cursor: pointer;
-      box-shadow: 0 4px 0 var(--primary-color);
+      box-shadow: 0 3px 0 var(--primary-color);
     }
 
     .stage-card.hard {
       border-color: #c0392b;
       color: #c0392b;
+      background: #fff0f0;
     }
 
     .stage-card.locked {
@@ -397,6 +398,7 @@
       document.getElementById('coin-count').innerText = coins;
       localStorage.setItem('roasters_current_stage', currentStage);
 
+      // 570ステージ以上はHARD表示
       const isHard = stageNum >= 570;
       document.getElementById('hard-tag').style.display = isHard ? 'inline-block' : 'none';
 
@@ -404,7 +406,7 @@
       let numColors = 3;
       if (stageNum > 10) numColors = 4;
       if (stageNum > 50) numColors = 5;
-      if (stageNum >= 570) numColors = 6; // Lv570以上で全6色
+      if (stageNum >= 570) numColors = 6; // Lv570以降は最大6色で激高難易度
 
       let blindRate = stageNum >= 570 ? 0.45 : (stageNum >= 5 ? 0.2 : 0);
       let frozenRate = stageNum >= 570 ? 0.35 : (stageNum >= 10 ? 0.15 : 0);
@@ -436,14 +438,14 @@
         lockedBottles.push(false);
       }
       
-      // 空ボトル数（Lv570以上は空ボトルを減らし超高難易度化）
+      // 空ボトル数（Lv570以上は1つのみにして高難易度化）
       let emptyCount = stageNum >= 570 ? 1 : 2;
       for (let e = 0; e < emptyCount; e++) {
         bottles.push([]);
         lockedBottles.push(false);
       }
 
-      // 鍵付きボトル（高難易度帯で発生）
+      // 鍵付きボトル
       if (stageNum >= 15 && stageNum % 3 === 0) {
         bottles.push([]);
         lockedBottles.push(true);
@@ -628,9 +630,12 @@
       }, 100);
     }
 
+    // 1500ステージ全表示用レンダリング
     function renderStageGrid() {
       const grid = document.getElementById('stage-grid');
       grid.innerHTML = '';
+      
+      const fragment = document.createDocumentFragment();
       for (let i = 1; i <= TOTAL_STAGES; i++) {
         const card = document.createElement('div');
         let isLocked = i > maxUnlockedStage;
@@ -643,8 +648,9 @@
             showScreen('game-screen');
           };
         }
-        grid.appendChild(card);
+        fragment.appendChild(card);
       }
+      grid.appendChild(fragment);
     }
   </script>
 </body>
