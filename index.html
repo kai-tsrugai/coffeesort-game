@@ -51,7 +51,7 @@
       display: flex;
     }
 
-    /* --- 1. ホーム画面 (スクロール対応修正) --- */
+    /* --- 1. ホーム画面 --- */
     #home-screen {
       justify-content: flex-start;
       padding: 20px 15px 30px 15px;
@@ -226,8 +226,8 @@
 
     /* --- 3. パズルゲーム画面 --- */
     #game-screen {
-      justify-content: space-between;
-      padding-bottom: 10px;
+      justify-content: flex-start;
+      padding-bottom: 20px;
     }
 
     header {
@@ -266,6 +266,38 @@
       margin-left: 6px;
     }
 
+    /* ショップボタンを上部に配置 */
+    .shop-container {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      padding: 8px 6px;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.75);
+      border-bottom: 2px solid rgba(92, 58, 33, 0.2);
+    }
+
+    .shop-btn {
+      background: #fff;
+      border: 2px solid #5c3a21;
+      border-radius: 10px;
+      padding: 6px 2px;
+      font-size: 0.65rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      box-shadow: 0 3px 0 #5c3a21;
+    }
+
+    .shop-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #5c3a21;
+    }
+
     .game-board {
       display: flex;
       flex-wrap: wrap;
@@ -273,7 +305,7 @@
       gap: 10px;
       width: 100%;
       margin: auto 0;
-      padding: 10px 0;
+      padding: 15px 0;
     }
 
     .bottle {
@@ -335,36 +367,7 @@
     .bean.frozen { border: 2px solid #00d2d3; box-shadow: 0 0 8px #00d2d3; }
     .bean.frozen::after { content: '❄️'; }
 
-    .shop-container {
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-      padding: 10px 0;
-      flex-shrink: 0;
-    }
-
-    .shop-btn {
-      background: #fff;
-      border: 2px solid #5c3a21;
-      border-radius: 10px;
-      padding: 6px 2px;
-      font-size: 0.65rem;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      box-shadow: 0 3px 0 #5c3a21;
-    }
-
-    .shop-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 #5c3a21;
-    }
-
-    /* 忍者AdMax 広告枠 */
+    /* 忍者AdMax 常駐広告 */
     .fixed-bottom-ad {
       position: fixed;
       bottom: 0; left: 0; width: 100%;
@@ -425,8 +428,7 @@
       <div class="coin-display">🪙 <span id="coin-count">100</span></div>
     </header>
 
-    <div class="game-board" id="game-board"></div>
-
+    <!-- 上部に配置されたショップコンテナ -->
     <div class="shop-container">
       <button class="shop-btn" onclick="undoMove()"><span>↩️ 戻す</span><span>🪙 10</span></button>
       <button class="shop-btn" onclick="showHint()"><span>💡 ヒント</span><span>🪙 20</span></button>
@@ -434,6 +436,8 @@
       <button class="shop-btn" onclick="useShuffle()"><span>🔀 シャッフル</span><span>🪙 50</span></button>
       <button class="shop-btn" onclick="addExtraBottle()"><span>🧪 ボトル追加</span><span>🪙 100</span></button>
     </div>
+
+    <div class="game-board" id="game-board"></div>
   </div>
 
   <!-- 忍者AdMax 常駐広告 -->
@@ -455,7 +459,7 @@
     let claimedAchieves = JSON.parse(localStorage.getItem('roasters_claimed_achieves')) || [];
     let bestTimeAttack = parseInt(localStorage.getItem('roasters_best_ta')) || 0;
 
-    let gameMode = 'normal'; // 'normal', 'daily', 'timeattack'
+    let gameMode = 'normal';
     let timerInterval = null;
     let timeRemaining = 180;
     let taClearedCount = 0;
