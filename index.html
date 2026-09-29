@@ -42,7 +42,7 @@
       overflow: hidden;
     }
 
-    /* メインコンテナ：上部広告の高さ＋余裕分の余白を設定 */
+    /* メインコンテナ */
     .app-container {
       width: 100%;
       max-width: 420px;
@@ -58,7 +58,7 @@
     .title-area {
       text-align: center;
       margin-top: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 20px;
     }
     .title-logo {
       display: flex;
@@ -77,30 +77,6 @@
       font-weight: bold;
       color: #4a3328;
       margin-top: 2px;
-    }
-
-    /* Sound Controls */
-    .audio-controls {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-      width: 100%;
-      justify-content: center;
-    }
-    .audio-btn {
-      background: #ffffff;
-      border: 2.5px solid var(--border-dark);
-      border-radius: 20px;
-      padding: 6px 16px;
-      font-size: 13px;
-      font-weight: 800;
-      color: #2c1a12;
-      cursor: pointer;
-      box-shadow: 0 3px 0 var(--border-dark);
-    }
-    .audio-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 var(--border-dark);
     }
 
     /* Menu Buttons */
@@ -209,11 +185,6 @@
       <div class="sub-title">〜極上やり込みパズル〜</div>
     </div>
 
-    <div class="audio-controls">
-      <button class="audio-btn" onclick="toggleSE()" id="btn-se">🔊 SE: ON</button>
-      <button class="audio-btn" onclick="toggleBGM()" id="btn-bgm">🎵 BGM: OFF</button>
-    </div>
-
     <div class="menu-list">
       <button class="btn-roaster btn-continue" onclick="startGame()">▶ 続きから遊ぶ</button>
       <button class="btn-roaster btn-stage" onclick="alert('ステージ選択へ')">🧃 ステージ選択 (1-1500)</button>
@@ -259,19 +230,6 @@
 </div>
 
 <script>
-  let seOn = true;
-  let bgmOn = false;
-
-  function toggleSE() {
-    seOn = !seOn;
-    document.getElementById('btn-se').innerText = `🔊 SE: ${seOn ? 'ON' : 'OFF'}`;
-  }
-
-  function toggleBGM() {
-    bgmOn = !bgmOn;
-    document.getElementById('btn-bgm').innerText = `🎵 BGM: ${bgmOn ? 'ON' : 'OFF'}`;
-  }
-
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
