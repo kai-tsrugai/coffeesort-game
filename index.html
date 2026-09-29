@@ -8,7 +8,7 @@
     :root {
       --bg-color: #f7f2e7;
       --border-dark: #2c1a12;
-      --ad-height: 100px; /* 忍者AdMaxの表示領域の高さ */
+      --ad-height: 100px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
@@ -23,7 +23,7 @@
       min-height: 100vh;
     }
 
-    /* 画面最上部に固定表示する忍者AdMax広告エリア */
+    /* 上部固定広告エリア（1つだけ表示） */
     .fixed-top-ad {
       position: fixed;
       top: 0;
@@ -37,12 +37,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 100;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      z-index: 999;
       overflow: hidden;
     }
 
-    /* メインコンテナ */
+    /* メインコンテンツ（広告分の余白を確保） */
     .app-container {
       width: 100%;
       max-width: 420px;
@@ -54,7 +53,7 @@
       position: relative;
     }
 
-    /* Header & Title */
+    /* Title Header */
     .title-area {
       text-align: center;
       margin-top: 10px;
@@ -166,11 +165,9 @@
 </head>
 <body>
 
-<!-- 画面最上部に固定表示する忍者AdMax常駐広告 -->
+<!-- 画面最上部に単一で固定配置する広告枠 -->
 <div class="fixed-top-ad">
-  <!-- admax -->
   <script src="https://adm.shinobi.jp/s/5235ee24a3bda74d9a1d05e10baf3d94"></script>
-  <!-- admax -->
 </div>
 
 <div class="app-container">
