@@ -3,1339 +3,323 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Roasters Sort - 1500 Stages & Challenge</title>
+  <title>Roasters Sort 〜極上やり込みパズル〜</title>
   <style>
     :root {
-      --bg-color: #f7f0e6;
-      --card-bg: #fff8f0;
-      --primary-color: #4a2c11;
-      --accent-color: #e06d28;
-      --text-color: #2b1810;
-      --bottle-border: #5c3a21;
-      --bottle-bg: rgba(255, 255, 255, 0.85);
-      --ad-height: 60px;
+      --bg-color: #f7f2e7;
+      --border-dark: #2c1a12;
+      --ad-height: 100px; /* 忍者AdMaxの表示領域の高さ */
     }
 
-    /* テーマ定義 */
-    body.theme-cafe {
-      --bg-color: #f7f0e6;
-      --primary-color: #4a2c11;
-      --accent-color: #e06d28;
-      --text-color: #2b1810;
-      --bottle-border: #5c3a21;
-    }
-    body.theme-dark {
-      --bg-color: #1e1e2e;
-      --primary-color: #cba6f7;
-      --accent-color: #f38ba8;
-      --text-color: #cdd6f4;
-      --bottle-border: #cba6f7;
-      --bottle-bg: rgba(45, 45, 65, 0.85);
-    }
-    body.theme-matcha {
-      --bg-color: #eef5e8;
-      --primary-color: #385e2b;
-      --accent-color: #72a24d;
-      --text-color: #1c3313;
-      --bottle-border: #385e2b;
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", sans-serif;
+      background-color: var(--bg-color);
+      color: #2c1a12;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
     }
 
-    /* ボトルスキン定義 */
-    .bottle.skin-beaker {
-      border-radius: 0 0 4px 4px !important;
-      border-top: none !important;
-    }
-    .bottle.skin-bamboo {
-      border-color: #2e5902 !important;
-      background: rgba(220, 240, 200, 0.8) !important;
-      border-radius: 8px !important;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    html, body {
+    /* 画面最上部に固定表示する忍者AdMax広告エリア */
+    .fixed-top-ad {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
       width: 100%;
-      height: 100%;
+      max-width: 420px;
+      height: var(--ad-height);
+      background: #ffffff;
+      border-bottom: 2px solid var(--border-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       overflow: hidden;
     }
 
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+    /* メインコンテナ：上部広告の高さ＋余裕分の余白を設定 */
+    .app-container {
+      width: 100%;
+      max-width: 420px;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      transition: background-color 0.3s, color 0.3s;
-    }
-
-    .screen {
-      display: none;
-      width: 100%;
-      max-width: 480px;
-      height: calc(100vh - var(--ad-height));
-      flex-direction: column;
-      align-items: center;
+      padding: calc(var(--ad-height) + 16px) 20px 40px 20px;
       position: relative;
     }
 
-    .screen.active {
-      display: flex;
-    }
-
-    /* --- 1. ホーム画面 --- */
-    #home-screen {
-      justify-content: flex-start;
-      padding: 20px 15px 30px 15px;
+    /* Header & Title */
+    .title-area {
       text-align: center;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .title-logo {
-      font-size: 2.2rem;
-      font-weight: 900;
-      color: var(--primary-color);
       margin-top: 10px;
-      margin-bottom: 5px;
-      text-shadow: 2px 2px 0px var(--accent-color);
-      flex-shrink: 0;
+      margin-bottom: 12px;
     }
-
-    .subtitle {
-      font-size: 0.95rem;
-      color: #666;
-      margin-bottom: 15px;
+    .title-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .title-text {
+      font-size: 32px;
+      font-weight: 900;
+      color: #3d1e11;
+      letter-spacing: -0.5px;
+    }
+    .sub-title {
+      font-size: 14px;
       font-weight: bold;
-      flex-shrink: 0;
+      color: #4a3328;
+      margin-top: 2px;
     }
 
+    /* Sound Controls */
     .audio-controls {
       display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-      flex-shrink: 0;
-    }
-
-    .audio-btn {
-      background: #fff;
-      border: 2px solid var(--primary-color);
-      color: var(--primary-color);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .home-btn {
-      width: 85%;
-      max-width: 300px;
-      padding: 12px;
-      margin: 5px 0;
-      font-size: 1rem;
-      font-weight: bold;
-      border: 3px solid var(--primary-color);
-      border-radius: 30px;
-      background: var(--accent-color);
-      color: #fff;
-      cursor: pointer;
-      box-shadow: 0 4px 0 var(--primary-color);
-      transition: transform 0.1s;
-      flex-shrink: 0;
-    }
-
-    .home-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 var(--primary-color);
-    }
-
-    .home-btn.secondary { background: #fff; color: var(--primary-color); }
-    .home-btn.bonus { background: #27ae60; }
-    .home-btn.timeattack { background: #d35400; }
-    .home-btn.shop { background: #8e44ad; }
-    .home-btn.stats { background: #16a085; }
-
-    /* --- サブ画面 ヘッダー共通 --- */
-    .screen-header {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      margin-bottom: 10px;
-      border-bottom: 2px solid var(--primary-color);
-      flex-shrink: 0;
-    }
-
-    .back-btn {
-      background: var(--primary-color);
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    /* --- 2. ステージ選択画面 --- */
-    #select-screen, #achieve-screen, #custom-screen, #stats-screen {
-      padding: 15px 15px 10px 15px;
-      height: calc(100vh - var(--ad-height));
-    }
-
-    .stage-grid-container {
-      width: 100%;
-      flex: 1;
-      height: 0;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 20px;
-    }
-
-    .stage-grid {
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      padding: 5px;
-    }
-
-    .stage-card {
-      aspect-ratio: 1;
-      background: #fff;
-      border: 2px solid var(--primary-color);
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 0.95rem;
-      cursor: pointer;
-      box-shadow: 0 3px 0 var(--primary-color);
-      position: relative;
-    }
-
-    .stage-card.cleared::after {
-      content: '✓';
-      position: absolute;
-      top: 2px;
-      right: 6px;
-      color: #27ae60;
-      font-size: 0.9rem;
-      font-weight: bold;
-    }
-
-    .stage-card.hard {
-      border-color: #c0392b;
-      color: #c0392b;
-      background: #fff0f0;
-    }
-
-    .stage-card.locked {
-      background: #dcdde1;
-      border-color: #7f8c8d;
-      color: #7f8c8d;
-      box-shadow: none;
-      cursor: not-allowed;
-    }
-
-    /* --- 実績 / ショップ / 統計共通 --- */
-    .list-container {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
       gap: 12px;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      flex: 1;
-      padding-bottom: 20px;
+      margin-bottom: 16px;
+      width: 100%;
+      justify-content: center;
     }
-
-    .item-card {
-      background: #fff;
-      border: 2px solid var(--primary-color);
-      border-radius: 12px;
-      padding: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #2b1810;
-    }
-
-    .action-btn {
-      background: #27ae60;
-      color: #fff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 15px;
-      font-weight: bold;
+    .audio-btn {
+      background: #ffffff;
+      border: 2.5px solid var(--border-dark);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #2c1a12;
       cursor: pointer;
+      box-shadow: 0 3px 0 var(--border-dark);
+    }
+    .audio-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--border-dark);
     }
 
-    .action-btn.secondary { background: #8e44ad; }
-    .action-btn.equipped { background: #7f8c8d; cursor: default; }
-
-    /* --- 3. パズルゲーム画面 --- */
-    #game-screen {
-      justify-content: flex-start;
-      padding-bottom: 20px;
+    /* Menu Buttons */
+    .menu-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    header {
+    .btn-roaster {
       width: 100%;
       padding: 12px 16px;
+      border: 3px solid var(--border-dark);
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 5px 0 var(--border-dark);
+      transition: transform 0.05s, box-shadow 0.05s;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+    .btn-roaster:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 var(--border-dark);
+    }
+
+    /* ボタンカラー */
+    .btn-continue { background: linear-gradient(to bottom, #d2642a, #b34a17); color: #fff; }
+    .btn-stage { background: #ffffff; color: #2c1a12; text-shadow: none; }
+    .btn-daily { background: linear-gradient(to bottom, #509e53, #3b7e3e); color: #fff; }
+    .btn-time { background: linear-gradient(to bottom, #c05826, #a14115); color: #fff; }
+    .btn-shop { background: linear-gradient(to bottom, #8a48a9, #6a3285); color: #fff; }
+    .btn-stats { background: linear-gradient(to bottom, #3b9b85, #277765); color: #fff; }
+    .btn-achieve { background: #ffffff; color: #2c1a12; text-shadow: none; }
+    .btn-bonus { background: linear-gradient(to bottom, #5bb376, #3f8e57); color: #fff; }
+    .btn-help { background: #ffffff; color: #b33924; text-shadow: none; }
+
+    /* Screen Management */
+    .screen { display: none; width: 100%; flex-direction: column; align-items: center; }
+    .screen.active { display: flex; }
+
+    /* Puzzle Screen */
+    .game-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      background: linear-gradient(135deg, var(--primary-color), #2b1810);
-      color: #fff;
-      flex-shrink: 0;
-    }
-
-    .coin-display {
-      background: var(--accent-color);
-      padding: 5px 14px;
-      border-radius: 20px;
-      font-size: 0.95rem;
-      font-weight: bold;
-    }
-
-    .timer-display {
-      background: #c0392b;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: bold;
-    }
-
-    .difficulty-badge {
-      font-size: 0.75rem;
-      background: #e74c3c;
-      color: #fff;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-left: 6px;
-    }
-
-    .shop-container {
       width: 100%;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-      padding: 8px 6px;
-      flex-shrink: 0;
-      background: rgba(255, 255, 255, 0.75);
-      border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-    }
-
-    .shop-btn {
-      background: #fff;
-      border: 2px solid var(--primary-color);
-      border-radius: 10px;
-      padding: 6px 2px;
-      font-size: 0.65rem;
       font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      box-shadow: 0 3px 0 var(--primary-color);
-      color: var(--text-color);
+      margin-bottom: 20px;
     }
-
-    .shop-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 var(--primary-color);
-    }
-
-    .game-board {
+    .bottles-area {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
+      margin: 20px 0;
       width: 100%;
-      margin: auto 0;
-      padding: 15px 0;
-      position: relative;
+      min-height: 180px;
     }
-
     .bottle {
       width: 50px;
-      height: 165px;
-      border: 3px solid var(--bottle-border);
+      height: 160px;
+      border: 3px solid var(--border-dark);
       border-radius: 0 0 16px 16px;
-      background: var(--bottle-bg);
       display: flex;
       flex-direction: column-reverse;
       align-items: center;
-      padding: 3px;
+      padding: 4px;
+      background: rgba(255,255,255,0.6);
       cursor: pointer;
-      position: relative;
-      transition: transform 0.2s, border-color 0.2s;
     }
-
     .bottle.selected {
-      transform: translateY(-16px);
-      border-color: var(--accent-color) !important;
-      box-shadow: 0 8px 20px rgba(224, 109, 40, 0.4);
+      border-color: #f39c12;
+      transform: translateY(-6px);
     }
-
-    .bottle.locked-bottle {
-      background: #bdc3c7;
-      border-color: #7f8c8d !important;
-    }
-
-    .bottle.locked-bottle::after {
-      content: '🔒';
-      font-size: 1.3rem;
-      position: absolute;
-      top: 40%;
-    }
-
-    .bean {
-      width: 100%;
-      height: 36px;
-      border-radius: 8px;
-      margin-top: 2px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-weight: bold;
-      color: #fff;
-      box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -3px 4px rgba(0,0,0,0.3);
-    }
-
-    .bean-light  { background: linear-gradient(135deg, #e6b88a, #c48b52); }
-    .bean-medium { background: linear-gradient(135deg, #b87333, #8a4f1d); }
-    .bean-dark   { background: linear-gradient(135deg, #5a3825, #2b1810); }
-    .bean-matcha { background: linear-gradient(135deg, #8ba832, #556b14); }
-    .bean-berry  { background: linear-gradient(135deg, #d9534f, #962d2a); }
-    .bean-milk   { background: linear-gradient(135deg, #f5ebe0, #d5bdaf); color: #333; }
-
-    .bean.blind { background: #7f8c8d !important; }
-    .bean.blind::after { content: '❓'; }
-
-    .bean.frozen { border: 2px solid #00d2d3; box-shadow: 0 0 8px #00d2d3; }
-    .bean.frozen::after { content: '❄️'; }
-
-    /* コンボ表示テキスト */
-    .combo-popup {
-      position: absolute;
-      top: 10px;
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: var(--accent-color);
-      text-shadow: 2px 2px 0 #fff;
-      pointer-events: none;
-      animation: comboAnim 0.8s forwards;
-      z-index: 100;
-    }
-
-    @keyframes comboAnim {
-      0% { transform: scale(0.5); opacity: 0; }
-      50% { transform: scale(1.3); opacity: 1; }
-      100% { transform: scale(1); opacity: 0; }
-    }
-
-    /* 紙吹雪キャンバス */
-    #confetti-canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 99999;
-    }
-
-    /* --- 4. モーダル --- */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: 10000;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-overlay.active { display: flex; }
-
-    .modal-content {
-      background: #fff;
-      width: 88%;
-      max-width: 380px;
-      border: 3px solid var(--primary-color);
-      border-radius: 16px;
-      padding: 20px;
-      text-align: center;
-      color: #2b1810;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    }
-
-    .modal-title {
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: var(--primary-color);
-      margin-bottom: 12px;
-      border-bottom: 2px solid var(--accent-color);
-      padding-bottom: 6px;
-    }
-
-    .modal-body {
-      font-size: 0.9rem;
-      line-height: 1.6;
-      text-align: left;
-      margin-bottom: 16px;
-    }
-
-    .modal-close-btn {
-      background: var(--accent-color);
-      color: #fff;
-      border: none;
-      padding: 10px 24px;
-      border-radius: 20px;
-      font-weight: bold;
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
-
-    /* 常駐広告 */
-    .fixed-bottom-ad {
-      position: fixed;
-      bottom: 0; left: 0; width: 100%;
-      height: var(--ad-height);
-      background-color: #f0f0f0;
-      display: flex; justify-content: center; align-items: center;
-      z-index: 9999;
-      border-top: 1px solid #ccc;
+    .bean-item {
+      width: 38px;
+      height: 34px;
+      border-radius: 50%;
+      margin: 2px 0;
+      box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3);
     }
   </style>
 </head>
-<body class="theme-cafe">
+<body>
 
-  <canvas id="confetti-canvas"></canvas>
+<!-- 画面最上部に固定表示する忍者AdMax常駐広告 -->
+<div class="fixed-top-ad">
+  <!-- admax -->
+  <script src="https://adm.shinobi.jp/s/5235ee24a3bda74d9a1d05e10baf3d94"></script>
+  <!-- admax -->
+</div>
 
-  <!-- 1. ホーム画面 -->
-  <div id="home-screen" class="screen active">
-    <div class="title-logo">☕ Roasters Sort</div>
-    <div class="subtitle">〜極上やり込みパズル〜</div>
+<div class="app-container">
+
+  <!-- ホーム画面 -->
+  <div id="screen-home" class="screen active">
+    <div class="title-area">
+      <div class="title-logo">
+        <span style="font-size:28px;">☕</span>
+        <span class="title-text">Roasters Sort</span>
+      </div>
+      <div class="sub-title">〜極上やり込みパズル〜</div>
+    </div>
 
     <div class="audio-controls">
-      <button class="audio-btn" id="se-toggle-btn" onclick="toggleSE()">🔊 SE: ON</button>
-      <button class="audio-btn" id="bgm-toggle-btn" onclick="toggleBGM()">🎵 BGM: OFF</button>
+      <button class="audio-btn" onclick="toggleSE()" id="btn-se">🔊 SE: ON</button>
+      <button class="audio-btn" onclick="toggleBGM()" id="btn-bgm">🎵 BGM: OFF</button>
     </div>
-    
-    <button class="home-btn" onclick="continueGame()">▶ 続きから遊ぶ</button>
-    <button class="home-btn secondary" onclick="showScreen('select-screen')">🗺️ ステージ選択 (1-1500)</button>
-    <button class="home-btn bonus" onclick="startDailyChallenge()">📅 日替わりチャレンジ (🪙150)</button>
-    <button class="home-btn timeattack" onclick="startTimeAttack()">⏱️ タイムアタック (3分)</button>
-    <button class="home-btn shop" onclick="showScreen('custom-screen')">🎨 ショップ・着せ替え</button>
-    <button class="home-btn stats" onclick="showScreen('stats-screen')">📊 プレイ記録・統計</button>
-    <button class="home-btn secondary" onclick="showScreen('achieve-screen')">🎖️ 実績・アチーブメント</button>
-    <button class="home-btn bonus" onclick="claimDailyBonus()">🎁 デイリーボーナス</button>
-    <button class="home-btn secondary" onclick="openTutorial()">❓ 遊び方（チュートリアル）</button>
-  </div>
 
-  <!-- 2. ステージ選択画面 -->
-  <div id="select-screen" class="screen">
-    <div class="screen-header">
-      <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
-      <h2 style="font-size: 1.1rem;">ステージ選択 (1-1500)</h2>
-      <div style="width: 50px;"></div>
-    </div>
-    <div class="stage-grid-container">
-      <div class="stage-grid" id="stage-grid"></div>
+    <div class="menu-list">
+      <button class="btn-roaster btn-continue" onclick="startGame()">▶ 続きから遊ぶ</button>
+      <button class="btn-roaster btn-stage" onclick="alert('ステージ選択へ')">🧃 ステージ選択 (1-1500)</button>
+      <button class="btn-roaster btn-daily" onclick="alert('日替わりチャレンジへ')">📅 日替わりチャレンジ (🌕 150)</button>
+      <button class="btn-roaster btn-time" onclick="alert('タイムアタックへ')">⏱️ タイムアタック (3分)</button>
+      <button class="btn-roaster btn-shop" onclick="showScreen('screen-shop')">🎨 ショップ・着せ替え</button>
+      <button class="btn-roaster btn-stats" onclick="showScreen('screen-stats')">📊 プレイ記録・統計</button>
+      <button class="btn-roaster btn-achieve" onclick="alert('実績・アチーブメント')">🎖️ 実績・アチーブメント</button>
+      <button class="btn-roaster btn-bonus" onclick="alert('デイリーボーナスを受け取りました！')">🎁 デイリーボーナス</button>
+      <button class="btn-roaster btn-help" onclick="alert('遊び方：同じ色のコーヒー豆を瓶にそろえよう！')">❓ 遊び方（チュートリアル）</button>
     </div>
   </div>
 
-  <!-- 着せ替え・ショップ画面 -->
-  <div id="custom-screen" class="screen">
-    <div class="screen-header">
-      <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
-      <h2 style="font-size: 1.1rem;">ショップ・着せ替え</h2>
-      <div class="coin-display">🪙 <span class="coin-val">100</span></div>
+  <!-- ゲーム画面 -->
+  <div id="screen-game" class="screen">
+    <div class="game-header">
+      <span id="stage-num">Stage 1</span>
+      <span id="move-num">手数: 0</span>
     </div>
-    <div class="list-container" id="shop-list"></div>
-  </div>
-
-  <!-- 統計データ画面 -->
-  <div id="stats-screen" class="screen">
-    <div class="screen-header">
-      <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
-      <h2 style="font-size: 1.1rem;">プレイ記録・統計</h2>
-      <div style="width: 50px;"></div>
-    </div>
-    <div class="list-container" id="stats-list"></div>
-  </div>
-
-  <!-- アチーブメント画面 -->
-  <div id="achieve-screen" class="screen">
-    <div class="screen-header">
-      <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
-      <h2 style="font-size: 1.1rem;">実績・アチーブメント</h2>
-      <div style="width: 50px;"></div>
-    </div>
-    <div class="list-container" id="achieve-list"></div>
-  </div>
-
-  <!-- 3. パズルゲーム画面 -->
-  <div id="game-screen" class="screen">
-    <header>
-      <button class="back-btn" onclick="exitGame()">🏠 戻る</button>
-      <div style="font-weight:bold;">
-        <span id="stage-label">STAGE</span> <span id="stage-display">1</span>
-        <span id="hard-tag" class="difficulty-badge" style="display:none;">HARD</span>
-      </div>
-      <div id="timer-box" class="timer-display" style="display:none;">⏳ <span id="timer-count">180</span>s</div>
-      <div class="coin-display">🪙 <span class="coin-val">100</span></div>
-    </header>
-
-    <div class="shop-container">
-      <button class="shop-btn" onclick="undoMove()"><span>↩️ 戻す</span><span>🪙 10</span></button>
-      <button class="shop-btn" onclick="showHint()"><span>💡 ヒント</span><span>🪙 20</span></button>
-      <button class="shop-btn" onclick="stirBottle()"><span>🥄 かき混ぜ</span><span>🪙 25</span></button>
-      <button class="shop-btn" onclick="useShuffle()"><span>🔀 シャッフル</span><span>🪙 50</span></button>
-      <button class="shop-btn" onclick="addExtraBottle()"><span>🧪 ボトル追加</span><span>🪙 100</span></button>
-    </div>
-
-    <div class="game-board" id="game-board"></div>
-  </div>
-
-  <!-- チュートリアル モーダル -->
-  <div id="tutorial-modal" class="modal-overlay">
-    <div class="modal-content">
-      <div class="modal-title">☕ ルールと遊び方</div>
-      <div class="modal-body">
-        同じ色のコーヒー豆をボトルごとに綺麗に分類しよう！
-        <ul style="padding-left: 20px; margin-top: 8px;">
-          <li><b>移動ルール:</b> ボトルの一番上の豆だけ動かせます。</li>
-          <li><b>重ねる条件:</b> 移動先が空か、一番上と同じ色のみ重ねられます。</li>
-          <li><b>ギミック:</b>
-            <ul>
-              <li>❓ <b>ハテナ豆:</b> 一番上にするまで正体不明。</li>
-              <li>❄️ <b>氷豆:</b> タップで割って解放。</li>
-            </ul>
-          </li>
-          <li><b>クリア:</b> 全ボトルを1色または空にそろえればクリア！</li>
-        </ul>
-      </div>
-      <button class="modal-close-btn" onclick="closeTutorial()">理解した！</button>
+    <div class="bottles-area" id="bottles-area"></div>
+    <div class="menu-list" style="margin-top: 20px;">
+      <button class="btn-roaster btn-continue" onclick="startGame()">リセット</button>
+      <button class="btn-roaster btn-stage" onclick="showScreen('screen-home')">ホームへ戻る</button>
     </div>
   </div>
 
-  <!-- 常駐広告 -->
-  <div class="fixed-bottom-ad">
-    <script src="https://adm.shinobi.jp/s/5235ee24a3bda74d9a1d05e10baf3d94"></script>
+  <!-- ショップ画面 -->
+  <div id="screen-shop" class="screen">
+    <h2 style="margin-bottom: 20px;">🎨 ショップ・着せ替え</h2>
+    <div class="menu-list">
+      <button class="btn-roaster btn-continue" onclick="showScreen('screen-home')">戻る</button>
+    </div>
   </div>
 
-  <script>
-    const BOTTLE_CAPACITY = 4;
-    const ALL_COLORS = ['light', 'medium', 'dark', 'matcha', 'berry', 'milk'];
-    const TOTAL_STAGES = 1500;
+  <!-- 統計画面 -->
+  <div id="screen-stats" class="screen">
+    <h2 style="margin-bottom: 20px;">📊 プレイ記録・統計</h2>
+    <div class="menu-list">
+      <button class="btn-roaster btn-continue" onclick="showScreen('screen-home')">戻る</button>
+    </div>
+  </div>
 
-    // ゲーム状態
-    let currentStage = parseInt(localStorage.getItem('roasters_current_stage')) || 1;
-    let maxUnlockedStage = parseInt(localStorage.getItem('roasters_max_stage')) || 1;
-    let clearedStages = JSON.parse(localStorage.getItem('roasters_cleared_list')) || [];
-    let coins = parseInt(localStorage.getItem('roasters_coins')) || 100;
-    let claimedAchieves = JSON.parse(localStorage.getItem('roasters_claimed_achieves')) || [];
-    let bestTimeAttack = parseInt(localStorage.getItem('roasters_best_ta')) || 0;
+</div>
 
-    // 統計データ
-    let totalMoves = parseInt(localStorage.getItem('roasters_stats_moves')) || 0;
-    let totalPlayTime = parseInt(localStorage.getItem('roasters_stats_time')) || 0; // 秒
+<script>
+  let seOn = true;
+  let bgmOn = false;
 
-    // カスタマイズ装備状況
-    let equippedTheme = localStorage.getItem('roasters_theme') || 'theme-cafe';
-    let equippedSkin = localStorage.getItem('roasters_skin') || 'skin-standard';
-    let unlockedItems = JSON.parse(localStorage.getItem('roasters_unlocked_items')) || ['theme-cafe', 'skin-standard'];
+  function toggleSE() {
+    seOn = !seOn;
+    document.getElementById('btn-se').innerText = `🔊 SE: ${seOn ? 'ON' : 'OFF'}`;
+  }
 
-    // オーディオ設定
-    let isSEEnabled = localStorage.getItem('roasters_se') !== 'false';
-    let isBGMEnabled = localStorage.getItem('roasters_bgm') === 'true';
+  function toggleBGM() {
+    bgmOn = !bgmOn;
+    document.getElementById('btn-bgm').innerText = `🎵 BGM: ${bgmOn ? 'ON' : 'OFF'}`;
+  }
 
-    let gameMode = 'normal';
-    let timerInterval = null;
-    let playTimerInterval = null;
-    let timeRemaining = 180;
-    let taClearedCount = 0;
-    let comboCount = 0;
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
 
-    let bottles = [];
-    let lockedBottles = [];
-    let history = [];
-    let selectedBottleIndex = null;
+  let bottles = [];
+  const colors = ['#5c3d2e', '#c19a6b', '#8b5a2b', '#d2b48c'];
+  let selected = null;
 
-    // ショップ商品リスト
-    const SHOP_ITEMS = [
-      { id: 'theme-cafe', type: 'theme', name: 'クラシックカフェ', price: 0, desc: '標準の落ち着いたカフェ風背景' },
-      { id: 'theme-dark', type: 'theme', name: 'ナイトカフェ', price: 200, desc: 'クールで目に優しいダークモード' },
-      { id: 'theme-matcha', type: 'theme', name: '和風抹茶庵', price: 300, desc: '安らぐ緑の和風テーマ' },
-      { id: 'skin-standard', type: 'skin', name: '標準ガラスボトル', price: 0, desc: '一般的な丸底ボトル' },
-      { id: 'skin-beaker', type: 'skin', name: '理科用ビーカー', price: 250, desc: '平底のシンプルなビーカー' },
-      { id: 'skin-bamboo', type: 'skin', name: '竹筒ボトル', price: 350, desc: '風情ある竹製の筒' }
-    ];
+  function startGame() {
+    bottles = [[0,1,0,1], [1,0,1,0], [], []];
+    selected = null;
+    renderBottles();
+    showScreen('screen-game');
+  }
 
-    const ACHIEVEMENTS = [
-      { id: 'cleared_10', title: 'ビギナーロースター', desc: '10ステージクリア', target: 10, reward: 100 },
-      { id: 'cleared_50', title: '一人前マスター', desc: '50ステージクリア', target: 50, reward: 200 },
-      { id: 'cleared_100', title: '人気カフェ店主', desc: '100ステージクリア', target: 100, reward: 300 },
-      { id: 'cleared_570', title: '伝説の焙煎士', desc: '570ステージ(HARD)達成', target: 570, reward: 500 }
-    ];
-
-    // Web Audio API による効果音生成
-    let audioCtx = null;
-    function getAudioContext() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      return audioCtx;
-    }
-
-    function playSound(type) {
-      if (!isSEEnabled) return;
-      try {
-        let ctx = getAudioContext();
-        let osc = ctx.createOscillator();
-        let gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        if (type === 'select') {
-          osc.frequency.setValueAtTime(400, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.1);
-          gain.gain.setValueAtTime(0.2, ctx.currentTime);
-          gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.1);
-        } else if (type === 'drop') {
-          osc.frequency.setValueAtTime(500, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.12);
-          gain.gain.setValueAtTime(0.3, ctx.currentTime);
-          gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.12);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.12);
-        } else if (type === 'ice') {
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(800, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.15);
-          gain.gain.setValueAtTime(0.4, ctx.currentTime);
-          gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.15);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.15);
-        } else if (type === 'win') {
-          const notes = [523.25, 659.25, 783.99, 1046.50];
-          notes.forEach((freq, idx) => {
-            let o = ctx.createOscillator();
-            let g = ctx.createGain();
-            o.connect(g);
-            g.connect(ctx.destination);
-            o.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.1);
-            g.gain.setValueAtTime(0.2, ctx.currentTime + idx * 0.1);
-            g.gain.linearRampToValueAtTime(0.01, ctx.currentTime + idx * 0.1 + 0.2);
-            o.start(ctx.currentTime + idx * 0.1);
-            o.stop(ctx.currentTime + idx * 0.1 + 0.2);
-          });
-        }
-      } catch (e) {}
-    }
-
-    // WEB Audio BGMループ再生
-    let bgmOsc = null;
-    let bgmInterval = null;
-    function startBGM() {
-      if (!isBGMEnabled || bgmInterval) return;
-      let ctx = getAudioContext();
-      const notes = [261.63, 329.63, 392.00, 329.63];
-      let step = 0;
-      bgmInterval = setInterval(() => {
-        try {
-          let o = ctx.createOscillator();
-          let g = ctx.createGain();
-          o.type = 'sine';
-          o.connect(g);
-          g.connect(ctx.destination);
-          o.frequency.setValueAtTime(notes[step % notes.length], ctx.currentTime);
-          g.gain.setValueAtTime(0.05, ctx.currentTime);
-          g.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-          o.start();
-          o.stop(ctx.currentTime + 0.4);
-          step++;
-        } catch(e) {}
-      }, 500);
-    }
-
-    function stopBGM() {
-      if (bgmInterval) {
-        clearInterval(bgmInterval);
-        bgmInterval = null;
-      }
-    }
-
-    function toggleSE() {
-      isSEEnabled = !isSEEnabled;
-      localStorage.setItem('roasters_se', isSEEnabled);
-      document.getElementById('se-toggle-btn').innerText = `🔊 SE: ${isSEEnabled ? 'ON' : 'OFF'}`;
-    }
-
-    function toggleBGM() {
-      isBGMEnabled = !isBGMEnabled;
-      localStorage.setItem('roasters_bgm', isBGMEnabled);
-      document.getElementById('bgm-toggle-btn').innerText = `🎵 BGM: ${isBGMEnabled ? 'ON' : 'OFF'}`;
-      if (isBGMEnabled) startBGM();
-      else stopBGM();
-    }
-
-    function applyEquippedTheme() {
-      document.body.className = equippedTheme;
-    }
-
-    function saveState() {
-      localStorage.setItem('roasters_current_stage', currentStage);
-      localStorage.setItem('roasters_max_stage', maxUnlockedStage);
-      localStorage.setItem('roasters_cleared_list', JSON.stringify(clearedStages));
-      localStorage.setItem('roasters_coins', coins);
-      localStorage.setItem('roasters_claimed_achieves', JSON.stringify(claimedAchieves));
-      localStorage.setItem('roasters_best_ta', bestTimeAttack);
-      localStorage.setItem('roasters_stats_moves', totalMoves);
-      localStorage.setItem('roasters_stats_time', totalPlayTime);
-      localStorage.setItem('roasters_theme', equippedTheme);
-      localStorage.setItem('roasters_skin', equippedSkin);
-      localStorage.setItem('roasters_unlocked_items', JSON.stringify(unlockedItems));
-    }
-
-    function updateCoins(amount) {
-      coins += amount;
-      document.querySelectorAll('.coin-val').forEach(el => el.innerText = coins);
-      saveState();
-    }
-
-    function showScreen(screenId) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      const targetScreen = document.getElementById(screenId);
-      if (targetScreen) targetScreen.classList.add('active');
-      
-      if (screenId === 'select-screen') renderStageGrid();
-      if (screenId === 'achieve-screen') renderAchieveList();
-      if (screenId === 'custom-screen') renderShopList();
-      if (screenId === 'stats-screen') renderStatsList();
-    }
-
-    function openTutorial() {
-      document.getElementById('tutorial-modal').classList.add('active');
-    }
-
-    function closeTutorial() {
-      document.getElementById('tutorial-modal').classList.remove('active');
-      localStorage.setItem('roasters_tutorial_seen', 'true');
-    }
-
-    function continueGame() {
-      gameMode = 'normal';
-      document.getElementById('timer-box').style.display = 'none';
-      document.getElementById('stage-label').innerText = 'STAGE';
-      initStage(currentStage);
-      showScreen('game-screen');
-    }
-
-    function startDailyChallenge() {
-      const today = new Date().toDateString();
-      if (localStorage.getItem('roasters_last_daily_challenge') === today) {
-        return alert("本日の日替わりチャレンジは挑戦済みです！");
-      }
-      gameMode = 'daily';
-      document.getElementById('timer-box').style.display = 'none';
-      document.getElementById('stage-label').innerText = 'DAILY';
-      initStage(9999);
-      showScreen('game-screen');
-    }
-
-    function startTimeAttack() {
-      gameMode = 'timeattack';
-      timeRemaining = 180;
-      taClearedCount = 0;
-      document.getElementById('timer-box').style.display = 'block';
-      document.getElementById('timer-count').innerText = timeRemaining;
-      document.getElementById('stage-label').innerText = 'TA';
-      
-      clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-        timeRemaining--;
-        document.getElementById('timer-count').innerText = timeRemaining;
-        if (timeRemaining <= 0) {
-          clearInterval(timerInterval);
-          playSound('win');
-          alert(`⏰ タイムアップ！\nクリア数: ${taClearedCount} ステージ！`);
-          if (taClearedCount > bestTimeAttack) {
-            bestTimeAttack = taClearedCount;
-            alert(`🎉 ハイスコア更新！ (${bestTimeAttack} ステージ)`);
-            saveState();
-          }
-          showScreen('home-screen');
-        }
-      }, 1000);
-
-      initStage(100 + Math.floor(Math.random() * 200));
-      showScreen('game-screen');
-    }
-
-    function exitGame() {
-      if (timerInterval) clearInterval(timerInterval);
-      showScreen('home-screen');
-    }
-
-    function claimDailyBonus() {
-      const today = new Date().toDateString();
-      if (localStorage.getItem('roasters_last_bonus') === today) {
-        alert("本日のデイリーボーナスは受取済みです！");
-      } else {
-        localStorage.setItem('roasters_last_bonus', today);
-        updateCoins(100);
-        playSound('win');
-        alert("🎁 デイリーボーナス！100コイン獲得！");
-      }
-    }
-
-    function seededRandom(seed) {
-      let x = Math.sin(seed++) * 10000;
-      return x - Math.floor(x);
-    }
-
-    function initStage(stageNum) {
-      currentStage = stageNum;
-      selectedBottleIndex = null;
-      comboCount = 0;
-      history = [];
-      document.getElementById('stage-display').innerText = gameMode === 'timeattack' ? `(クリア:${taClearedCount})` : stageNum;
-      updateCoins(0);
-
-      const isHard = stageNum >= 570;
-      document.getElementById('hard-tag').style.display = isHard ? 'inline-block' : 'none';
-
-      let numColors = 3;
-      if (stageNum > 10) numColors = 4;
-      if (stageNum > 50) numColors = 5;
-      if (stageNum >= 570) numColors = 6;
-
-      let blindRate = stageNum >= 570 ? 0.45 : (stageNum >= 5 ? 0.2 : 0);
-      let frozenRate = stageNum >= 570 ? 0.35 : (stageNum >= 10 ? 0.15 : 0);
-
-      let usedColors = ALL_COLORS.slice(0, numColors);
-      let allBeans = [];
-
-      usedColors.forEach(color => {
-        for (let i = 0; i < BOTTLE_CAPACITY; i++) {
-          allBeans.push({
-            color: color,
-            isBlind: Math.random() < blindRate,
-            isFrozen: Math.random() < frozenRate
-          });
-        }
+  function renderBottles() {
+    const area = document.getElementById('bottles-area');
+    area.innerHTML = '';
+    bottles.forEach((b, idx) => {
+      const bEl = document.createElement('div');
+      bEl.className = `bottle ${selected === idx ? 'selected' : ''}`;
+      bEl.onclick = () => onBottleClick(idx);
+      b.forEach(cIdx => {
+        const bean = document.createElement('div');
+        bean.className = 'bean-item';
+        bean.style.backgroundColor = colors[cIdx];
+        bEl.appendChild(bean);
       });
+      area.appendChild(bEl);
+    });
+  }
 
-      let seed = stageNum * 8888;
-      for (let i = allBeans.length - 1; i > 0; i--) {
-        const j = Math.floor(seededRandom(seed++) * (i + 1));
-        [allBeans[i], allBeans[j]] = [allBeans[j], allBeans[i]];
-      }
-
-      bottles = [];
-      lockedBottles = [];
-      for (let i = 0; i < numColors; i++) {
-        bottles.push(allBeans.slice(i * BOTTLE_CAPACITY, (i + 1) * BOTTLE_CAPACITY));
-        lockedBottles.push(false);
-      }
-      
-      let emptyCount = stageNum >= 570 ? 1 : 2;
-      for (let e = 0; e < emptyCount; e++) {
-        bottles.push([]);
-        lockedBottles.push(false);
-      }
-
-      bottles.forEach(b => {
-        if (b.length > 0) b[b.length - 1].isBlind = false;
-      });
-
-      renderBoard();
-    }
-
-    function renderBoard() {
-      const board = document.getElementById('game-board');
-      if (!board) return;
-      board.innerHTML = '';
-
-      bottles.forEach((bottle, bIndex) => {
-        const bottleEl = document.createElement('div');
-        let isLocked = lockedBottles[bIndex];
-        bottleEl.className = `bottle ${equippedSkin} ${selectedBottleIndex === bIndex ? 'selected' : ''} ${isLocked ? 'locked-bottle' : ''}`;
-        bottleEl.onclick = () => handleBottleClick(bIndex);
-
-        if (!isLocked) {
-          bottle.forEach(bean => {
-            const beanEl = document.createElement('div');
-            let extraClass = '';
-            if (bean.isBlind) extraClass += ' blind';
-            if (bean.isFrozen) extraClass += ' frozen';
-            beanEl.className = `bean bean-${bean.color} ${extraClass}`;
-            bottleEl.appendChild(beanEl);
-          });
-        }
-
-        board.appendChild(bottleEl);
-      });
-    }
-
-    function handleBottleClick(index) {
-      if (selectedBottleIndex === null) {
-        if (bottles[index].length > 0) {
-          let topBean = bottles[index][bottles[index].length - 1];
-          if (topBean.isFrozen) {
-            topBean.isFrozen = false;
-            playSound('ice');
-            alert("❄️ 氷を割りました！");
-            renderBoard();
-            return;
-          }
-          selectedBottleIndex = index;
-          playSound('select');
-        }
-      } else {
-        if (selectedBottleIndex === index) {
-          selectedBottleIndex = null;
-        } else {
-          moveBean(selectedBottleIndex, index);
-          selectedBottleIndex = null;
+  function onBottleClick(idx) {
+    if (selected === null) {
+      if (bottles[idx].length > 0) selected = idx;
+    } else {
+      if (selected !== idx) {
+        const src = bottles[selected];
+        const dest = bottles[idx];
+        if (dest.length < 4 && (dest.length === 0 || dest[dest.length - 1] === src[src.length - 1])) {
+          dest.push(src.pop());
         }
       }
-      renderBoard();
+      selected = null;
     }
-
-    function triggerComboPopup(text) {
-      const board = document.getElementById('game-board');
-      const popup = document.createElement('div');
-      popup.className = 'combo-popup';
-      popup.innerText = text;
-      board.appendChild(popup);
-      setTimeout(() => popup.remove(), 800);
-    }
-
-    function moveBean(fromIndex, toIndex) {
-      const fromBottle = bottles[fromIndex];
-      const toBottle = bottles[toIndex];
-
-      if (fromBottle.length === 0 || toBottle.length >= BOTTLE_CAPACITY) return;
-
-      const movingBean = fromBottle[fromBottle.length - 1];
-      const targetTopBean = toBottle[toBottle.length - 1];
-
-      if (toBottle.length === 0 || targetTopBean.color === movingBean.color) {
-        history.push(JSON.stringify({ bottles: bottles, locked: lockedBottles }));
-        movingBean.isBlind = false;
-        toBottle.push(fromBottle.pop());
-
-        if (fromBottle.length > 0) {
-          fromBottle[fromBottle.length - 1].isBlind = false;
-        }
-
-        playSound('drop');
-        totalMoves++;
-        comboCount++;
-        if (comboCount >= 2) {
-          triggerComboPopup(`${comboCount} COMBO!`);
-        }
-        saveState();
-        checkWin();
-      }
-    }
-
-    function undoMove() {
-      if (history.length === 0) return alert("戻せる手がありません！");
-      if (coins >= 10) {
-        updateCoins(-10);
-        let lastState = JSON.parse(history.pop());
-        bottles = lastState.bottles;
-        lockedBottles = lastState.locked;
-        comboCount = 0;
-        renderBoard();
-      } else {
-        alert("コインが足りません！");
-      }
-    }
-
-    function stirBottle() {
-      if (selectedBottleIndex === null) return alert("ボトルを先に選択してください！");
-      if (coins >= 25) {
-        updateCoins(-25);
-        bottles[selectedBottleIndex].sort(() => Math.random() - 0.5);
-        selectedBottleIndex = null;
-        renderBoard();
-      } else {
-        alert("コインが足りません！");
-      }
-    }
-
-    function showHint() {
-      if (coins < 20) return alert("コインが足りません！");
-      for (let i = 0; i < bottles.length; i++) {
-        for (let j = 0; j < bottles.length; j++) {
-          if (i !== j && bottles[i].length > 0 && bottles[j].length < BOTTLE_CAPACITY) {
-            let srcBean = bottles[i][bottles[i].length - 1];
-            let destBean = bottles[j][bottles[j].length - 1];
-            if (!srcBean.isFrozen && (bottles[j].length === 0 || srcBean.color === destBean.color)) {
-              updateCoins(-20);
-              selectedBottleIndex = i;
-              renderBoard();
-              alert(`💡 ヒント: ${i + 1}番目から${j + 1}番目のボトルへ！`);
-              return;
-            }
-          }
-        }
-      }
-      alert("移動できる場所がありません！");
-    }
-
-    function useShuffle() {
-      if (coins >= 50) {
-        updateCoins(-50);
-        let allBeans = bottles.flat();
-        allBeans.sort(() => Math.random() - 0.5);
-        bottles = bottles.map(() => []);
-        allBeans.forEach((bean, idx) => {
-          bottles[idx % (bottles.length - 1)].push(bean);
-        });
-        renderBoard();
-      } else {
-        alert("コインが足りません！");
-      }
-    }
-
-    function addExtraBottle() {
-      if (coins >= 100) {
-        updateCoins(-100);
-        bottles.push([]);
-        lockedBottles.push(false);
-        renderBoard();
-      } else {
-        alert("コインが足りません！");
-      }
-    }
-
-    /* 紙吹雪エフェクト */
-    function launchConfetti() {
-      const canvas = document.getElementById('confetti-canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      const particles = [];
-      const colors = ['#e06d28', '#27ae60', '#f1c40f', '#e74c3c', '#9b59b6', '#3498db'];
-
-      for (let i = 0; i < 80; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height - canvas.height,
-          size: Math.random() * 8 + 4,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          vx: Math.random() * 4 - 2,
-          vy: Math.random() * 4 + 3
-        });
-      }
-
-      let frame = 0;
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-          ctx.fillStyle = p.color;
-          ctx.fillRect(p.x, p.y, p.size, p.size);
-        });
-        frame++;
-        if (frame < 100) {
-          requestAnimationFrame(animate);
-        } else {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-      }
-      animate();
-    }
-
-    function checkWin() {
-      setTimeout(() => {
-        const isWin = bottles.every(b => b.length === 0 || (b.length === BOTTLE_CAPACITY && b.every(v => v.color === b[0].color && !v.isFrozen)));
-        if (isWin) {
-          playSound('win');
-          launchConfetti();
-          if (gameMode === 'daily') {
-            const today = new Date().toDateString();
-            localStorage.setItem('roasters_last_daily_challenge', today);
-            alert("🎉 日替わりチャレンジクリア！ 🪙+150獲得！");
-            updateCoins(150);
-            showScreen('home-screen');
-          } else if (gameMode === 'timeattack') {
-            taClearedCount++;
-            initStage(100 + Math.floor(Math.random() * 200));
-          } else {
-            alert(`🎉 Stage ${currentStage} クリア！ 🪙+50獲得！`);
-            if (!clearedStages.includes(currentStage)) {
-              clearedStages.push(currentStage);
-            }
-            if (currentStage >= maxUnlockedStage && currentStage < TOTAL_STAGES) {
-              maxUnlockedStage = currentStage + 1;
-            }
-            currentStage = currentStage + 1;
-            updateCoins(50);
-            initStage(currentStage);
-          }
-        }
-      }, 100);
-    }
-
-    function renderStageGrid() {
-      const grid = document.getElementById('stage-grid');
-      if (!grid) return;
-      grid.innerHTML = '';
-      const fragment = document.createDocumentFragment();
-      for (let i = 1; i <= TOTAL_STAGES; i++) {
-        const card = document.createElement('div');
-        let isLocked = i > maxUnlockedStage;
-        let isCleared = clearedStages.includes(i);
-        let isHard = i >= 570;
-
-        let classNames = ['stage-card'];
-        if (isLocked) classNames.push('locked');
-        if (isCleared) classNames.push('cleared');
-        if (isHard) classNames.push('hard');
-
-        card.className = classNames.join(' ');
-        card.innerText = isLocked ? '🔒' : i;
-
-        if (!isLocked) {
-          card.onclick = () => {
-            gameMode = 'normal';
-            document.getElementById('timer-box').style.display = 'none';
-            document.getElementById('stage-label').innerText = 'STAGE';
-            initStage(i);
-            showScreen('game-screen');
-          };
-        }
-        fragment.appendChild(card);
-      }
-      grid.appendChild(fragment);
-    }
-
-    function renderShopList() {
-      const list = document.getElementById('shop-list');
-      if (!list) return;
-      list.innerHTML = '';
-      SHOP_ITEMS.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'item-card';
-
-        let isUnlocked = unlockedItems.includes(item.id);
-        let isEquipped = (item.type === 'theme' && equippedTheme === item.id) || (item.type === 'skin' && equippedSkin === item.id);
-
-        let btnText = isEquipped ? '着用中' : (isUnlocked ? '着替える' : `購入 (🪙${item.price})`);
-        let btnClass = isEquipped ? 'action-btn equipped' : (isUnlocked ? 'action-btn secondary' : 'action-btn');
-
-        card.innerHTML = `
-          <div>
-            <div style="font-weight:bold; font-size:0.95rem;">${item.name}</div>
-            <div style="font-size:0.75rem; color:#666;">${item.desc}</div>
-          </div>
-          <button class="${btnClass}" onclick="handleShopClick('${item.id}', ${item.price}, '${item.type}')">${btnText}</button>
-        `;
-        list.appendChild(card);
-      });
-    }
-
-    function handleShopClick(id, price, type) {
-      if (!unlockedItems.includes(id)) {
-        if (coins >= price) {
-          updateCoins(-price);
-          unlockedItems.push(id);
-          alert("🎁 解放しました！");
-        } else {
-          return alert("コインが足りません！");
-        }
-      }
-
-      if (type === 'theme') equippedTheme = id;
-      if (type === 'skin') equippedSkin = id;
-
-      applyEquippedTheme();
-      saveState();
-      renderShopList();
-    }
-
-    function renderStatsList() {
-      const list = document.getElementById('stats-list');
-      if (!list) return;
-      list.innerHTML = `
-        <div class="item-card"><div><b>クリア済みステージ数:</b> ${clearedStages.length} / ${TOTAL_STAGES}</div></div>
-        <div class="item-card"><div><b>総豆移動数:</b> ${totalMoves} 回</div></div>
-        <div class="item-card"><div><b>総プレイ時間:</b> ${Math.floor(totalPlayTime / 60)} 分 ${totalPlayTime % 60} 秒</div></div>
-        <div class="item-card"><div><b>タイムアタック最高記録:</b> ${bestTimeAttack} ステージ</div></div>
-      `;
-    }
-
-    function renderAchieveList() {
-      const list = document.getElementById('achieve-list');
-      if (!list) return;
-      list.innerHTML = '';
-      ACHIEVEMENTS.forEach(ach => {
-        const item = document.createElement('div');
-        item.className = 'item-card';
-        
-        let isAchieved = clearedStages.length >= ach.target;
-        let isClaimed = claimedAchieves.includes(ach.id);
-
-        item.innerHTML = `
-          <div>
-            <div style="font-weight:bold; font-size:0.95rem;">${ach.title}</div>
-            <div style="font-size:0.75rem; color:#666;">${ach.desc} (報酬: 🪙${ach.reward})</div>
-          </div>
-          <button class="action-btn ${isClaimed ? 'equipped' : ''}" ${!isAchieved || isClaimed ? 'disabled' : ''} onclick="claimAchieve('${ach.id}', ${ach.reward})">
-            ${isClaimed ? '受取済' : (isAchieved ? '受け取る' : '未達成')}
-          </button>
-        `;
-        list.appendChild(item);
-      });
-    }
-
-    function claimAchieve(id, reward) {
-      if (!claimedAchieves.includes(id)) {
-        claimedAchieves.push(id);
-        updateCoins(reward);
-        playSound('win');
-        alert(`🎁 実績達成！ 🪙${reward} コインを獲得しました！`);
-        renderAchieveList();
-      }
-    }
-
-    // 初期化とタイマー開始
-    window.onload = function() {
-      applyEquippedTheme();
-      showScreen('home-screen');
-      if (!localStorage.getItem('roasters_tutorial_seen')) {
-        openTutorial();
-      }
-
-      // 総プレイ時間カウント
-      playTimerInterval = setInterval(() => {
-        totalPlayTime++;
-        if (totalPlayTime % 10 === 0) saveState();
-      }, 1000);
-    };
-  </script>
+    renderBottles();
+  }
+</script>
 </body>
 </html>
