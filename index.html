@@ -23,7 +23,7 @@
       min-height: 100vh;
     }
 
-    /* 上部固定広告エリア（1つだけ表示） */
+    /* 上部固定広告エリア */
     .fixed-top-ad {
       position: fixed;
       top: 0;
@@ -41,7 +41,7 @@
       overflow: hidden;
     }
 
-    /* メインコンテンツ（広告分の余白を確保） */
+    /* メインコンテナ */
     .app-container {
       width: 100%;
       max-width: 420px;
@@ -122,44 +122,83 @@
     .screen { display: none; width: 100%; flex-direction: column; align-items: center; }
     .screen.active { display: flex; }
 
-    /* Puzzle Screen */
+    /* Game Screen Fixes */
     .game-header {
       display: flex;
       justify-content: space-between;
       width: 100%;
+      font-size: 18px;
       font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
+      padding: 0 10px;
     }
     .bottles-area {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 12px;
-      margin: 20px 0;
+      margin: 10px 0 20px 0;
       width: 100%;
       min-height: 180px;
     }
     .bottle {
-      width: 50px;
+      width: 54px;
       height: 160px;
       border: 3px solid var(--border-dark);
-      border-radius: 0 0 16px 16px;
+      border-radius: 0 0 18px 18px;
       display: flex;
       flex-direction: column-reverse;
       align-items: center;
       padding: 4px;
-      background: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.7);
       cursor: pointer;
+      transition: transform 0.1s;
     }
     .bottle.selected {
       border-color: #f39c12;
-      transform: translateY(-6px);
+      transform: translateY(-10px);
+      box-shadow: 0 8px 12px rgba(0,0,0,0.15);
     }
     .bean-item {
-      width: 38px;
+      width: 40px;
       height: 34px;
       border-radius: 50%;
       margin: 2px 0;
       box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* Stage Select Grid */
+    .stage-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 15px;
+      border: 2px solid var(--border-dark);
+      margin-bottom: 20px;
+    }
+    .stage-btn {
+      padding: 12px 0;
+      background: #fff;
+      border: 2px solid var(--border-dark);
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 0 3px 0 var(--border-dark);
+    }
+    .stage-btn.cleared {
+      background: #5bb376;
+      color: #fff;
+    }
+    .stage-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--border-dark);
     }
   </style>
 </head>
@@ -167,7 +206,9 @@
 
 <!-- 画面最上部に単一で固定配置する広告枠 -->
 <div class="fixed-top-ad">
+  <!-- admax -->
   <script src="https://adm.shinobi.jp/s/5235ee24a3bda74d9a1d05e10baf3d94"></script>
+  <!-- admax -->
 </div>
 
 <div class="app-container">
@@ -183,8 +224,8 @@
     </div>
 
     <div class="menu-list">
-      <button class="btn-roaster btn-continue" onclick="startGame()">▶ 続きから遊ぶ</button>
-      <button class="btn-roaster btn-stage" onclick="alert('ステージ選択へ')">🧃 ステージ選択 (1-1500)</button>
+      <button class="btn-roaster btn-continue" onclick="continueGame()">▶ 続きから遊ぶ</button>
+      <button class="btn-roaster btn-stage" onclick="openStageSelect()">🧃 ステージ選択 (1-1500)</button>
       <button class="btn-roaster btn-daily" onclick="alert('日替わりチャレンジへ')">📅 日替わりチャレンジ (🌕 150)</button>
       <button class="btn-roaster btn-time" onclick="alert('タイムアタックへ')">⏱️ タイムアタック (3分)</button>
       <button class="btn-roaster btn-shop" onclick="showScreen('screen-shop')">🎨 ショップ・着せ替え</button>
@@ -195,6 +236,17 @@
     </div>
   </div>
 
+  <!-- ステージ選択画面 -->
+  <div id="screen-stage" class="screen">
+    <h2 style="margin-bottom: 15px;">🧃 ステージ選択</h2>
+    <div class="stage-grid" id="stage-grid">
+      <!-- JavaScriptで動的生成 -->
+    </div>
+    <div class="menu-list">
+      <button class="btn-roaster btn-continue" onclick="showScreen('screen-home')">ホームへ戻る</button>
+    </div>
+  </div>
+
   <!-- ゲーム画面 -->
   <div id="screen-game" class="screen">
     <div class="game-header">
@@ -202,8 +254,8 @@
       <span id="move-num">手数: 0</span>
     </div>
     <div class="bottles-area" id="bottles-area"></div>
-    <div class="menu-list" style="margin-top: 20px;">
-      <button class="btn-roaster btn-continue" onclick="startGame()">リセット</button>
+    <div class="menu-list">
+      <button class="btn-roaster btn-continue" onclick="resetStage()">リセット</button>
       <button class="btn-roaster btn-stage" onclick="showScreen('screen-home')">ホームへ戻る</button>
     </div>
   </div>
@@ -219,6 +271,7 @@
   <!-- 統計画面 -->
   <div id="screen-stats" class="screen">
     <h2 style="margin-bottom: 20px;">📊 プレイ記録・統計</h2>
+    <div id="stats-info" style="margin-bottom: 20px; font-weight: bold;"></div>
     <div class="menu-list">
       <button class="btn-roaster btn-continue" onclick="showScreen('screen-home')">戻る</button>
     </div>
@@ -227,20 +280,64 @@
 </div>
 
 <script>
-  function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-  }
-
+  // データの永続保存処理
+  let currentStage = parseInt(localStorage.getItem('rs_currentStage')) || 1;
+  let clearedStages = JSON.parse(localStorage.getItem('rs_clearedStages')) || [];
+  
+  let currentMoveCount = 0;
   let bottles = [];
   const colors = ['#5c3d2e', '#c19a6b', '#8b5a2b', '#d2b48c'];
   let selected = null;
 
-  function startGame() {
-    bottles = [[0,1,0,1], [1,0,1,0], [], []];
+  function saveData() {
+    localStorage.setItem('rs_currentStage', currentStage);
+    localStorage.setItem('rs_clearedStages', JSON.stringify(clearedStages));
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (id === 'screen-stats') {
+      document.getElementById('stats-info').innerText = `最高到達ステージ: ${currentStage}\nクリア済みステージ数: ${clearedStages.length}`;
+    }
+  }
+
+  function continueGame() {
+    startStage(currentStage);
+  }
+
+  function openStageSelect() {
+    const grid = document.getElementById('stage-grid');
+    grid.innerHTML = '';
+    // パフォーマンスのため、現在のステージ周辺＋最初の100件を表示する例
+    for (let i = 1; i <= 100; i++) {
+      const btn = document.createElement('button');
+      btn.className = `stage-btn ${clearedStages.includes(i) ? 'cleared' : ''}`;
+      btn.innerText = i;
+      btn.onclick = () => startStage(i);
+      grid.appendChild(btn);
+    }
+    showScreen('screen-stage');
+  }
+
+  function startStage(stageNum) {
+    currentStage = stageNum;
+    currentMoveCount = 0;
+    saveData();
+    
+    // ステージ初期構成（簡易生成）
+    bottles = [[0, 1, 0, 1], [1, 0, 1, 0], [], []];
     selected = null;
+    
+    document.getElementById('stage-num').innerText = `Stage ${currentStage}`;
+    document.getElementById('move-num').innerText = `手数: ${currentMoveCount}`;
+    
     renderBottles();
     showScreen('screen-game');
+  }
+
+  function resetStage() {
+    startStage(currentStage);
   }
 
   function renderBottles() {
@@ -269,11 +366,36 @@
         const dest = bottles[idx];
         if (dest.length < 4 && (dest.length === 0 || dest[dest.length - 1] === src[src.length - 1])) {
           dest.push(src.pop());
+          currentMoveCount++;
+          document.getElementById('move-num').innerText = `手数: ${currentMoveCount}`;
+          checkClear();
         }
       }
       selected = null;
     }
     renderBottles();
+  }
+
+  function checkClear() {
+    let isClear = true;
+    bottles.forEach(b => {
+      if (b.length > 0) {
+        if (b.length !== 4) isClear = false;
+        else if (!b.every(val => val === b[0])) isClear = false;
+      }
+    });
+
+    if (isClear) {
+      setTimeout(() => {
+        alert(`ステージ ${currentStage} クリア！`);
+        if (!clearedStages.includes(currentStage)) {
+          clearedStages.push(currentStage);
+        }
+        currentStage++;
+        saveData();
+        startStage(currentStage);
+      }, 100);
+    }
   }
 </script>
 </body>
