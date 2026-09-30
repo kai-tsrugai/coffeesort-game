@@ -538,7 +538,7 @@
         }
       }, 1000);
 
-      initStage(100 + Math.floor(Math.random() * 200));
+      initStage(100);
       showScreen('game-screen');
     }
 
@@ -570,13 +570,25 @@
     }
 
     function initStage(stageNum) {
-      currentStage = stageNum;
+      if (gameMode === 'normal') {
+        currentStage = stageNum;
+        saveState();
+      }
+      
       selectedBottleIndex = null;
       history = [];
-      document.getElementById('stage-display').innerText = gameMode === 'timeattack' ? `(クリア:${taClearedCount})` : stageNum;
+
+      if (gameMode === 'timeattack') {
+        document.getElementById('stage-display').innerText = `(クリア:${taClearedCount})`;
+      } else if (gameMode === 'daily') {
+        document.getElementById('stage-display').innerText = 'DAY';
+      } else {
+        document.getElementById('stage-display').innerText = stageNum;
+      }
+
       document.getElementById('coin-count').innerText = coins;
 
-      const isHard = stageNum >= 570;
+      const isHard = stageNum >= 570 && gameMode === 'normal';
       document.getElementById('hard-tag').style.display = isHard ? 'inline-block' : 'none';
 
       let numColors = 3;
@@ -780,7 +792,7 @@
             showScreen('home-screen');
           } else if (gameMode === 'timeattack') {
             taClearedCount++;
-            initStage(100 + Math.floor(Math.random() * 200));
+            initStage(100 + taClearedCount);
           } else {
             alert(`🎉 Stage ${currentStage} クリア！ 🪙+50獲得！`);
             if (!clearedStages.includes(currentStage)) {
