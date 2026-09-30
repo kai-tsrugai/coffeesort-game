@@ -6,36 +6,35 @@
   <title>Roasters Sort 〜極上やり込みパズル〜</title>
   <style>
     :root {
-      --bg-color: #f5f0e6;
-      --border-dark: #3d2115;
+      --bg-color: #f7f2e7;
+      --border-dark: #2c1a12;
       --ad-height: 100px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", sans-serif;
       background-color: var(--bg-color);
-      color: #3d2115;
+      color: #2c1a12;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      /* 下部広告に被らないよう余白を固定 */
-      padding-bottom: calc(var(--ad-height) + 20px);
     }
 
-    /* メインコンテナ */
     .app-container {
       width: 100%;
       max-width: 420px;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px 20px 10px 20px;
+      padding: 16px 20px calc(var(--ad-height) + 30px) 20px;
+      position: relative;
     }
 
-    /* Title Header */
+    /* Header & Title */
     .title-area {
       text-align: center;
       margin-top: 10px;
@@ -45,42 +44,41 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
     }
     .title-text {
-      font-size: 34px;
+      font-size: 32px;
       font-weight: 900;
-      color: #3d2115;
+      color: #3d1e11;
       letter-spacing: -0.5px;
     }
     .sub-title {
       font-size: 14px;
       font-weight: bold;
-      color: #3d2115;
-      margin-top: 4px;
+      color: #4a3328;
+      margin-top: 2px;
     }
 
-    /* SE / BGM Control Buttons */
+    /* Sound Controls */
     .audio-controls {
       display: flex;
       gap: 12px;
-      margin-bottom: 22px;
+      margin-bottom: 16px;
+      width: 100%;
+      justify-content: center;
     }
-    .btn-toggle {
+    .audio-btn {
       background: #ffffff;
-      border: 3px solid var(--border-dark);
+      border: 2.5px solid var(--border-dark);
       border-radius: 20px;
       padding: 6px 16px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
-      color: #3d2115;
+      color: #2c1a12;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
       box-shadow: 0 3px 0 var(--border-dark);
     }
-    .btn-toggle:active {
+    .audio-btn:active {
       transform: translateY(2px);
       box-shadow: 0 1px 0 var(--border-dark);
     }
@@ -90,16 +88,16 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 10px;
     }
 
     .btn-roaster {
       width: 100%;
-      padding: 14px 16px;
-      border: 3.5px solid var(--border-dark);
-      border-radius: 28px;
-      font-size: 17px;
-      font-weight: 900;
+      padding: 12px 16px;
+      border: 3px solid var(--border-dark);
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -107,154 +105,127 @@
       cursor: pointer;
       box-shadow: 0 5px 0 var(--border-dark);
       transition: transform 0.05s, box-shadow 0.05s;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     }
     .btn-roaster:active {
       transform: translateY(3px);
       box-shadow: 0 2px 0 var(--border-dark);
     }
 
-    /* 配色 */
-    .btn-continue { background: #d76a38; color: #ffffff; }
-    .btn-stage { background: #ffffff; color: #3d2115; }
-    .btn-daily { background: #58b067; color: #ffffff; }
-    .btn-time { background: #ca5723; color: #ffffff; }
-    .btn-shop { background: #8e4bb8; color: #ffffff; }
-    .btn-stats { background: #37927d; color: #ffffff; }
-    .btn-achieve { background: #ffffff; color: #3d2115; }
-    .btn-bonus { background: #5bb376; color: #ffffff; }
-    .btn-help { background: #ffffff; color: #b33924; }
+    /* 各ボタンの個性的カラー */
+    .btn-continue { background: linear-gradient(to bottom, #d2642a, #b34a17); color: #fff; }
+    .btn-stage { background: #ffffff; color: #2c1a12; text-shadow: none; }
+    .btn-daily { background: linear-gradient(to bottom, #509e53, #3b7e3e); color: #fff; }
+    .btn-time { background: linear-gradient(to bottom, #c05826, #a14115); color: #fff; }
+    .btn-shop { background: linear-gradient(to bottom, #8a48a9, #6a3285); color: #fff; }
+    .btn-stats { background: linear-gradient(to bottom, #3b9b85, #277765); color: #fff; }
+    .btn-achieve { background: #ffffff; color: #2c1a12; text-shadow: none; }
+    .btn-bonus { background: linear-gradient(to bottom, #5bb376, #3f8e57); color: #fff; }
+    .btn-help { background: #ffffff; color: #b33924; text-shadow: none; }
 
-    /* Screen Management */
+    /* 各画面切り替え */
     .screen { display: none; width: 100%; flex-direction: column; align-items: center; }
     .screen.active { display: flex; }
 
-    /* ゲーム画面 */
+    /* パズル画面 */
     .game-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
       width: 100%;
-      padding: 12px 18px;
-      background: #ffffff;
-      border: 3.5px solid var(--border-dark);
-      border-radius: 22px;
+      font-weight: bold;
+      margin-bottom: 20px;
       font-size: 18px;
-      font-weight: 900;
-      margin-bottom: 25px;
-      box-shadow: 0 4px 0 var(--border-dark);
     }
-
     .bottles-area {
       display: flex;
       justify-content: center;
-      align-items: flex-end;
-      gap: 16px;
-      margin: 10px 0 30px 0;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px 0 20px 0;
       width: 100%;
-      min-height: 200px;
+      min-height: 180px;
     }
-
     .bottle {
-      width: 58px;
-      height: 180px;
-      border: 4px solid var(--border-dark);
-      border-radius: 0 0 20px 20px;
+      width: 46px;
+      height: 150px;
+      border: 3px solid var(--border-dark);
+      border-radius: 0 0 16px 16px;
       display: flex;
       flex-direction: column-reverse;
       align-items: center;
-      padding: 6px 4px;
-      background: rgba(255, 255, 255, 0.9);
+      padding: 3px;
+      background: rgba(255,255,255,0.6);
       cursor: pointer;
-      position: relative;
-      transition: transform 0.15s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.1s ease;
     }
-    
-    .bottle::before {
-      content: '';
-      position: absolute;
-      top: -12px;
-      width: 44px;
-      height: 10px;
-      border: 3.5px solid var(--border-dark);
-      border-bottom: none;
-      border-radius: 6px 6px 0 0;
-      background: #e8ded1;
-    }
-
     .bottle.selected {
       border-color: #f39c12;
-      transform: translateY(-15px);
+      transform: translateY(-10px);
     }
-
     .bean-item {
-      width: 44px;
-      height: 38px;
+      width: 36px;
+      height: 32px;
       border-radius: 50%;
-      margin: 2px 0;
-      box-shadow: inset -3px -3px 6px rgba(0,0,0,0.35);
+      margin: 1px 0;
+      box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3);
     }
 
-    /* 1500ステージ選択画面 */
-    .stage-header-title {
-      font-size: 22px;
-      font-weight: 900;
-      margin-bottom: 14px;
+    /* 1500ステージ選択表示 */
+    .stage-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 12px;
     }
-
     .stage-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
+      gap: 8px;
       width: 100%;
-      height: 420px;
+      max-height: 380px;
       overflow-y: auto;
-      padding: 12px;
+      padding: 10px;
       background: #ffffff;
-      border-radius: 22px;
-      border: 3.5px solid var(--border-dark);
-      margin-bottom: 20px;
-      box-shadow: 0 4px 0 var(--border-dark);
+      border-radius: 16px;
+      border: 3px solid var(--border-dark);
+      margin-bottom: 16px;
     }
-
     .stage-btn {
       aspect-ratio: 1;
-      background: #f5f0e6;
-      border: 2.5px solid var(--border-dark);
-      border-radius: 14px;
-      font-weight: 900;
-      font-size: 13px;
+      background: #f7f2e7;
+      border: 2px solid var(--border-dark);
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 12px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 3px 0 var(--border-dark);
-      color: #3d2115;
+      color: #2c1a12;
+      box-shadow: 0 2px 0 var(--border-dark);
     }
-
     .stage-btn.cleared {
-      background: #58b067;
+      background: #509e53;
       color: #ffffff;
     }
-
-    .stage-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 var(--border-dark);
+    .stage-btn.hard {
+      border-color: #b33924;
     }
 
-    /* 広告コンテナ：画面最下部に1つだけ固定 */
-    .ad-wrapper {
+    /* 広告枠固定表示 */
+    .ad-placeholder {
       position: fixed;
       bottom: 0;
-      left: 0;
+      left: 50%;
+      transform: translateX(-50%);
       width: 100%;
+      max-width: 420px;
       height: var(--ad-height);
       background: #ffffff;
-      border-top: 2.5px solid var(--border-dark);
+      border-top: 1px solid #ccc;
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 9999;
+      z-index: 100;
       overflow: hidden;
     }
   </style>
@@ -267,20 +238,20 @@
   <div id="screen-home" class="screen active">
     <div class="title-area">
       <div class="title-logo">
-        <span style="font-size:32px;">☕</span>
+        <span style="font-size:28px;">☕</span>
         <span class="title-text">Roasters Sort</span>
       </div>
       <div class="sub-title">〜極上やり込みパズル〜</div>
     </div>
 
     <div class="audio-controls">
-      <button class="btn-toggle" id="btn-se" onclick="toggleSE()">🔊 SE: ON</button>
-      <button class="btn-toggle" id="btn-bgm" onclick="toggleBGM()">🎵 BGM: OFF</button>
+      <button class="audio-btn" onclick="toggleSE()" id="btn-se">🔊 SE: ON</button>
+      <button class="audio-btn" onclick="toggleBGM()" id="btn-bgm">🎵 BGM: OFF</button>
     </div>
 
     <div class="menu-list">
       <button class="btn-roaster btn-continue" onclick="continueGame()">▶ 続きから遊ぶ</button>
-      <button class="btn-roaster btn-stage" onclick="openStageSelect()">🗺️ ステージ選択 (1-1500)</button>
+      <button class="btn-roaster btn-stage" onclick="openStageSelect()">🧃 ステージ選択 (1-1500)</button>
       <button class="btn-roaster btn-daily" onclick="alert('日替わりチャレンジへ')">📅 日替わりチャレンジ (🌕 150)</button>
       <button class="btn-roaster btn-time" onclick="alert('タイムアタックへ')">⏱️ タイムアタック (3分)</button>
       <button class="btn-roaster btn-shop" onclick="showScreen('screen-shop')">🎨 ショップ・着せ替え</button>
@@ -291,9 +262,9 @@
     </div>
   </div>
 
-  <!-- ステージ選択画面 (1〜1500) -->
+  <!-- ステージ選択画面 -->
   <div id="screen-stage" class="screen">
-    <div class="stage-header-title">🗺️ ステージ選択 (1-1500)</div>
+    <div class="stage-title">🧃 ステージ選択 (1-1500)</div>
     <div class="stage-grid" id="stage-grid"></div>
     <div class="menu-list">
       <button class="btn-roaster btn-continue" onclick="showScreen('screen-home')">ホームへ戻る</button>
@@ -307,7 +278,7 @@
       <span id="move-num">手数: 0</span>
     </div>
     <div class="bottles-area" id="bottles-area"></div>
-    <div class="menu-list">
+    <div class="menu-list" style="margin-top: 10px;">
       <button class="btn-roaster btn-continue" onclick="resetStage()">リセット</button>
       <button class="btn-roaster btn-stage" onclick="showScreen('screen-home')">ホームへ戻る</button>
     </div>
@@ -332,33 +303,34 @@
 
 </div>
 
-<!-- 広告（画面下部に1つだけ設置） -->
-<div class="ad-wrapper">
+<!-- 下部固定広告領域 -->
+<div class="ad-placeholder">
   <!-- admax -->
   <script src="https://adm.shinobi.jp/s/5235ee24a3bda74d9a1d05e10baf3d94"></script>
   <!-- admax -->
 </div>
 
 <script>
-  let seEnabled = true;
-  let bgmEnabled = false;
+  let seOn = true;
+  let bgmOn = false;
 
   function toggleSE() {
-    seEnabled = !seEnabled;
-    document.getElementById('btn-se').innerText = seEnabled ? '🔊 SE: ON' : '🔇 SE: OFF';
+    seOn = !seOn;
+    document.getElementById('btn-se').innerText = `🔊 SE: ${seOn ? 'ON' : 'OFF'}`;
   }
 
   function toggleBGM() {
-    bgmEnabled = !bgmEnabled;
-    document.getElementById('btn-bgm').innerText = bgmEnabled ? '🎵 BGM: ON' : '🎵 BGM: OFF';
+    bgmOn = !bgmOn;
+    document.getElementById('btn-bgm').innerText = `🎵 BGM: ${bgmOn ? 'ON' : 'OFF'}`;
   }
 
   let currentStage = parseInt(localStorage.getItem('rs_currentStage')) || 1;
   let clearedStages = JSON.parse(localStorage.getItem('rs_clearedStages')) || [];
-  
-  let currentMoveCount = 0;
+
+  let moveCount = 0;
   let bottles = [];
-  const colors = ['#3d2115', '#c19a6b', '#8b5a2b', '#d2b48c'];
+  // 難易度増加に伴いカラーパレットを拡張 (最大7色)
+  const colors = ['#5c3d2e', '#c19a6b', '#8b5a2b', '#d2b48c', '#e67e22', '#e74c3c', '#9b59b6'];
   let selected = null;
 
   function saveData() {
@@ -370,7 +342,7 @@
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     if (id === 'screen-stats') {
-      document.getElementById('stats-info').innerText = `最高到達ステージ: ${currentStage}\nクリア済みステージ数: ${clearedStages.length} / 1500`;
+      document.getElementById('stats-info').innerText = `最高到達ステージ: ${currentStage}\nクリア数: ${clearedStages.length} / 1500`;
     }
   }
 
@@ -381,17 +353,16 @@
   function openStageSelect() {
     const grid = document.getElementById('stage-grid');
     grid.innerHTML = '';
-    
     const fragment = document.createDocumentFragment();
+
     for (let i = 1; i <= 1500; i++) {
       const btn = document.createElement('button');
-      btn.className = `stage-btn ${clearedStages.includes(i) ? 'cleared' : ''}`;
+      btn.className = `stage-btn ${clearedStages.includes(i) ? 'cleared' : ''} ${i >= 570 ? 'hard' : ''}`;
       btn.innerText = i;
       btn.onclick = () => startStage(i);
       fragment.appendChild(btn);
     }
     grid.appendChild(fragment);
-
     showScreen('screen-stage');
 
     setTimeout(() => {
@@ -402,17 +373,61 @@
     }, 100);
   }
 
+  // シード付き疑似乱数（ステージごとの配置再現用）
+  function pseudoRandom(seed) {
+    let x = Math.sin(seed++) * 10000;
+    return x - Math.floor(x);
+  }
+
+  function generateStage(stageNum) {
+    let colorCount, emptyBottles;
+
+    // 570ステージ以降は激高難易度化！
+    if (stageNum >= 570) {
+      colorCount = Math.min(7, 4 + Math.floor((stageNum - 570) / 150) + 1); // 最大7色
+      emptyBottles = 1; // 空きボトルを1本に制限して難易度UP
+    } else {
+      colorCount = Math.min(5, 2 + Math.floor(stageNum / 150)); // 通常2〜4色
+      emptyBottles = 2; // 空きボトル2本
+    }
+
+    let allBeans = [];
+    for (let c = 0; c < colorCount; c++) {
+      for (let i = 0; i < 4; i++) {
+        allBeans.push(c);
+      }
+    }
+
+    // ステージ番号に応じたシャッフル
+    let seed = stageNum * 999;
+    for (let i = allBeans.length - 1; i > 0; i--) {
+      const j = Math.floor(pseudoRandom(seed++) * (i + 1));
+      [allBeans[i], allBeans[j]] = [allBeans[j], allBeans[i]];
+    }
+
+    let resultBottles = [];
+    for (let i = 0; i < colorCount; i++) {
+      resultBottles.push(allBeans.slice(i * 4, (i + 1) * 4));
+    }
+    for (let i = 0; i < emptyBottles; i++) {
+      resultBottles.push([]);
+    }
+
+    return resultBottles;
+  }
+
   function startStage(stageNum) {
     currentStage = stageNum;
-    currentMoveCount = 0;
+    moveCount = 0;
     saveData();
-    
-    bottles = [[0, 1, 0, 1], [1, 0, 1, 0], [], []];
+
+    bottles = generateStage(currentStage);
     selected = null;
-    
-    document.getElementById('stage-num').innerText = `Stage ${currentStage}`;
-    document.getElementById('move-num').innerText = `手数: ${currentMoveCount}`;
-    
+
+    const stageLabel = currentStage >= 570 ? `Stage ${currentStage} 🔥` : `Stage ${currentStage}`;
+    document.getElementById('stage-num').innerText = stageLabel;
+    document.getElementById('move-num').innerText = `手数: ${moveCount}`;
+
     renderBottles();
     showScreen('screen-game');
   }
@@ -447,8 +462,8 @@
         const dest = bottles[idx];
         if (dest.length < 4 && (dest.length === 0 || dest[dest.length - 1] === src[src.length - 1])) {
           dest.push(src.pop());
-          currentMoveCount++;
-          document.getElementById('move-num').innerText = `手数: ${currentMoveCount}`;
+          moveCount++;
+          document.getElementById('move-num').innerText = `手数: ${moveCount}`;
           checkClear();
         }
       }
