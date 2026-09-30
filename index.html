@@ -1,461 +1,483 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-<title>Roasters Sort ～極上やり込みパズル～</title>
-<style>
-:root {
---bg-color: #f7f2e7;
---border-dark: #3d1e11;
---ad-height: 100px;
-}
-* {
-box-sizing: border-box;
-margin: 0;
-padding: 0;
-user-select: none;
--webkit-tap-highlight-color: transparent;
-}
-body {
-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", sans-serif;
-background-color: var(--bg-color);
-color: #3d1e11;
-display: flex;
-flex-direction: column;
-align-items: center;
-min-height: 100vh;
-padding-bottom: calc(var(--ad-height) + 20px);
-}
-/* メインコンテナ */
-.app-container {
-width: 100%;
-max-width: 420px;
-display: flex;
-flex-direction: column;
-align-items: center;
-padding: 20px 20px 0 20px;
-}
-/* タイトルエリア */
-.title-area {
-text-align: center;
-margin-top: 10px;
-margin-bottom: 12px;
-}
-.title-logo {
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 8px;
-}
-.title-text {
-font-size: 36px;
-font-weight: 900;
-color: #3d1e11;
-letter-spacing: -0.5px;
-text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
-}
-.sub-title {
-font-size: 14px;
-font-weight: bold;
-color: #3d1e11;
-margin-top: 2px;
-}
-/* Sound Switch Container */
-.audio-controls {
-display: flex;
-justify-content: center;
-gap: 12px;
-width: 100%;
-margin-bottom: 20px;
-}
-.btn-audio {
-background: #ffffff;
-border: 3px solid var(--border-dark);
-border-radius: 20px;
-padding: 6px 16px;
-font-size: 14px;
-font-weight: 800;
-color: #3d1e11;
-cursor: pointer;
-box-shadow: 0 4px 0 var(--border-dark);
-display: flex;
-align-items: center;
-gap: 6px;
-}
-.btn-audio:active {
-transform: translateY(2px);
-box-shadow: 0 2px 0 var(--border-dark);
-}
-/* Menu Buttons */
-.menu-list {
-width: 100%;
-display: flex;
-flex-direction: column;
-gap: 12px;
-}
-.btn-roaster {
-width: 100%;
-padding: 14px 16px;
-border: 3.5px solid var(--border-dark);
-border-radius: 28px;
-font-size: 17px;
-font-weight: 900;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 8px;
-cursor: pointer;
-box-shadow: 0 5px 0 var(--border-dark);
-transition: transform 0.05s, box-shadow 0.05s;
-}
-.btn-roaster:active {
-transform: translateY(3px);
-box-shadow: 0 2px 0 var(--border-dark);
-}
-/* ボタンカラー（元の画像を精密再現） */
-.btn-continue { background: #d36528; color: #ffffff; }
-.btn-stage { background: #ffffff; color: #3d1e11; }
-.btn-daily { background: #55b26b; color: #ffffff; }
-.btn-time { background: #be5321; color: #ffffff; }
-.btn-shop { background: #884cb0; color: #ffffff; }
-.btn-stats { background: #48a68a; color: #ffffff; }
-.btn-achieve { background: #ffffff; color: #3d1e11; }
-.btn-bonus { background: #55b26b; color: #ffffff; }
-.btn-help { background: #ffffff; color: #b8332a; }
-/* Screen Management */
-.screen { display: none; width: 100%; flex-direction: column; align-items: center; }
-.screen.active { display: flex; }
-/* --- ゲーム画面 UI --- */
-.game-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-width: 100%;
-padding: 12px 20px;
-background: #ffffff;
-border: 3.5px solid var(--border-dark);
-border-radius: 25px;
-font-size: 18px;
-font-weight: 900;
-margin-bottom: 25px;
-box-shadow: 0 4px 0 var(--border-dark);
-}
-.bottles-area {
-display: flex;
-justify-content: center;
-align-items: flex-end;
-gap: 16px;
-margin: 15px 0 30px 0;
-width: 100%;
-min-height: 220px;
-}
-.bottle {
-width: 60px;
-height: 190px;
-border: 4px solid var(--border-dark);
-border-radius: 0 0 22px 22px;
-display: flex;
-flex-direction: column-reverse;
-align-items: center;
-padding: 6px 4px;
-background: rgba(255, 255, 255, 0.85);
-cursor: pointer;
-position: relative;
-transition: transform 0.15s ease, border-color 0.15s ease;
-box-shadow: inset 0 -6px 10px rgba(0,0,0,0.05), 0 4px 6px rgba(0,0,0,0.1);
-}
-.bottle::before {
-content: '';
-position: absolute;
-top: -12px;
-width: 44px;
-height: 10px;
-border: 3.5px solid var(--border-dark);
-border-bottom: none;
-border-radius: 6px 6px 0 0;
-background: #e8ded1;
-}
-.bottle.selected {
-border-color: #f39c12;
-transform: translateY(-16px);
-box-shadow: 0 12px 20px rgba(243, 156, 18, 0.3);
-}
-.bean-item {
-width: 46px;
-height: 40px;
-border-radius: 50%;
-margin: 2px 0;
-border: 1px solid rgba(0,0,0,0.15);
-box-shadow: inset -3px -3px 6px rgba(0,0,0,0.35), inset 2px 2px 4px rgba(255,255,255,0.4);
-}
-/* --- 1500ステージ対応 ステージ選択画面 --- */
-.stage-title-text {
-font-size: 22px;
-font-weight: 900;
-margin-bottom: 15px;
-}
-.stage-grid {
-display: grid;
-grid-template-columns: repeat(5, 1fr);
-gap: 10px;
-width: 100%;
-height: 430px;
-overflow-y: auto;
-padding: 12px;
-background: #ffffff;
-border-radius: 25px;
-border: 3.5px solid var(--border-dark);
-margin-bottom: 20px;
-box-shadow: 0 4px 0 var(--border-dark);
-}
-.stage-btn {
-aspect-ratio: 1;
-background: #f7f2e7;
-border: 2.5px solid var(--border-dark);
-border-radius: 14px;
-font-weight: 900;
-font-size: 13px;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-box-shadow: 0 3px 0 var(--border-dark);
-color: #3d1e11;
-}
-.stage-btn.cleared {
-background: #55b26b;
-color: #ffffff;
-}
-.stage-btn:active {
-transform: translateY(2px);
-box-shadow: 0 1px 0 var(--border-dark);
-}
-/* 画面最下部：固定広告エリア */
-.fixed-bottom-ad {
-position: fixed;
-bottom: 0;
-left: 50%;
-transform: translateX(-50%);
-width: 100%;
-max-width: 420px;
-height: var(--ad-height);
-background: #ffffff;
-border-top: 2px solid var(--border-dark);
-display: flex;
-align-items: center;
-justify-content: center;
-z-index: 999;
-overflow: hidden;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Roasters Sort 〜極上やり込みパズル〜</title>
+  <style>
+    :root {
+      --bg-color: #f5f0e6;
+      --border-dark: #3d2115;
+      --ad-height: 100px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: #3d2115;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      /* 下部広告に被らないよう余白を固定 */
+      padding-bottom: calc(var(--ad-height) + 20px);
+    }
+
+    /* メインコンテナ */
+    .app-container {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 20px 10px 20px;
+    }
+
+    /* Title Header */
+    .title-area {
+      text-align: center;
+      margin-top: 10px;
+      margin-bottom: 12px;
+    }
+    .title-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .title-text {
+      font-size: 34px;
+      font-weight: 900;
+      color: #3d2115;
+      letter-spacing: -0.5px;
+    }
+    .sub-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #3d2115;
+      margin-top: 4px;
+    }
+
+    /* SE / BGM Control Buttons */
+    .audio-controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .btn-toggle {
+      background: #ffffff;
+      border: 3px solid var(--border-dark);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #3d2115;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 3px 0 var(--border-dark);
+    }
+    .btn-toggle:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--border-dark);
+    }
+
+    /* Menu Buttons */
+    .menu-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .btn-roaster {
+      width: 100%;
+      padding: 14px 16px;
+      border: 3.5px solid var(--border-dark);
+      border-radius: 28px;
+      font-size: 17px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 5px 0 var(--border-dark);
+      transition: transform 0.05s, box-shadow 0.05s;
+    }
+    .btn-roaster:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 var(--border-dark);
+    }
+
+    /* 配色 */
+    .btn-continue { background: #d76a38; color: #ffffff; }
+    .btn-stage { background: #ffffff; color: #3d2115; }
+    .btn-daily { background: #58b067; color: #ffffff; }
+    .btn-time { background: #ca5723; color: #ffffff; }
+    .btn-shop { background: #8e4bb8; color: #ffffff; }
+    .btn-stats { background: #37927d; color: #ffffff; }
+    .btn-achieve { background: #ffffff; color: #3d2115; }
+    .btn-bonus { background: #5bb376; color: #ffffff; }
+    .btn-help { background: #ffffff; color: #b33924; }
+
+    /* Screen Management */
+    .screen { display: none; width: 100%; flex-direction: column; align-items: center; }
+    .screen.active { display: flex; }
+
+    /* ゲーム画面 */
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 12px 18px;
+      background: #ffffff;
+      border: 3.5px solid var(--border-dark);
+      border-radius: 22px;
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 0 var(--border-dark);
+    }
+
+    .bottles-area {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 16px;
+      margin: 10px 0 30px 0;
+      width: 100%;
+      min-height: 200px;
+    }
+
+    .bottle {
+      width: 58px;
+      height: 180px;
+      border: 4px solid var(--border-dark);
+      border-radius: 0 0 20px 20px;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      padding: 6px 4px;
+      background: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.15s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .bottle::before {
+      content: '';
+      position: absolute;
+      top: -12px;
+      width: 44px;
+      height: 10px;
+      border: 3.5px solid var(--border-dark);
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      background: #e8ded1;
+    }
+
+    .bottle.selected {
+      border-color: #f39c12;
+      transform: translateY(-15px);
+    }
+
+    .bean-item {
+      width: 44px;
+      height: 38px;
+      border-radius: 50%;
+      margin: 2px 0;
+      box-shadow: inset -3px -3px 6px rgba(0,0,0,0.35);
+    }
+
+    /* 1500ステージ選択画面 */
+    .stage-header-title {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+
+    .stage-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      width: 100%;
+      height: 420px;
+      overflow-y: auto;
+      padding: 12px;
+      background: #ffffff;
+      border-radius: 22px;
+      border: 3.5px solid var(--border-dark);
+      margin-bottom: 20px;
+      box-shadow: 0 4px 0 var(--border-dark);
+    }
+
+    .stage-btn {
+      aspect-ratio: 1;
+      background: #f5f0e6;
+      border: 2.5px solid var(--border-dark);
+      border-radius: 14px;
+      font-weight: 900;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 0 var(--border-dark);
+      color: #3d2115;
+    }
+
+    .stage-btn.cleared {
+      background: #58b067;
+      color: #ffffff;
+    }
+
+    .stage-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--border-dark);
+    }
+
+    /* 広告コンテナ：画面最下部に1つだけ固定 */
+    .ad-wrapper {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: var(--ad-height);
+      background: #ffffff;
+      border-top: 2.5px solid var(--border-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      overflow: hidden;
+    }
+  </style>
 </head>
 <body>
+
 <div class="app-container">
-<!-- ホーム画面 -->
-<div id="screen-home" class="screen active">
-<div class="title-area">
-<div class="title-logo">
-<span style="font-size:32px;">☕</span>
-<span class="title-text">Roasters Sort</span>
+
+  <!-- ホーム画面 -->
+  <div id="screen-home" class="screen active">
+    <div class="title-area">
+      <div class="title-logo">
+        <span style="font-size:32px;">☕</span>
+        <span class="title-text">Roasters Sort</span>
+      </div>
+      <div class="sub-title">〜極上やり込みパズル〜</div>
+    </div>
+
+    <div class="audio-controls">
+      <button class="btn-toggle" id="btn-se" onclick="toggleSE()">🔊 SE: ON</button>
+      <button class="btn-toggle" id="btn-bgm" onclick="toggleBGM()">🎵 BGM: OFF</button>
+    </div>
+
+    <div class="menu-list">
+      <button class="btn-roaster btn-continue" onclick="continueGame()">▶ 続きから遊ぶ</button>
+      <button class="btn-roaster btn-stage" onclick="openStageSelect()">🗺️ ステージ選択 (1-1500)</button>
+      <button class="btn-roaster btn-daily" onclick="alert('日替わりチャレンジへ')">📅 日替わりチャレンジ (🌕 150)</button>
+      <button class="btn-roaster btn-time" onclick="alert('タイムアタックへ')">⏱️ タイムアタック (3分)</button>
+      <button class="btn-roaster btn-shop" onclick="showScreen('screen-shop')">🎨 ショップ・着せ替え</button>
+      <button class="btn-roaster btn-stats" onclick="showScreen('screen-stats')">📊 プレイ記録・統計</button>
+      <button class="btn-roaster btn-achieve" onclick="alert('実績・アチーブメント')">🎖️ 実績・アチーブメント</button>
+      <button class="btn-roaster btn-bonus" onclick="alert('デイリーボーナスを受け取りました！')">🎁 デイリーボーナス</button>
+      <button class="btn-roaster btn-help" onclick="alert('遊び方：同じ色のコーヒー豆を瓶にそろえよう！')">❓ 遊び方（チュートリアル）</button>
+    </div>
+  </div>
+
+  <!-- ステージ選択画面 (1〜1500) -->
+  <div id="screen-stage" class="screen">
+    <div class="stage-header-title">🗺️ ステージ選択 (1-1500)</div>
+    <div class="stage-grid" id="stage-grid"></div>
+    <div class="menu-list">
+      <button class="btn-roaster btn-continue" onclick="showScreen('screen-home')">ホームへ戻る</button>
+    </div>
+  </div>
+
+  <!-- ゲーム画面 -->
+  <div id="screen-game" class="screen">
+    <div class="game-header">
+      <span id="stage-num">Stage 1</span>
+      <span id="move-num">手数: 0</span>
+    </div>
+    <div class="bottles-area" id="bottles-area"></div>
+    <div class="menu-list">
+      <button class="btn-roaster btn-continue" onclick="resetStage()">リセット</button>
+      <button class="btn-roaster btn-stage" onclick="showScreen('screen-home')">ホームへ戻る</button>
+    </div>
+  </div>
+
+  <!-- ショップ画面 -->
+  <div id="screen-shop" class="screen">
+    <h2 style="margin-bottom: 20px;">🎨 ショップ・着せ替え</h2>
+    <div class="menu-list">
+      <button class="btn-roaster btn-continue" onclick="showScreen('screen-home')">戻る</button>
+    </div>
+  </div>
+
+  <!-- 統計画面 -->
+  <div id="screen-stats" class="screen">
+    <h2 style="margin-bottom: 20px;">📊 プレイ記録・統計</h2>
+    <div id="stats-info" style="margin-bottom: 20px; font-weight: bold; text-align: center; line-height: 1.8;"></div>
+    <div class="menu-list">
+      <button class="btn-roaster btn-continue" onclick="showScreen('screen-home')">戻る</button>
+    </div>
+  </div>
+
 </div>
-<div class="sub-title">～極上やり込みパズル～</div>
+
+<!-- 広告（画面下部に1つだけ設置） -->
+<div class="ad-wrapper">
+  <!-- admax -->
+  <script src="https://adm.shinobi.jp/s/5235ee24a3bda74d9a1d05e10baf3d94"></script>
+  <!-- admax -->
 </div>
-<!-- SE / BGM ボタン -->
-<div class="audio-controls">
-<button class="btn-audio" id="btn-se" onclick="toggleSE()">🔊 SE: ON</button>
-<button class="btn-audio" id="btn-bgm" onclick="toggleBGM()">🎵 BGM: OFF</button>
-</div>
-<div class="menu-list">
-<button class="btn-roaster btn-continue" onclick="continueGame()">▶ 続きから遊ぶ</button>
-<button class="btn-roaster btn-stage" onclick="openStageSelect()">🗺️ ステージ選択 (1-1500)</button>
-<button class="btn-roaster btn-daily" onclick="alert('日替わりチャレンジへ')">📅 日替わりチャレンジ (🌕 150)</button>
-<button class="btn-roaster btn-time" onclick="alert('タイムアタックへ')">⏱️ タイムアタック (3分)</button>
-<button class="btn-roaster btn-shop" onclick="showScreen('screen-shop')">🎨 ショップ・着せ替え</button>
-<button class="btn-roaster btn-stats" onclick="showScreen('screen-stats')">📊 プレイ記録・統計</button>
-<button class="btn-roaster btn-achieve" onclick="alert('実績・アチーブメント')">🎖️ 実績・アチーブメント</button>
-<button class="btn-roaster btn-bonus" onclick="alert('デイリーボーナスを受け取りました！')">🎁 デイリーボーナス</button>
-<button class="btn-roaster btn-help" onclick="alert('遊び方：同じ色のコーヒー豆を瓶にそろえよう！')">❓ 遊び方（チュートリアル）</button>
-</div>
-</div>
-<!-- ステージ選択画面 (1-1500) -->
-<div id="screen-stage" class="screen">
-<div class="stage-title-text">🗺️ ステージ選択 (1-1500)</div>
-<div class="stage-grid" id="stage-grid">
-<!-- 1～1500動的生成 -->
-</div>
-<div class="menu-list">
-<button class="btn-roaster btn-continue" onclick="showScreen('screen-home')">ホームへ戻る</button>
-</div>
-</div>
-<!-- ゲーム画面 -->
-<div id="screen-game" class="screen">
-<div class="game-header">
-<span id="stage-num">Stage 1</span>
-<span id="move-num">手数: 0</span>
-</div>
-<div class="bottles-area" id="bottles-area"></div>
-<div class="menu-list">
-<button class="btn-roaster btn-continue" onclick="resetStage()">リセット</button>
-<button class="btn-roaster btn-stage" onclick="showScreen('screen-home')">ホームへ戻る</button>
-</div>
-</div>
-<!-- ショップ画面 -->
-<div id="screen-shop" class="screen">
-<h2 style="margin-bottom: 20px;">🎨 ショップ・着せ替え</h2>
-<div class="menu-list">
-<button class="btn-roaster btn-continue" onclick="showScreen('screen-home')">戻る</button>
-</div>
-</div>
-<!-- 統計画面 -->
-<div id="screen-stats" class="screen">
-<h2 style="margin-bottom: 20px;">📊 プレイ記録・統計</h2>
-<div id="stats-info" style="margin-bottom: 20px; font-weight: bold; text-align: center; line-height: 1.8;"></div>
-<div class="menu-list">
-<button class="btn-roaster btn-continue" onclick="showScreen('screen-home')">戻る</button>
-</div>
-</div>
-</div>
-<!-- 画面最下部に固定配置する広告枠 -->
-<div class="fixed-bottom-ad">
-<!-- admax -->
-<script src="https://adm.shinobi.jp/s/5235ee24a3bda74d9a1d05e10baf3d94"></script>
-<!-- admax -->
-</div>
+
 <script>
-// ローカルストレージによる状態保持
-let currentStage = parseInt(localStorage.getItem('rs_currentStage')) || 1;
-let clearedStages = JSON.parse(localStorage.getItem('rs_clearedStages')) || [];
-let seEnabled = localStorage.getItem('rs_se') !== 'false';
-let bgmEnabled = localStorage.getItem('rs_bgm') === 'true';
-let currentMoveCount = 0;
-let bottles = [];
-const colors = ['#3d1e11', '#c19a6b', '#8b5a2b', '#d2b48c'];
-let selected = null;
-// 初期化設定
-window.onload = () => {
-updateAudioUI();
-};
-function saveData() {
-localStorage.setItem('rs_currentStage', currentStage);
-localStorage.setItem('rs_clearedStages', JSON.stringify(clearedStages));
-localStorage.setItem('rs_se', seEnabled);
-localStorage.setItem('rs_bgm', bgmEnabled);
-}
-function toggleSE() {
-seEnabled = !seEnabled;
-saveData();
-updateAudioUI();
-}
-function toggleBGM() {
-bgmEnabled = !bgmEnabled;
-saveData();
-updateAudioUI();
-}
-function updateAudioUI() {
-document.getElementById('btn-se').innerText = seEnabled ? '🔊 SE: ON' : '🔈 SE: OFF';
-document.getElementById('btn-bgm').innerText = bgmEnabled ? '🎶 BGM: ON' : '🎵 BGM: OFF';
-}
-function showScreen(id) {
-document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-if (id === 'screen-stats') {
-document.getElementById('stats-info').innerText = ⁠最高到達ステージ: ${currentStage}\nクリア済みステージ数: ${clearedStages.length} / 1500⁠;
-}
-}
-function continueGame() {
-startStage(currentStage);
-}
-/* 1～1500 ステージ一覧動的生成 */
-function openStageSelect() {
-const grid = document.getElementById('stage-grid');
-grid.innerHTML = '';
-const fragment = document.createDocumentFragment();
-for (let i = 1; i <= 1500; i++) {
-const btn = document.createElement('button');
-btn.className = ⁠stage-btn ${clearedStages.includes(i) ? 'cleared' : ''}⁠;
-btn.innerText = i;
-btn.onclick = () => startStage(i);
-fragment.appendChild(btn);
-}
-grid.appendChild(fragment);
-showScreen('screen-stage');
-// 現在の最新到達ステージの位置まで自動でスクロール移動
-setTimeout(() => {
-const targetBtn = grid.children[currentStage - 1];
-if (targetBtn) {
-targetBtn.scrollIntoView({ block: 'center', behavior: 'smooth' });
-}
-}, 100);
-}
-function startStage(stageNum) {
-currentStage = stageNum;
-currentMoveCount = 0;
-saveData();
-bottles = [[0, 1, 0, 1], [1, 0, 1, 0], [], []];
-selected = null;
-document.getElementById('stage-num').innerText = ⁠Stage ${currentStage}⁠;
-document.getElementById('move-num').innerText = ⁠手数: ${currentMoveCount}⁠;
-renderBottles();
-showScreen('screen-game');
-}
-function resetStage() {
-startStage(currentStage);
-}
-function renderBottles() {
-const area = document.getElementById('bottles-area');
-area.innerHTML = '';
-bottles.forEach((b, idx) => {
-const bEl = document.createElement('div');
-bEl.className = ⁠bottle ${selected === idx ? 'selected' : ''}⁠;
-bEl.onclick = () => onBottleClick(idx);
-b.forEach(cIdx => {
-const bean = document.createElement('div');
-bean.className = 'bean-item';
-bean.style.backgroundColor = colors[cIdx];
-bEl.appendChild(bean);
-});
-area.appendChild(bEl);
-});
-}
-function onBottleClick(idx) {
-if (selected === null) {
-if (bottles[idx].length > 0) selected = idx;
-} else {
-if (selected !== idx) {
-const src = bottles[selected];
-const dest = bottles[idx];
-if (dest.length < 4 && (dest.length === 0 || dest[dest.length - 1] === src[src.length - 1])) {
-dest.push(src.pop());
-currentMoveCount++;
-document.getElementById('move-num').innerText = ⁠手数: ${currentMoveCount}⁠;
-checkClear();
-}
-}
-selected = null;
-}
-renderBottles();
-}
-function checkClear() {
-let isClear = true;
-bottles.forEach(b => {
-if (b.length > 0) {
-if (b.length !== 4) isClear = false;
-else if (!b.every(val => val === b[0])) isClear = false;
-}
-});
-if (isClear) {
-setTimeout(() => {
-alert(⁠Stage ${currentStage} クリア！⁠);
-if (!clearedStages.includes(currentStage)) {
-clearedStages.push(currentStage);
-}
-currentStage++;
-saveData();
-startStage(currentStage);
-}, 150);
-}
-}
+  let seEnabled = true;
+  let bgmEnabled = false;
+
+  function toggleSE() {
+    seEnabled = !seEnabled;
+    document.getElementById('btn-se').innerText = seEnabled ? '🔊 SE: ON' : '🔇 SE: OFF';
+  }
+
+  function toggleBGM() {
+    bgmEnabled = !bgmEnabled;
+    document.getElementById('btn-bgm').innerText = bgmEnabled ? '🎵 BGM: ON' : '🎵 BGM: OFF';
+  }
+
+  let currentStage = parseInt(localStorage.getItem('rs_currentStage')) || 1;
+  let clearedStages = JSON.parse(localStorage.getItem('rs_clearedStages')) || [];
+  
+  let currentMoveCount = 0;
+  let bottles = [];
+  const colors = ['#3d2115', '#c19a6b', '#8b5a2b', '#d2b48c'];
+  let selected = null;
+
+  function saveData() {
+    localStorage.setItem('rs_currentStage', currentStage);
+    localStorage.setItem('rs_clearedStages', JSON.stringify(clearedStages));
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (id === 'screen-stats') {
+      document.getElementById('stats-info').innerText = `最高到達ステージ: ${currentStage}\nクリア済みステージ数: ${clearedStages.length} / 1500`;
+    }
+  }
+
+  function continueGame() {
+    startStage(currentStage);
+  }
+
+  function openStageSelect() {
+    const grid = document.getElementById('stage-grid');
+    grid.innerHTML = '';
+    
+    const fragment = document.createDocumentFragment();
+    for (let i = 1; i <= 1500; i++) {
+      const btn = document.createElement('button');
+      btn.className = `stage-btn ${clearedStages.includes(i) ? 'cleared' : ''}`;
+      btn.innerText = i;
+      btn.onclick = () => startStage(i);
+      fragment.appendChild(btn);
+    }
+    grid.appendChild(fragment);
+
+    showScreen('screen-stage');
+
+    setTimeout(() => {
+      const targetBtn = grid.children[currentStage - 1];
+      if (targetBtn) {
+        targetBtn.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+    }, 100);
+  }
+
+  function startStage(stageNum) {
+    currentStage = stageNum;
+    currentMoveCount = 0;
+    saveData();
+    
+    bottles = [[0, 1, 0, 1], [1, 0, 1, 0], [], []];
+    selected = null;
+    
+    document.getElementById('stage-num').innerText = `Stage ${currentStage}`;
+    document.getElementById('move-num').innerText = `手数: ${currentMoveCount}`;
+    
+    renderBottles();
+    showScreen('screen-game');
+  }
+
+  function resetStage() {
+    startStage(currentStage);
+  }
+
+  function renderBottles() {
+    const area = document.getElementById('bottles-area');
+    area.innerHTML = '';
+    bottles.forEach((b, idx) => {
+      const bEl = document.createElement('div');
+      bEl.className = `bottle ${selected === idx ? 'selected' : ''}`;
+      bEl.onclick = () => onBottleClick(idx);
+      b.forEach(cIdx => {
+        const bean = document.createElement('div');
+        bean.className = 'bean-item';
+        bean.style.backgroundColor = colors[cIdx];
+        bEl.appendChild(bean);
+      });
+      area.appendChild(bEl);
+    });
+  }
+
+  function onBottleClick(idx) {
+    if (selected === null) {
+      if (bottles[idx].length > 0) selected = idx;
+    } else {
+      if (selected !== idx) {
+        const src = bottles[selected];
+        const dest = bottles[idx];
+        if (dest.length < 4 && (dest.length === 0 || dest[dest.length - 1] === src[src.length - 1])) {
+          dest.push(src.pop());
+          currentMoveCount++;
+          document.getElementById('move-num').innerText = `手数: ${currentMoveCount}`;
+          checkClear();
+        }
+      }
+      selected = null;
+    }
+    renderBottles();
+  }
+
+  function checkClear() {
+    let isClear = true;
+    bottles.forEach(b => {
+      if (b.length > 0) {
+        if (b.length !== 4) isClear = false;
+        else if (!b.every(val => val === b[0])) isClear = false;
+      }
+    });
+
+    if (isClear) {
+      setTimeout(() => {
+        alert(`Stage ${currentStage} クリア！`);
+        if (!clearedStages.includes(currentStage)) {
+          clearedStages.push(currentStage);
+        }
+        currentStage++;
+        saveData();
+        startStage(currentStage);
+      }, 150);
+    }
+  }
 </script>
 </body>
 </html>
