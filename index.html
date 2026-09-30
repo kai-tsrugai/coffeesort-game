@@ -227,7 +227,8 @@
     /* --- 3. パズルゲーム画面 --- */
     #game-screen {
       justify-content: flex-start;
-      padding-bottom: 20px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     header {
@@ -302,10 +303,11 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
+      align-content: flex-start;
+      gap: 12px 10px;
       width: 100%;
-      margin: auto 0;
-      padding: 15px 0;
+      padding: 20px 10px 75px 10px;
+      box-sizing: border-box;
     }
 
     .bottle {
