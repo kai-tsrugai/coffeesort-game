@@ -464,6 +464,7 @@
     let timerInterval = null;
     let timeRemaining = 180;
     let taClearedCount = 0;
+    let stageStartTime = 0; // ステージ計測タイマー
 
     let bottles = [];
     let lockedBottles = [];
@@ -579,6 +580,7 @@
       
       selectedBottleIndex = null;
       history = [];
+      stageStartTime = Date.now(); // ステージ開始時の時刻をセット
 
       if (gameMode === 'timeattack') {
         document.getElementById('stage-display').innerText = `(クリア:${taClearedCount})`;
@@ -786,17 +788,20 @@
       setTimeout(() => {
         const isWin = bottles.every(b => b.length === 0 || (b.length === BOTTLE_CAPACITY && b.every(v => v.color === b[0].color && !v.isFrozen)));
         if (isWin) {
+          // 所要時間の計算（秒）
+          const clearTimeSec = ((Date.now() - stageStartTime) / 1000).toFixed(1);
+
           if (gameMode === 'daily') {
             const today = new Date().toDateString();
             localStorage.setItem('roasters_last_daily_challenge', today);
-            alert("🎉 日替わりチャレンジクリア！ 🪙+150獲得！");
+            alert(`🎉 日替わりチャレンジクリア！\n⏱️ タイム: ${clearTimeSec}秒\n🪙 +150獲得！`);
             updateCoins(150);
             showScreen('home-screen');
           } else if (gameMode === 'timeattack') {
             taClearedCount++;
             initStage(100 + taClearedCount);
           } else {
-            alert(`🎉 Stage ${currentStage} クリア！ 🪙+50獲得！`);
+            alert(`🎉 Stage ${currentStage} クリア！\n⏱️ タイム: ${clearTimeSec}秒\n🪙 +50獲得！`);
             if (!clearedStages.includes(currentStage)) {
               clearedStages.push(currentStage);
             }
@@ -849,8 +854,7 @@
       if (!list) return;
       list.innerHTML = '';
       ACHIEVEMENTS.forEach(ach => {
-        const item = document.createElement('div');
-        item.className = 'achieve-item';
+        const item = document.className = 'achieve-item';
         
         let isAchieved = clearedStages.length >= ach.target;
         let isClaimed = claimedAchieves.includes(ach.id);
