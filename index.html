@@ -11,7 +11,7 @@
       --primary-color: #4a2c11;
       --accent-color: #e06d28;
       --text-color: #2b1810;
-      --ad-height: 70px; /* 広告の高さを確保 */
+      --ad-height: 70px; /* 広告の高さ */
     }
 
     * {
@@ -51,21 +51,20 @@
       display: flex;
     }
 
-    /* --- 1. ホーム画面 --- */
+    /* --- 1. ホーム画面 (スクロール対応修正) --- */
     #home-screen {
       justify-content: flex-start;
-      padding: 20px 15px 30px 15px;
+      padding: 15px 15px 10px 15px;
       text-align: center;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      height: calc(100vh - var(--ad-height));
     }
 
     .title-logo {
       font-size: 2.2rem;
       font-weight: 900;
       color: var(--primary-color);
-      margin-top: 10px;
-      margin-bottom: 5px;
+      margin-top: 5px;
+      margin-bottom: 2px;
       text-shadow: 2px 2px 0px #e06d28;
       flex-shrink: 0;
     }
@@ -73,9 +72,21 @@
     .subtitle {
       font-size: 0.95rem;
       color: #666;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       font-weight: bold;
       flex-shrink: 0;
+    }
+
+    /* ボタンコンテナを独立スクロール可能に設定 */
+    .menu-scroll-container {
+      width: 100%;
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 25px; /* 最下部ボタンがしっかり見える余白 */
     }
 
     .home-btn {
@@ -404,7 +415,7 @@
     .bean.blind::after { content: '❓'; }
 
     .bean.frozen { border: 2px solid #00d2d3; box-shadow: 0 0 8px #00d2d3; }
-    .bean.frozen::after { content: '❄️'; }
+    .bean.frozen::after { content: '❄️️'; }
 
     /* 💣 爆弾タイマー表示 */
     .bean-bomb-icon {
@@ -522,13 +533,16 @@
     <div class="title-logo">☕ Roasters Sort</div>
     <div class="subtitle">〜やり込みパズル〜</div>
     
-    <button class="home-btn" onclick="continueGame()">▶ 続きから遊ぶ</button>
-    <button class="home-btn secondary" onclick="showScreen('select-screen')">🗺️ ステージ選択 (1-1500)</button>
-    <button class="home-btn bonus" onclick="startDailyChallenge()">📅 日替わりチャレンジ (🪙150)</button>
-    <button class="home-btn timeattack" onclick="startTimeAttack()">⏱ タイムアタック (3分)</button>
-    <button class="home-btn secondary" onclick="showScreen('achieve-screen')">🎖️ 実績・アチーブメント</button>
-    <button class="home-btn bonus" onclick="claimDailyBonus()">🎁 デイリーボーナス</button>
-    <button class="home-btn secondary" onclick="openTutorialModal()">📖 遊び方・ルール</button>
+    <!-- モード一覧（スクロール対応） -->
+    <div class="menu-scroll-container">
+      <button class="home-btn" onclick="continueGame()">▶ 続きから遊ぶ</button>
+      <button class="home-btn secondary" onclick="showScreen('select-screen')">🗺️️ ステージ選択 (1-1500)</button>
+      <button class="home-btn bonus" onclick="startDailyChallenge()">📅 日替わりチャレンジ (🪙150)</button>
+      <button class="home-btn timeattack" onclick="startTimeAttack()">⏱ タイムアタック (3分)</button>
+      <button class="home-btn secondary" onclick="showScreen('achieve-screen')">🎖️ 実績・アチーブメント</button>
+      <button class="home-btn bonus" onclick="claimDailyBonus()">🎁 デイリーボーナス</button>
+      <button class="home-btn secondary" onclick="openTutorialModal()">📖 遊び方・ルール</button>
+    </div>
   </div>
 
   <!-- 2. ステージ選択画面 -->
@@ -692,7 +706,6 @@
       initStage(currentStage);
       showScreen('game-screen');
       
-      // 初回プレイ時の自動チュートリアル表示
       if (!isTutorialSeen) {
         openTutorialModal();
       }
@@ -814,12 +827,10 @@
         }
       });
 
-      // ワイルド豆の配置
       if (stageNum > 3) {
         allBeans[0].color = 'wild';
       }
 
-      // 🔑鍵の配置
       let hasLockedBottle = stageNum > 2;
       if (hasLockedBottle) {
         allBeans[allBeans.length - 1].hasKey = true;
@@ -844,7 +855,6 @@
         lockedBottles.push(false);
       }
 
-      // 🔒 鍵付きボトルの設定
       if (hasLockedBottle) {
         bottles.push([]);
         lockedBottles.push(true);
