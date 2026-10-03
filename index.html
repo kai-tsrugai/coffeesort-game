@@ -11,7 +11,7 @@
       --primary-color: #4a2c11;
       --accent-color: #e06d28;
       --text-color: #2b1810;
-      --ad-height: 60px;
+      --ad-height: 70px; /* 広告の高さを少し余裕をもって確保 */
     }
 
     * {
@@ -197,6 +197,7 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       flex: 1;
+      padding-bottom: 20px;
     }
 
     .achieve-item {
@@ -229,33 +230,43 @@
       justify-content: flex-start;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      padding-bottom: 30px;
     }
 
     header {
       width: 100%;
-      padding: 12px 16px;
+      padding: 10px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: linear-gradient(135deg, #5c3a21, #3d2314);
       color: #fff;
       flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .header-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .coin-display {
       background: #e06d28;
-      padding: 5px 14px;
+      padding: 5px 12px;
       border-radius: 20px;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       font-weight: bold;
+      white-space: nowrap;
     }
 
     .timer-display {
       background: #c0392b;
-      padding: 5px 12px;
+      padding: 5px 10px;
       border-radius: 20px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: bold;
+      white-space: nowrap;
     }
 
     .difficulty-badge {
@@ -264,7 +275,7 @@
       color: #fff;
       padding: 2px 6px;
       border-radius: 4px;
-      margin-left: 6px;
+      margin-left: 4px;
     }
 
     /* ショップボタン */
@@ -275,7 +286,7 @@
       gap: 4px;
       padding: 8px 6px;
       flex-shrink: 0;
-      background: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.85);
       border-bottom: 2px solid rgba(92, 58, 33, 0.2);
     }
 
@@ -306,7 +317,7 @@
       align-content: flex-start;
       gap: 12px 10px;
       width: 100%;
-      padding: 20px 10px 75px 10px;
+      padding: 15px 10px 90px 10px; /* 広告に被らないよう下部に大きなマージンを確保 */
       box-sizing: border-box;
     }
 
@@ -369,7 +380,7 @@
     .bean.frozen { border: 2px solid #00d2d3; box-shadow: 0 0 8px #00d2d3; }
     .bean.frozen::after { content: '❄️'; }
 
-    /* 忍者AdMax 常駐広告 */
+    /* 忍者AdMax 常駐広告エリア */
     .fixed-bottom-ad {
       position: fixed;
       bottom: 0; left: 0; width: 100%;
@@ -391,7 +402,7 @@
     <button class="home-btn" onclick="continueGame()">▶ 続きから遊ぶ</button>
     <button class="home-btn secondary" onclick="showScreen('select-screen')">🗺️ ステージ選択 (1-1500)</button>
     <button class="home-btn bonus" onclick="startDailyChallenge()">📅 日替わりチャレンジ (🪙150)</button>
-    <button class="home-btn timeattack" onclick="startTimeAttack()">⏱️ タイムアタック (3分)</button>
+    <button class="home-btn timeattack" onclick="startTimeAttack()">⏱️️ タイムアタック (3分)</button>
     <button class="home-btn secondary" onclick="showScreen('achieve-screen')">🎖️ 実績・アチーブメント</button>
     <button class="home-btn bonus" onclick="claimDailyBonus()">🎁 デイリーボーナス</button>
   </div>
@@ -422,12 +433,14 @@
   <div id="game-screen" class="screen">
     <header>
       <button class="back-btn" onclick="exitGame()">🏠 戻る</button>
-      <div style="font-weight:bold;">
+      <div style="font-weight:bold; font-size: 0.95rem;">
         <span id="stage-label">STAGE</span> <span id="stage-display">1</span>
         <span id="hard-tag" class="difficulty-badge" style="display:none;">HARD</span>
       </div>
-      <div id="timer-box" class="timer-display" style="display:none;">⏳ <span id="timer-count">180</span>s</div>
-      <div class="coin-display">🪙 <span id="coin-count">100</span></div>
+      <div class="header-status">
+        <div id="timer-box" class="timer-display" style="display:none;">⏳ <span id="timer-count">180</span>s</div>
+        <div class="coin-display">🪙 <span id="coin-count">100</span></div>
+      </div>
     </header>
 
     <div class="shop-container">
@@ -457,14 +470,16 @@
     let maxUnlockedStage = parseInt(localStorage.getItem('roasters_max_stage')) || 1;
     let clearedStages = JSON.parse(localStorage.getItem('roasters_cleared_list')) || [];
     let coins = parseInt(localStorage.getItem('roasters_coins')) || 100;
+    let totalCoinsEarned = parseInt(localStorage.getItem('roasters_total_coins_earned')) || 100;
     let claimedAchieves = JSON.parse(localStorage.getItem('roasters_claimed_achieves')) || [];
     let bestTimeAttack = parseInt(localStorage.getItem('roasters_best_ta')) || 0;
+    let fastestClearTime = parseFloat(localStorage.getItem('roasters_fastest_time')) || 999;
 
     let gameMode = 'normal';
     let timerInterval = null;
     let timeRemaining = 180;
     let taClearedCount = 0;
-    let stageStartTime = 0; // ステージ計測タイマー
+    let stageStartTime = 0;
 
     let bottles = [];
     let lockedBottles = [];
@@ -472,10 +487,17 @@
     let selectedBottleIndex = null;
 
     const ACHIEVEMENTS = [
-      { id: 'cleared_10', title: 'ビギナーロースター', desc: '10ステージクリア', target: 10, reward: 100 },
-      { id: 'cleared_50', title: '一人前マスター', desc: '50ステージクリア', target: 50, reward: 200 },
-      { id: 'cleared_100', title: '人気カフェ店主', desc: '100ステージクリア', target: 100, reward: 300 },
-      { id: 'cleared_570', title: '伝説の焙煎士', desc: '570ステージ(HARD)達成', target: 570, reward: 500 }
+      { id: 'cleared_10', title: '🌱 ビギナーロースター', desc: '10ステージクリア', check: () => clearedStages.length >= 10, reward: 100 },
+      { id: 'cleared_50', title: '☕ 一人前マスター', desc: '50ステージクリア', check: () => clearedStages.length >= 50, reward: 200 },
+      { id: 'cleared_100', title: '🏪 人気カフェ店主', desc: '100ステージクリア', check: () => clearedStages.length >= 100, reward: 300 },
+      { id: 'cleared_300', title: '🏆 ベテラン焙煎士', desc: '300ステージクリア', check: () => clearedStages.length >= 300, reward: 500 },
+      { id: 'cleared_500', title: '✨ 焙煎の極み', desc: '500ステージクリア', check: () => clearedStages.length >= 500, reward: 800 },
+      { id: 'cleared_1000', title: '👑 カフェ帝国建設', desc: '1000ステージクリア', check: () => clearedStages.length >= 1000, reward: 1500 },
+      { id: 'cleared_1500', title: '🌌 伝説のグラマスター', desc: '全1500ステージ制覇！', check: () => clearedStages.length >= 1500, reward: 3000 },
+      { id: 'cleared_570', title: '🔥 HARDモード突破', desc: '570ステージ(HARD)達成', check: () => maxUnlockedStage > 570, reward: 500 },
+      { id: 'coins_500', title: '💰 貯金上手', desc: '累計500コイン獲得', check: () => totalCoinsEarned >= 500, reward: 150 },
+      { id: 'coins_2000', title: '💎 大富豪ロースター', desc: '累計2000コイン獲得', check: () => totalCoinsEarned >= 2000, reward: 500 },
+      { id: 'speed_15', title: '⚡ スピードスター', desc: '15秒以内でステージクリア', check: () => fastestClearTime <= 15, reward: 200 }
     ];
 
     function saveState() {
@@ -483,8 +505,10 @@
       localStorage.setItem('roasters_max_stage', maxUnlockedStage);
       localStorage.setItem('roasters_cleared_list', JSON.stringify(clearedStages));
       localStorage.setItem('roasters_coins', coins);
+      localStorage.setItem('roasters_total_coins_earned', totalCoinsEarned);
       localStorage.setItem('roasters_claimed_achieves', JSON.stringify(claimedAchieves));
       localStorage.setItem('roasters_best_ta', bestTimeAttack);
+      localStorage.setItem('roasters_fastest_time', fastestClearTime);
     }
 
     function showScreen(screenId) {
@@ -552,6 +576,9 @@
 
     function updateCoins(amount) {
       coins += amount;
+      if (amount > 0) {
+        totalCoinsEarned += amount;
+      }
       document.getElementById('coin-count').innerText = coins;
       saveState();
     }
@@ -580,7 +607,7 @@
       
       selectedBottleIndex = null;
       history = [];
-      stageStartTime = Date.now(); // ステージ開始時の時刻をセット
+      stageStartTime = Date.now();
 
       if (gameMode === 'timeattack') {
         document.getElementById('stage-display').innerText = `(クリア:${taClearedCount})`;
@@ -788,8 +815,10 @@
       setTimeout(() => {
         const isWin = bottles.every(b => b.length === 0 || (b.length === BOTTLE_CAPACITY && b.every(v => v.color === b[0].color && !v.isFrozen)));
         if (isWin) {
-          // 所要時間の計算（秒）
-          const clearTimeSec = ((Date.now() - stageStartTime) / 1000).toFixed(1);
+          const clearTimeSec = parseFloat(((Date.now() - stageStartTime) / 1000).toFixed(1));
+          if (clearTimeSec < fastestClearTime) {
+            fastestClearTime = clearTimeSec;
+          }
 
           if (gameMode === 'daily') {
             const today = new Date().toDateString();
@@ -854,9 +883,10 @@
       if (!list) return;
       list.innerHTML = '';
       ACHIEVEMENTS.forEach(ach => {
-        const item = document.className = 'achieve-item';
+        const item = document.createElement('div');
+        item.className = 'achieve-item';
         
-        let isAchieved = clearedStages.length >= ach.target;
+        let isAchieved = ach.check();
         let isClaimed = claimedAchieves.includes(ach.id);
 
         item.innerHTML = `
@@ -881,7 +911,6 @@
       }
     }
 
-    // 初期化表示
     window.onload = function() {
       showScreen('home-screen');
     };
