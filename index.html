@@ -131,6 +131,21 @@
       cursor: pointer;
     }
 
+    .help-icon-btn {
+      background: #e06d28;
+      color: #fff;
+      border: 2px solid #5c3a21;
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .stage-grid-container {
       width: 100%;
       flex: 1;
@@ -409,6 +424,85 @@
       font-size: 0.8rem;
     }
 
+    /* --- チュートリアルモーダル --- */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .tutorial-card {
+      background: var(--card-bg);
+      border: 3px solid var(--primary-color);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 400px;
+      max-height: 85vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      overflow-y: auto;
+    }
+
+    .tutorial-title {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 15px;
+      border-bottom: 2px dashed var(--accent-color);
+      padding-bottom: 8px;
+    }
+
+    .tutorial-section {
+      margin-bottom: 15px;
+    }
+
+    .tutorial-section h4 {
+      font-size: 0.95rem;
+      color: var(--accent-color);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tutorial-section p {
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: #444;
+    }
+
+    .tutorial-close-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent-color);
+      color: #fff;
+      border: 2px solid var(--primary-color);
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 3px 0 var(--primary-color);
+    }
+
+    .tutorial-close-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--primary-color);
+    }
+
     /* 忍者AdMax 常駐広告エリア */
     .fixed-bottom-ad {
       position: fixed;
@@ -434,6 +528,7 @@
     <button class="home-btn timeattack" onclick="startTimeAttack()">⏱ タイムアタック (3分)</button>
     <button class="home-btn secondary" onclick="showScreen('achieve-screen')">🎖️ 実績・アチーブメント</button>
     <button class="home-btn bonus" onclick="claimDailyBonus()">🎁 デイリーボーナス</button>
+    <button class="home-btn secondary" onclick="openTutorialModal()">📖 遊び方・ルール</button>
   </div>
 
   <!-- 2. ステージ選択画面 -->
@@ -441,7 +536,7 @@
     <div class="screen-header">
       <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
       <h2 style="font-size: 1.1rem;">ステージ選択 (1-1500)</h2>
-      <div style="width: 50px;"></div>
+      <button class="help-icon-btn" onclick="openTutorialModal()">?</button>
     </div>
     <div class="stage-grid-container">
       <div class="stage-grid" id="stage-grid"></div>
@@ -453,7 +548,7 @@
     <div class="screen-header">
       <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
       <h2 style="font-size: 1.1rem;">実績・アチーブメント</h2>
-      <div style="width: 50px;"></div>
+      <div style="width: 34px;"></div>
     </div>
     <div class="achieve-list" id="achieve-list"></div>
   </div>
@@ -462,9 +557,10 @@
   <div id="game-screen" class="screen">
     <header>
       <button class="back-btn" onclick="exitGame()">🏠 戻る</button>
-      <div style="font-weight:bold; font-size: 0.95rem;">
+      <div style="font-weight:bold; font-size: 0.95rem; display: flex; align-items: center; gap: 4px;">
         <span id="stage-label">STAGE</span> <span id="stage-display">1</span>
         <span id="hard-tag" class="difficulty-badge" style="display:none;">HARD</span>
+        <button class="help-icon-btn" style="width:24px; height:24px; font-size:0.75rem; margin-left:4px;" onclick="openTutorialModal()">?</button>
       </div>
       <div class="header-status">
         <div id="timer-box" class="timer-display" style="display:none;">⏳ <span id="timer-count">180</span>s</div>
@@ -481,6 +577,34 @@
     </div>
 
     <div class="game-board" id="game-board"></div>
+  </div>
+
+  <!-- 📖 チュートリアルモーダル -->
+  <div id="tutorial-modal" class="modal-overlay">
+    <div class="tutorial-card">
+      <div class="tutorial-title">☕ 遊び方ガイド</div>
+      
+      <div class="tutorial-section">
+        <h4>🎯 基本ルール</h4>
+        <p>・ボトルをタップして移動したい豆を選び、別のボトルへ移します。<br>・同じ色の豆の上、または空のボトルにだけ移動できます。<br>・すべてのボトルを「同じ色1色」で満たせばクリア！</p>
+      </div>
+
+      <div class="tutorial-section">
+        <h4>✨ 特殊アイテム・ギミック</h4>
+        <p><strong>🌈 ワイルド豆：</strong> どの色の豆の上にも重ねられ、どの色の豆も上に置けます。<br>
+        <strong>🔑 鍵と 🔒 鍵付きボトル：</strong> 🔑を持っている豆を移動させると 🔒 ボトルが解放されます。<br>
+        <strong>❄️ 氷漬け豆：</strong> 一度タップして氷を割らないと動かせません。<br>
+        <strong>❓ 隠し豆：</strong> 上の豆を移動させると正体が判明します。<br>
+        <strong>💣 爆弾豆：</strong> 手数が0になると爆発して豆が混ざってしまいます！</p>
+      </div>
+
+      <div class="tutorial-section">
+        <h4>🛠️ 便利なサポート機能</h4>
+        <p>行き詰まった時は上部のショップアイテム（1手戻す・ヒント・ボトル追加など）を活用しましょう！</p>
+      </div>
+
+      <button class="tutorial-close-btn" onclick="closeTutorialModal()">OK！ゲームを始める</button>
+    </div>
   </div>
 
   <!-- 忍者AdMax 常駐広告 -->
@@ -503,6 +627,7 @@
     let claimedAchieves = JSON.parse(localStorage.getItem('roasters_claimed_achieves')) || [];
     let bestTimeAttack = parseInt(localStorage.getItem('roasters_best_ta')) || 0;
     let fastestClearTime = parseFloat(localStorage.getItem('roasters_fastest_time')) || 999;
+    let isTutorialSeen = localStorage.getItem('roasters_tutorial_seen') === 'true';
 
     let gameMode = 'normal';
     let timerInterval = null;
@@ -528,6 +653,16 @@
       { id: 'coins_2000', title: '💎 大富豪ロースター', desc: '累計2000コイン獲得', check: () => totalCoinsEarned >= 2000, reward: 500 },
       { id: 'speed_15', title: '⚡ スピードスター', desc: '15秒以内でステージクリア', check: () => fastestClearTime <= 15, reward: 200 }
     ];
+
+    function openTutorialModal() {
+      document.getElementById('tutorial-modal').classList.add('active');
+    }
+
+    function closeTutorialModal() {
+      document.getElementById('tutorial-modal').classList.remove('active');
+      localStorage.setItem('roasters_tutorial_seen', 'true');
+      isTutorialSeen = true;
+    }
 
     function saveState() {
       localStorage.setItem('roasters_current_stage', currentStage);
@@ -556,6 +691,11 @@
       document.getElementById('stage-label').innerText = 'STAGE';
       initStage(currentStage);
       showScreen('game-screen');
+      
+      // 初回プレイ時の自動チュートリアル表示
+      if (!isTutorialSeen) {
+        openTutorialModal();
+      }
     }
 
     function startDailyChallenge() {
@@ -925,7 +1065,7 @@
           if (gameMode === 'daily') {
             const today = new Date().toDateString();
             localStorage.setItem('roasters_last_daily_challenge', today);
-            alert(`🎉 日替わりチャレンジクリア！\n⏱️️ タイム: ${clearTimeSec}秒\n🪙 +150獲得！`);
+            alert(`🎉 日替わりチャレンジクリア！\n⏱ タイム: ${clearTimeSec}秒\n🪙 +150獲得！`);
             updateCoins(150);
             showScreen('home-screen');
           } else if (gameMode === 'timeattack') {
