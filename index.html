@@ -13,6 +13,11 @@
       --text-color: #2b1810;
     }
 
+    /* 着せ替えテーマ用のCSS変数定義 */
+    body.theme-wood { --bg-color: #3e2723; --card-bg: #4e342e; --primary-color: #d7ccc8; --accent-color: #ffb74d; --text-color: #fff; }
+    body.theme-midnight { --bg-color: #1a1a2e; --card-bg: #16213e; --primary-color: #e94560; --accent-color: #0f3460; --text-color: #fff; }
+    body.theme-sakura { --bg-color: #fff0f5; --card-bg: #ffe4e1; --primary-color: #c71585; --accent-color: #ff69b4; --text-color: #4a2c11; }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -26,6 +31,7 @@
       height: 100%;
       overflow: hidden;
       background-color: var(--bg-color);
+      transition: background-color 0.3s;
     }
 
     /* スマホで絶対に崩れないアプリ全体ラッパー */
@@ -57,27 +63,27 @@
       display: flex;
     }
 
-    /* --- 1. ホーム画面 --- */
+    /* --- 1. ホーム画面 (コンパクト) --- */
     #home-screen {
       justify-content: flex-start;
-      padding: 15px 15px 10px 15px;
+      padding: 10px 10px 5px 10px;
       text-align: center;
     }
 
     .title-logo {
-      font-size: 2.2rem;
+      font-size: 1.8rem;
       font-weight: 900;
       color: var(--primary-color);
-      margin-top: 5px;
+      margin-top: 2px;
       margin-bottom: 2px;
-      text-shadow: 2px 2px 0px #e06d28;
+      text-shadow: 1px 1px 0px var(--accent-color);
       flex-shrink: 0;
     }
 
     .subtitle {
-      font-size: 0.95rem;
+      font-size: 0.8rem;
       color: #666;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       font-weight: bold;
       flex-shrink: 0;
     }
@@ -90,38 +96,40 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-bottom: 25px;
+      padding-bottom: 20px;
     }
 
     .home-btn {
       width: 85%;
-      max-width: 300px;
-      padding: 14px;
-      margin: 6px 0;
-      font-size: 1.05rem;
+      max-width: 280px;
+      padding: 9px;
+      margin: 4px 0;
+      font-size: 0.9rem;
       font-weight: bold;
-      border: 3px solid var(--primary-color);
-      border-radius: 30px;
+      border: 2px solid var(--primary-color);
+      border-radius: 20px;
       background: var(--accent-color);
       color: #fff;
       cursor: pointer;
-      box-shadow: 0 4px 0 var(--primary-color);
+      box-shadow: 0 3px 0 var(--primary-color);
       transition: transform 0.1s;
       flex-shrink: 0;
     }
 
     .home-btn:active {
       transform: translateY(2px);
-      box-shadow: 0 2px 0 var(--primary-color);
+      box-shadow: 0 1px 0 var(--primary-color);
     }
 
     .home-btn.secondary { background: #fff; color: var(--primary-color); }
     .home-btn.bonus { background: #27ae60; }
     .home-btn.timeattack { background: #d35400; }
+    .home-btn.shop-theme { background: #8e44ad; }
+    .home-btn.gacha-btn { background: #f1c40f; color: #333; }
 
     /* --- 2. ステージ選択画面 --- */
-    #select-screen, #achieve-screen {
-      padding: 15px 15px 10px 15px;
+    #select-screen, #achieve-screen, #shop-screen {
+      padding: 10px 10px 5px 10px;
     }
 
     .screen-header {
@@ -129,8 +137,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
-      margin-bottom: 10px;
+      padding: 6px 0;
+      margin-bottom: 6px;
       border-bottom: 2px solid var(--primary-color);
       flex-shrink: 0;
     }
@@ -139,21 +147,22 @@
       background: var(--primary-color);
       color: #fff;
       border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
+      padding: 6px 12px;
+      border-radius: 15px;
       font-weight: bold;
+      font-size: 0.8rem;
       cursor: pointer;
     }
 
     .help-icon-btn {
-      background: #e06d28;
+      background: var(--accent-color);
       color: #fff;
-      border: 2px solid #5c3a21;
+      border: 2px solid var(--primary-color);
       border-radius: 50%;
-      width: 34px;
-      height: 34px;
+      width: 28px;
+      height: 28px;
       font-weight: bold;
-      font-size: 1rem;
+      font-size: 0.85rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -165,40 +174,41 @@
       flex: 1;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding-bottom: 20px;
+      padding-bottom: 15px;
     }
 
     .stage-grid {
       width: 100%;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      padding: 5px;
+      gap: 8px;
+      padding: 4px;
     }
 
     .stage-card {
       aspect-ratio: 1;
       background: #fff;
       border: 2px solid var(--primary-color);
-      border-radius: 12px;
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       cursor: pointer;
-      box-shadow: 0 3px 0 var(--primary-color);
+      box-shadow: 0 2px 0 var(--primary-color);
       position: relative;
+      color: #333;
     }
 
     .stage-card.cleared::after {
       content: '✓';
       position: absolute;
       top: 2px;
-      right: 6px;
+      right: 4px;
       color: #27ae60;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       font-weight: bold;
     }
 
@@ -216,40 +226,46 @@
       cursor: not-allowed;
     }
 
-    /* --- アチーブメントリスト --- */
-    .achieve-list {
+    /* --- アチーブメント & テーマショップ --- */
+    .content-list {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       flex: 1;
-      padding-bottom: 20px;
+      padding-bottom: 15px;
     }
 
-    .achieve-item {
-      background: #fff;
+    .list-item {
+      background: var(--card-bg);
       border: 2px solid var(--primary-color);
-      border-radius: 12px;
-      padding: 12px;
+      border-radius: 10px;
+      padding: 8px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .achieve-claim-btn {
+    .action-btn {
       background: #27ae60;
       color: #fff;
       border: none;
-      padding: 6px 12px;
-      border-radius: 15px;
+      padding: 5px 10px;
+      border-radius: 12px;
       font-weight: bold;
+      font-size: 0.75rem;
       cursor: pointer;
     }
 
-    .achieve-claim-btn.done {
+    .action-btn.done {
       background: #7f8c8d;
+      cursor: default;
+    }
+
+    .action-btn.active-theme {
+      background: #e67e22;
       cursor: default;
     }
 
@@ -262,7 +278,7 @@
 
     header {
       width: 100%;
-      padding: 10px 12px;
+      padding: 6px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -275,42 +291,43 @@
     .header-status {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .coin-display {
       background: #e06d28;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
+      padding: 3px 8px;
+      border-radius: 15px;
+      font-size: 0.75rem;
       font-weight: bold;
       white-space: nowrap;
     }
 
     .timer-display {
       background: #c0392b;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 0.85rem;
+      padding: 3px 8px;
+      border-radius: 15px;
+      font-size: 0.75rem;
       font-weight: bold;
       white-space: nowrap;
     }
 
     .difficulty-badge {
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       background: #e74c3c;
       color: #fff;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-left: 4px;
+      padding: 1px 4px;
+      border-radius: 3px;
+      margin-left: 2px;
     }
 
+    /* ゲーム内ショップ（価格改定後） */
     .shop-container {
       width: 100%;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-      padding: 8px 6px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 2px;
+      padding: 4px;
       flex-shrink: 0;
       background: rgba(255, 255, 255, 0.85);
       border-bottom: 2px solid rgba(92, 58, 33, 0.2);
@@ -318,22 +335,23 @@
 
     .shop-btn {
       background: #fff;
-      border: 2px solid #5c3a21;
-      border-radius: 10px;
-      padding: 6px 2px;
-      font-size: 0.65rem;
+      border: 1px solid #5c3a21;
+      border-radius: 6px;
+      padding: 4px 1px;
+      font-size: 0.55rem;
       font-weight: bold;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
-      box-shadow: 0 3px 0 #5c3a21;
+      gap: 1px;
+      box-shadow: 0 1px 0 #5c3a21;
+      color: #333;
     }
 
     .shop-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 #5c3a21;
+      transform: translateY(1px);
+      box-shadow: none;
     }
 
     .game-board {
@@ -341,31 +359,31 @@
       flex-wrap: wrap;
       justify-content: center;
       align-content: flex-start;
-      gap: 12px 10px;
+      gap: 10px 8px;
       width: 100%;
-      padding: 15px 10px 40px 10px;
+      padding: 10px 8px 30px 8px;
       box-sizing: border-box;
     }
 
     .bottle {
-      width: 50px;
-      height: 165px;
-      border: 3px solid #5c3a21;
-      border-radius: 0 0 16px 16px;
+      width: 44px;
+      height: 145px;
+      border: 2px solid #5c3a21;
+      border-radius: 0 0 14px 14px;
       background: rgba(255,255,255,0.85);
       display: flex;
       flex-direction: column-reverse;
       align-items: center;
-      padding: 3px;
+      padding: 2px;
       cursor: pointer;
       position: relative;
       transition: transform 0.2s;
     }
 
     .bottle.selected {
-      transform: translateY(-16px);
+      transform: translateY(-12px);
       border-color: #e06d28;
-      box-shadow: 0 8px 20px rgba(224, 109, 40, 0.4);
+      box-shadow: 0 6px 15px rgba(224, 109, 40, 0.4);
     }
 
     .bottle.locked-bottle {
@@ -376,15 +394,15 @@
 
     .bottle.locked-bottle::after {
       content: '🔒';
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       position: absolute;
       top: 40%;
     }
 
     .bean {
       width: 100%;
-      height: 36px;
-      border-radius: 8px;
+      height: 31px;
+      border-radius: 6px;
       margin-top: 2px;
       display: flex;
       justify-content: center;
@@ -392,7 +410,8 @@
       font-weight: bold;
       color: #fff;
       position: relative;
-      box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -3px 4px rgba(0,0,0,0.3);
+      box-shadow: inset 0 1px 3px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.3);
+      font-size: 0.7rem;
     }
 
     .bean-light  { background: linear-gradient(135deg, #e6b88a, #c48b52); }
@@ -412,26 +431,26 @@
     .bean.blind { background: #7f8c8d !important; }
     .bean.blind::after { content: '❓'; }
 
-    .bean.frozen { border: 2px solid #00d2d3; box-shadow: 0 0 8px #00d2d3; }
-    .bean.frozen::after { content: '❄'; }
+    .bean.frozen { border: 2px solid #00d2d3; box-shadow: 0 0 6px #00d2d3; }
+    .bean.frozen::after { content: '❄'; font-size: 0.6rem; }
 
     .bean-bomb-icon {
       position: absolute;
-      font-size: 0.7rem;
+      font-size: 0.6rem;
       background: rgba(0,0,0,0.75);
       color: #fff;
-      padding: 1px 4px;
-      border-radius: 10px;
+      padding: 1px 3px;
+      border-radius: 8px;
     }
 
     .has-key::before {
       content: '🔑';
       position: absolute;
-      left: 2px;
-      font-size: 0.8rem;
+      left: 1px;
+      font-size: 0.7rem;
     }
 
-    /* --- チュートリアルモーダル --- */
+    /* --- 遊び方・チュートリアル・ガチャ --- */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -441,7 +460,7 @@
       z-index: 10000;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 15px;
     }
 
     .modal-overlay.active {
@@ -450,30 +469,31 @@
 
     .tutorial-card {
       background: var(--card-bg);
-      border: 3px solid var(--primary-color);
-      border-radius: 20px;
+      border: 2px solid var(--primary-color);
+      border-radius: 14px;
       width: 100%;
-      max-width: 400px;
-      max-height: 85vh;
-      padding: 20px;
+      max-width: 360px;
+      max-height: 80vh;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
       overflow-y: auto;
+      color: var(--text-color);
     }
 
     .tutorial-header-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
+      margin-bottom: 8px;
       border-bottom: 2px dashed var(--accent-color);
-      padding-bottom: 8px;
+      padding-bottom: 5px;
       flex-shrink: 0;
     }
 
     .tutorial-title {
-      font-size: 1.3rem;
+      font-size: 1.05rem;
       font-weight: 900;
       color: var(--primary-color);
       margin: 0;
@@ -482,12 +502,12 @@
     .tutorial-close-x {
       background: none;
       border: none;
-      font-size: 1.8rem;
+      font-size: 1.4rem;
       font-weight: bold;
       color: var(--primary-color);
       cursor: pointer;
       line-height: 1;
-      padding: 0 5px;
+      padding: 0 4px;
     }
 
     .tutorial-close-x:active {
@@ -495,22 +515,22 @@
     }
 
     .tutorial-section {
-      margin-bottom: 15px;
+      margin-bottom: 8px;
     }
 
     .tutorial-section h4 {
-      font-size: 0.95rem;
+      font-size: 0.8rem;
       color: var(--accent-color);
-      margin-bottom: 5px;
+      margin-bottom: 3px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .tutorial-section p {
-      font-size: 0.85rem;
-      line-height: 1.4;
-      color: #444;
+      font-size: 0.72rem;
+      line-height: 1.3;
+      opacity: 0.9;
     }
 
     /* 忍者AdMax 常駐広告エリア (50px固定) */
@@ -528,7 +548,7 @@
     }
   </style>
 </head>
-<body>
+<body id="body-root">
 
   <!-- スマホ対応ラッパー -->
   <div id="app-wrapper">
@@ -539,14 +559,16 @@
       <div class="subtitle">〜やり込みパズル〜</div>
       
       <div class="menu-scroll-container">
-        <!-- お問い合わせ（レビュー）用メールアドレス（最上部に配置） -->
-        <div style="margin-bottom: 8px; padding: 10px 12px; background: rgba(255,255,255,0.7); border-radius: 14px; width: 85%; max-width: 300px; font-size: 0.75rem; text-align: center; border: 2px dashed var(--primary-color); flex-shrink: 0;">
-          <div style="font-weight: bold; color: var(--primary-color); margin-bottom: 2px;">お問い合わせ（レビュー）用メールアドレス</div>
+        <!-- お問い合わせ用メールアドレス -->
+        <div style="margin-bottom: 6px; padding: 6px 8px; background: rgba(255,255,255,0.7); border-radius: 10px; width: 85%; max-width: 280px; font-size: 0.68rem; text-align: center; border: 1px dashed var(--primary-color); flex-shrink: 0; color: #333;">
+          <div style="font-weight: bold; color: var(--primary-color); margin-bottom: 1px;">お問い合わせ（レビュー）用アドレス</div>
           <a href="mailto:kai2026.shop@gmail.com" style="color: var(--accent-color); text-decoration: none; font-weight: bold; word-break: break-all;">kai2026.shop@gmail.com</a>
         </div>
 
         <button class="home-btn" onclick="continueGame()">▶ 続きから遊ぶ</button>
         <button class="home-btn secondary" onclick="showScreen('select-screen')">🗺 ステージ選択 (1-1500)</button>
+        <button class="home-btn gacha-btn" onclick="openGachaModal()">🎁 ラッキーガチャ (🪙150)</button>
+        <button class="home-btn shop-theme" onclick="showScreen('shop-screen')">🎨 着せ替えテーマショップ</button>
         <button class="home-btn bonus" onclick="startDailyChallenge()">📅 日替わりチャレンジ (🪙150)</button>
         <button class="home-btn timeattack" onclick="startTimeAttack()">⏱ タイムアタック (3分)</button>
         <button class="home-btn secondary" onclick="showScreen('achieve-screen')">🎖️ 実績・アチーブメント</button>
@@ -559,7 +581,7 @@
     <div id="select-screen" class="screen">
       <div class="screen-header">
         <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
-        <h2 style="font-size: 1.1rem;">ステージ選択 (1-1500)</h2>
+        <h2 style="font-size: 0.95rem;">ステージ選択 (1-1500)</h2>
         <button class="help-icon-btn" onclick="openTutorialModal()">?</button>
       </div>
       <div class="stage-grid-container">
@@ -571,20 +593,30 @@
     <div id="achieve-screen" class="screen">
       <div class="screen-header">
         <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
-        <h2 style="font-size: 1.1rem;">実績・アチーブメント</h2>
-        <div style="width: 34px;"></div>
+        <h2 style="font-size: 0.95rem;">実績・アチーブメント</h2>
+        <div style="width: 28px;"></div>
       </div>
-      <div class="achieve-list" id="achieve-list"></div>
+      <div class="content-list" id="achieve-list"></div>
+    </div>
+
+    <!-- 着せ替えテーマショップ画面 -->
+    <div id="shop-screen" class="screen">
+      <div class="screen-header">
+        <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
+        <h2 style="font-size: 0.95rem;">着せ替えテーマショップ</h2>
+        <div class="coin-display">🪙 <span id="shop-coin-count">100</span></div>
+      </div>
+      <div class="content-list" id="theme-shop-list"></div>
     </div>
 
     <!-- 3. パズルゲーム画面 -->
     <div id="game-screen" class="screen">
       <header>
         <button class="back-btn" onclick="exitGame()">🏠 戻る</button>
-        <div style="font-weight:bold; font-size: 0.95rem; display: flex; align-items: center; gap: 4px;">
+        <div style="font-weight:bold; font-size: 0.85rem; display: flex; align-items: center; gap: 4px;">
           <span id="stage-label">STAGE</span> <span id="stage-display">1</span>
           <span id="hard-tag" class="difficulty-badge" style="display:none;">HARD</span>
-          <button class="help-icon-btn" style="width:24px; height:24px; font-size:0.75rem; margin-left:4px;" onclick="openTutorialModal()">?</button>
+          <button class="help-icon-btn" style="width:20px; height:20px; font-size:0.65rem; margin-left:2px;" onclick="openTutorialModal()">?</button>
         </div>
         <div class="header-status">
           <div id="timer-box" class="timer-display" style="display:none;">⏳ <span id="timer-count">180</span>s</div>
@@ -592,12 +624,14 @@
         </div>
       </header>
 
+      <!-- サポートアイテム＋スキップボタン（値上げ後の価格を表示） -->
       <div class="shop-container">
-        <button class="shop-btn" onclick="undoMove()"><span>↩️ 戻す</span><span>🪙 10</span></button>
-        <button class="shop-btn" onclick="showHint()"><span>💡 ヒント</span><span>🪙 20</span></button>
-        <button class="shop-btn" onclick="stirBottle()"><span>🥄 かき混ぜ</span><span>🪙 25</span></button>
-        <button class="shop-btn" onclick="useShuffle()"><span>🔀 シャッフル</span><span>🪙 50</span></button>
-        <button class="shop-btn" onclick="addExtraBottle()"><span>🧪 ボトル追加</span><span>🪙 100</span></button>
+        <button class="shop-btn" onclick="undoMove()"><span>↩️ 戻す</span><span>🪙60</span></button>
+        <button class="shop-btn" onclick="showHint()"><span>💡 ヒント</span><span>🪙100</span></button>
+        <button class="shop-btn" onclick="stirBottle()"><span>🥄 混ぜ</span><span>🪙120</span></button>
+        <button class="shop-btn" onclick="useShuffle()"><span>🔀 シャッ</span><span>🪙200</span></button>
+        <button class="shop-btn" onclick="addExtraBottle()"><span>🧪 ＋1本</span><span>🪙300</span></button>
+        <button class="shop-btn" onclick="skipStage()" style="background:#e67e22; color:#fff;"><span>⏩ スキップ</span><span>🪙400</span></button>
       </div>
 
       <div class="game-board" id="game-board"></div>
@@ -617,17 +651,27 @@
         </div>
 
         <div class="tutorial-section">
-          <h4>✨ 特殊アイテム・ギミック</h4>
-          <p><strong>🌈 ワイルド豆：</strong> どの色の豆の上にも重ねられ、どの色の豆も上に置けます。<br>
-          <strong>🔑 鍵と 🔒 鍵付きボトル：</strong> 🔑を持っている豆を移動させると 🔒 ボトルが解放されます。<br>
-          <strong>❄️ 氷漬け豆：</strong> 一度タップして氷を割らないと動かせません。<br>
-          <strong>❓ 隠し豆：</strong> 上の豆を移動させると正体が判明します。<br>
-          <strong>💣 爆弾豆：</strong> 手数が0になると爆発して豆が混ざってしまいます！</p>
+          <h4>✨ コインの使い道 (1・2・3)</h4>
+          <p><strong>⏩ 1. スキップ：</strong> 難所を🪙400で強制突破！<br>
+          <strong>🎨 2. テーマショップ：</strong> 貯めたコインでカフェの背景を着せ替え！<br>
+          <strong>🎁 3. ラッキーガチャ：</strong> 🪙150で運試し！大量コインゲットのチャンス！</p>
         </div>
+      </div>
+    </div>
 
-        <div class="tutorial-section">
-          <h4>🛠️ 便利なサポート機能</h4>
-          <p>行き詰まった時は上部のショップアイテム（1手戻す・ヒント・ボトル追加など）を活用しましょう！</p>
+    <!-- 🎁 ガチャモーダル -->
+    <div id="gacha-modal" class="modal-overlay">
+      <div class="tutorial-card" style="text-align: center;">
+        <div class="tutorial-header-top">
+          <div class="tutorial-title">🎁 ラッキーガチャ</div>
+          <button class="tutorial-close-x" onclick="closeGachaModal()">×</button>
+        </div>
+        <div style="padding: 10px 0;">
+          <div style="font-size: 2rem; margin-bottom: 5px;">☕✨</div>
+          <div id="gacha-result-text" style="font-size: 0.85rem; font-weight: bold; margin-bottom: 12px; min-height: 30px;">
+            1回 150コインでガチャを回せます！何が出るかな？
+          </div>
+          <button class="home-btn gacha-btn" style="margin: 0 auto; width: 100%; padding: 8px;" onclick="spinGacha()">回す (🪙150)</button>
         </div>
       </div>
     </div>
@@ -655,6 +699,8 @@
     let bestTimeAttack = parseInt(localStorage.getItem('roasters_best_ta')) || 0;
     let fastestClearTime = parseFloat(localStorage.getItem('roasters_fastest_time')) || 999;
     let isTutorialSeen = localStorage.getItem('roasters_tutorial_seen') === 'true';
+    let currentTheme = localStorage.getItem('roasters_theme') || 'default';
+    let unlockedThemes = JSON.parse(localStorage.getItem('roasters_unlocked_themes')) || ['default'];
 
     let gameMode = 'normal';
     let timerInterval = null;
@@ -681,14 +727,52 @@
       { id: 'speed_15', title: '⚡ スピードスター', desc: '15秒以内でステージクリア', check: () => fastestClearTime <= 15, reward: 200 }
     ];
 
-    function openTutorialModal() {
-      document.getElementById('tutorial-modal').classList.add('active');
+    /* テーマショップ（値上げ後の価格設定） */
+    const THEMES = [
+      { id: 'default', name: '☕ カフェ・ナチュラル', price: 0, class: '' },
+      { id: 'wood', name: '🪵 ウッド・ロースト', price: 750, class: 'theme-wood' },
+      { id: 'midnight', name: '🌙 ミッドナイト・カフェ', price: 1500, class: 'theme-midnight' },
+      { id: 'sakura', name: '🌸 サクラ・ラテ', price: 2000, class: 'theme-sakura' }
+    ];
+
+    function applyTheme(themeId) {
+      currentTheme = themeId;
+      const bodyRoot = document.getElementById('body-root');
+      bodyRoot.className = '';
+      const tObj = THEMES.find(t => t.id === themeId);
+      if (tObj && tObj.class) {
+        bodyRoot.classList.add(tObj.class);
+      }
+      localStorage.setItem('roasters_theme', currentTheme);
+      renderThemeShop();
     }
 
-    function closeTutorialModal() {
-      document.getElementById('tutorial-modal').classList.remove('active');
-      localStorage.setItem('roasters_tutorial_seen', 'true');
-      isTutorialSeen = true;
+    function openTutorialModal() { document.getElementById('tutorial-modal').classList.add('active'); }
+    function closeTutorialModal() { document.getElementById('tutorial-modal').classList.remove('active'); localStorage.setItem('roasters_tutorial_seen', 'true'); isTutorialSeen = true; }
+    
+    function openGachaModal() { document.getElementById('gacha-modal').classList.add('active'); }
+    function closeGachaModal() { document.getElementById('gacha-modal').classList.remove('active'); }
+
+    /* ガチャ処理（150コインに値上げ＆報酬調整） */
+    function spinGacha() {
+      if (coins < 150) return alert("コインが足りません！ (🪙150必要)");
+      updateCoins(-150);
+      const rand = Math.random();
+      let msg = "";
+      if (rand < 0.05) {
+        updateCoins(1000);
+        msg = "超大当たり！✨ 🪙1000コイン獲得！！";
+      } else if (rand < 0.25) {
+        updateCoins(500);
+        msg = "大当たり！🎉 🪙500コイン獲得！";
+      } else if (rand < 0.60) {
+        updateCoins(250);
+        msg = "当たり！😊 🪙250コイン獲得！";
+      } else {
+        updateCoins(100);
+        msg = "参加賞 ☕ 🪙100コイン獲得！";
+      }
+      document.getElementById('gacha-result-text').innerText = msg;
     }
 
     function saveState() {
@@ -700,16 +784,19 @@
       localStorage.setItem('roasters_claimed_achieves', JSON.stringify(claimedAchieves));
       localStorage.setItem('roasters_best_ta', bestTimeAttack);
       localStorage.setItem('roasters_fastest_time', fastestClearTime);
+      localStorage.setItem('roasters_unlocked_themes', JSON.stringify(unlockedThemes));
     }
 
     function showScreen(screenId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       const targetScreen = document.getElementById(screenId);
-      if (targetScreen) {
-        targetScreen.classList.add('active');
-      }
+      if (targetScreen) targetScreen.classList.add('active');
       if (screenId === 'select-screen') renderStageGrid();
       if (screenId === 'achieve-screen') renderAchieveList();
+      if (screenId === 'shop-screen') {
+        document.getElementById('shop-coin-count').innerText = coins;
+        renderThemeShop();
+      }
     }
 
     function continueGame() {
@@ -718,17 +805,12 @@
       document.getElementById('stage-label').innerText = 'STAGE';
       initStage(currentStage);
       showScreen('game-screen');
-      
-      if (!isTutorialSeen) {
-        openTutorialModal();
-      }
+      if (!isTutorialSeen) openTutorialModal();
     }
 
     function startDailyChallenge() {
       const today = new Date().toDateString();
-      if (localStorage.getItem('roasters_last_daily_challenge') === today) {
-        return alert("本日の日替わりチャレンジは挑戦済みです！また明日お越しください！");
-      }
+      if (localStorage.getItem('roasters_last_daily_challenge') === today) return alert("本日の日替わりチャレンジは挑戦済みです！");
       gameMode = 'daily';
       document.getElementById('timer-box').style.display = 'none';
       document.getElementById('stage-label').innerText = 'DAILY';
@@ -764,17 +846,14 @@
       showScreen('game-screen');
     }
 
-    function exitGame() {
-      if (timerInterval) clearInterval(timerInterval);
-      showScreen('home-screen');
-    }
+    function exitGame() { if (timerInterval) clearInterval(timerInterval); showScreen('home-screen'); }
 
     function updateCoins(amount) {
       coins += amount;
-      if (amount > 0) {
-        totalCoinsEarned += amount;
-      }
+      if (amount > 0) totalCoinsEarned += amount;
       document.getElementById('coin-count').innerText = coins;
+      const shopCoinEl = document.getElementById('shop-coin-count');
+      if (shopCoinEl) shopCoinEl.innerText = coins;
       saveState();
     }
 
@@ -789,65 +868,38 @@
       }
     }
 
-    function seededRandom(seed) {
-      let x = Math.sin(seed++) * 10000;
-      return x - Math.floor(x);
-    }
+    function seededRandom(seed) { let x = Math.sin(seed++) * 10000; return x - Math.floor(x); }
 
     function initStage(stageNum) {
-      if (gameMode === 'normal') {
-        currentStage = stageNum;
-        saveState();
-      }
-      
+      if (gameMode === 'normal') { currentStage = stageNum; saveState(); }
       selectedBottleIndex = null;
       history = [];
       stageStartTime = Date.now();
 
-      if (gameMode === 'timeattack') {
-        document.getElementById('stage-display').innerText = `(クリア:${taClearedCount})`;
-      } else if (gameMode === 'daily') {
-        document.getElementById('stage-display').innerText = 'DAY';
-      } else {
-        document.getElementById('stage-display').innerText = stageNum;
-      }
+      if (gameMode === 'timeattack') document.getElementById('stage-display').innerText = `(クリア:${taClearedCount})`;
+      else if (gameMode === 'daily') document.getElementById('stage-display').innerText = 'DAY';
+      else document.getElementById('stage-display').innerText = stageNum;
 
       document.getElementById('coin-count').innerText = coins;
-
       const isHard = stageNum >= 570 && gameMode === 'normal';
       document.getElementById('hard-tag').style.display = isHard ? 'inline-block' : 'none';
 
-      let numColors = 3;
-      if (stageNum > 10) numColors = 4;
-      if (stageNum > 50) numColors = 5;
+      let numColors = stageNum > 50 ? 5 : (stageNum > 10 ? 4 : 3);
       if (stageNum >= 570) numColors = 6;
-
       let blindRate = stageNum >= 570 ? 0.45 : (stageNum >= 5 ? 0.2 : 0);
       let frozenRate = stageNum >= 570 ? 0.35 : (stageNum >= 10 ? 0.15 : 0);
 
       let usedColors = ALL_COLORS.slice(0, numColors);
       let allBeans = [];
-
       usedColors.forEach(color => {
         for (let i = 0; i < BOTTLE_CAPACITY; i++) {
-          allBeans.push({
-            color: color,
-            isBlind: Math.random() < blindRate,
-            isFrozen: Math.random() < frozenRate,
-            bombTimer: (stageNum > 5 && Math.random() < 0.08) ? 6 : null,
-            hasKey: false
-          });
+          allBeans.push({ color: color, isBlind: Math.random() < blindRate, isFrozen: Math.random() < frozenRate, bombTimer: (stageNum > 5 && Math.random() < 0.08) ? 6 : null, hasKey: false });
         }
       });
 
-      if (stageNum > 3) {
-        allBeans[0].color = 'wild';
-      }
-
+      if (stageNum > 3) allBeans[0].color = 'wild';
       let hasLockedBottle = stageNum > 2;
-      if (hasLockedBottle) {
-        allBeans[allBeans.length - 1].hasKey = true;
-      }
+      if (hasLockedBottle) allBeans[allBeans.length - 1].hasKey = true;
 
       let seed = stageNum * 8888;
       for (let i = allBeans.length - 1; i > 0; i--) {
@@ -863,20 +915,10 @@
       }
       
       let emptyCount = stageNum >= 570 ? 1 : 2;
-      for (let e = 0; e < emptyCount; e++) {
-        bottles.push([]);
-        lockedBottles.push(false);
-      }
+      for (let e = 0; e < emptyCount; e++) { bottles.push([]); lockedBottles.push(false); }
+      if (hasLockedBottle) { bottles.push([]); lockedBottles.push(true); }
 
-      if (hasLockedBottle) {
-        bottles.push([]);
-        lockedBottles.push(true);
-      }
-
-      bottles.forEach(b => {
-        if (b.length > 0) b[b.length - 1].isBlind = false;
-      });
-
+      bottles.forEach(b => { if (b.length > 0) b[b.length - 1].isBlind = false; });
       renderBoard();
     }
 
@@ -889,10 +931,7 @@
         const bottleEl = document.createElement('div');
         let isLocked = lockedBottles[bIndex];
         bottleEl.className = `bottle ${selectedBottleIndex === bIndex ? 'selected' : ''} ${isLocked ? 'locked-bottle' : ''}`;
-        
-        bottleEl.onclick = () => {
-          if (!isLocked) handleBottleClick(bIndex);
-        };
+        bottleEl.onclick = () => { if (!isLocked) handleBottleClick(bIndex); };
 
         if (!isLocked) {
           bottle.forEach(bean => {
@@ -901,7 +940,6 @@
             if (bean.isBlind) extraClass += ' blind';
             if (bean.isFrozen) extraClass += ' frozen';
             if (bean.hasKey) extraClass += ' has-key';
-
             beanEl.className = `bean bean-${bean.color} ${extraClass}`;
 
             if (bean.bombTimer !== null && !bean.isBlind) {
@@ -910,11 +948,9 @@
               bombEl.innerText = `💣${bean.bombTimer}`;
               beanEl.appendChild(bombEl);
             }
-
             bottleEl.appendChild(beanEl);
           });
         }
-
         board.appendChild(bottleEl);
       });
     }
@@ -932,12 +968,8 @@
           selectedBottleIndex = index;
         }
       } else {
-        if (selectedBottleIndex === index) {
-          selectedBottleIndex = null;
-        } else {
-          moveBean(selectedBottleIndex, index);
-          selectedBottleIndex = null;
-        }
+        if (selectedBottleIndex === index) selectedBottleIndex = null;
+        else { moveBean(selectedBottleIndex, index); selectedBottleIndex = null; }
       }
       renderBoard();
     }
@@ -945,32 +977,18 @@
     function moveBean(fromIndex, toIndex) {
       const fromBottle = bottles[fromIndex];
       const toBottle = bottles[toIndex];
-
       if (fromBottle.length === 0 || toBottle.length >= BOTTLE_CAPACITY) return;
 
       const movingBean = fromBottle[fromBottle.length - 1];
       const targetTopBean = toBottle[toBottle.length - 1];
-
-      const canMove = toBottle.length === 0 || 
-                      movingBean.color === 'wild' || 
-                      targetTopBean.color === 'wild' || 
-                      targetTopBean.color === movingBean.color;
+      const canMove = toBottle.length === 0 || movingBean.color === 'wild' || targetTopBean.color === 'wild' || targetTopBean.color === movingBean.color;
 
       if (canMove) {
         history.push(JSON.stringify({ bottles: bottles, locked: lockedBottles }));
         movingBean.isBlind = false;
-
-        if (movingBean.hasKey) {
-          movingBean.hasKey = false;
-          unlockKeyBottle();
-        }
-
+        if (movingBean.hasKey) { movingBean.hasKey = false; unlockKeyBottle(); }
         toBottle.push(fromBottle.pop());
-
-        if (fromBottle.length > 0) {
-          fromBottle[fromBottle.length - 1].isBlind = false;
-        }
-
+        if (fromBottle.length > 0) fromBottle[fromBottle.length - 1].isBlind = false;
         updateBombTimers();
         checkWin();
       }
@@ -978,58 +996,41 @@
 
     function unlockKeyBottle() {
       let lockedIdx = lockedBottles.indexOf(true);
-      if (lockedIdx !== -1) {
-        lockedBottles[lockedIdx] = false;
-        alert("🔑 鍵を獲得！封印されたボトルが解放されました！");
-      }
+      if (lockedIdx !== -1) { lockedBottles[lockedIdx] = false; alert("🔑 鍵を獲得！封印されたボトルが解放されました！"); }
     }
 
     function updateBombTimers() {
       let exploded = false;
-      bottles.forEach(b => {
-        b.forEach(bean => {
-          if (bean.bombTimer !== null && bean.bombTimer > 0) {
-            bean.bombTimer--;
-            if (bean.bombTimer === 0) {
-              exploded = true;
-            }
-          }
-        });
-      });
-
-      if (exploded) {
-        alert("💥 💣 爆弾が爆発しました！豆がシャッフルされます！");
-        useShuffle(true);
-      }
+      bottles.forEach(b => { b.forEach(bean => { if (bean.bombTimer !== null && bean.bombTimer > 0) { bean.bombTimer--; if (bean.bombTimer === 0) exploded = true; } }); });
+      if (exploded) { alert("💥 💣 爆弾が爆発しました！豆がシャッフルされます！"); useShuffle(true); }
     }
 
+    /* アイテム価格更新: 1手戻す 🪙60 */
     function undoMove() {
       if (history.length === 0) return alert("戻せる手がありません！");
-      if (coins >= 10) {
-        updateCoins(-10);
+      if (coins >= 60) {
+        updateCoins(-60);
         let lastState = JSON.parse(history.pop());
         bottles = lastState.bottles;
         lockedBottles = lastState.locked;
         renderBoard();
-      } else {
-        alert("コインが足りません！");
-      }
+      } else alert("コインが足りません！ (🪙60必要)");
     }
 
+    /* アイテム価格更新: かき混ぜ 🪙120 */
     function stirBottle() {
       if (selectedBottleIndex === null) return alert("ボトルを先に選択してください！");
-      if (coins >= 25) {
-        updateCoins(-25);
+      if (coins >= 120) {
+        updateCoins(-120);
         bottles[selectedBottleIndex].sort(() => Math.random() - 0.5);
         selectedBottleIndex = null;
         renderBoard();
-      } else {
-        alert("コインが足りません！");
-      }
+      } else alert("コインが足りません！ (🪙120必要)");
     }
 
+    /* アイテム価格更新: ヒント 🪙100 */
     function showHint() {
-      if (coins < 20) return alert("コインが足りません！");
+      if (coins < 100) return alert("コインが足りません！ (🪙100必要)");
       for (let i = 0; i < bottles.length; i++) {
         if (lockedBottles[i]) continue;
         for (let j = 0; j < bottles.length; j++) {
@@ -1038,7 +1039,7 @@
             let srcBean = bottles[i][bottles[i].length - 1];
             let destBean = bottles[j][bottles[j].length - 1];
             if (!srcBean.isFrozen && (bottles[j].length === 0 || srcBean.color === 'wild' || destBean.color === 'wild' || srcBean.color === destBean.color)) {
-              updateCoins(-20);
+              updateCoins(-100);
               selectedBottleIndex = i;
               renderBoard();
               alert(`💡 ヒント: ${i + 1}番目から${j + 1}番目のボトルへ！`);
@@ -1050,30 +1051,41 @@
       alert("移動できる場所がありません！");
     }
 
+    /* アイテム価格更新: シャッフル 🪙200 */
     function useShuffle(isFree = false) {
-      if (isFree || coins >= 50) {
-        if (!isFree) updateCoins(-50);
+      if (isFree || coins >= 200) {
+        if (!isFree) updateCoins(-200);
         let allBeans = bottles.flat();
         allBeans.sort(() => Math.random() - 0.5);
         bottles = bottles.map(() => []);
-        allBeans.forEach((bean, idx) => {
-          bottles[idx % (bottles.length - 1)].push(bean);
-        });
+        allBeans.forEach((bean, idx) => { bottles[idx % (bottles.length - 1)].push(bean); });
         renderBoard();
-      } else {
-        alert("コインが足りません！");
-      }
+      } else alert("コインが足りません！ (🪙200必要)");
     }
 
+    /* アイテム価格更新: ボトル追加 🪙300 */
     function addExtraBottle() {
-      if (coins >= 100) {
-        updateCoins(-100);
+      if (coins >= 300) {
+        updateCoins(-300);
         bottles.push([]);
         lockedBottles.push(false);
         renderBoard();
-      } else {
-        alert("コインが足りません！");
-      }
+      } else alert("コインが足りません！ (🪙300必要)");
+    }
+
+    /* アイテム価格更新: スキップ 🪙400 */
+    function skipStage() {
+      if (gameMode !== 'normal') return alert("通常ステージでのみ使用できます！");
+      if (coins >= 400) {
+        if (confirm("🪙400コインを支払って、このステージをクリア扱いにしますか？")) {
+          updateCoins(-400);
+          alert(`⏩ Stage ${currentStage} をスキップしました！`);
+          if (!clearedStages.includes(currentStage)) clearedStages.push(currentStage);
+          if (currentStage >= maxUnlockedStage && currentStage < TOTAL_STAGES) maxUnlockedStage = currentStage + 1;
+          currentStage++;
+          initStage(currentStage);
+        }
+      } else alert("コインが足りません！ (🪙400必要)");
     }
 
     function checkWin() {
@@ -1081,13 +1093,10 @@
         const isWin = bottles.every(b => b.length === 0 || (b.length === BOTTLE_CAPACITY && b.every(v => (v.color === b[0].color || v.color === 'wild') && !v.isFrozen)));
         if (isWin) {
           const clearTimeSec = parseFloat(((Date.now() - stageStartTime) / 1000).toFixed(1));
-          if (clearTimeSec < fastestClearTime) {
-            fastestClearTime = clearTimeSec;
-          }
+          if (clearTimeSec < fastestClearTime) fastestClearTime = clearTimeSec;
 
           if (gameMode === 'daily') {
-            const today = new Date().toDateString();
-            localStorage.setItem('roasters_last_daily_challenge', today);
+            localStorage.setItem('roasters_last_daily_challenge', new Date().toDateString());
             alert(`🎉 日替わりチャレンジクリア！\n⏱ タイム: ${clearTimeSec}秒\n🪙 +150獲得！`);
             updateCoins(150);
             showScreen('home-screen');
@@ -1096,13 +1105,9 @@
             initStage(100 + taClearedCount);
           } else {
             alert(`🎉 Stage ${currentStage} クリア！\n⏱️ タイム: ${clearTimeSec}秒\n🪙 +50獲得！`);
-            if (!clearedStages.includes(currentStage)) {
-              clearedStages.push(currentStage);
-            }
-            if (currentStage >= maxUnlockedStage && currentStage < TOTAL_STAGES) {
-              maxUnlockedStage = currentStage + 1;
-            }
-            currentStage = currentStage + 1;
+            if (!clearedStages.includes(currentStage)) clearedStages.push(currentStage);
+            if (currentStage >= maxUnlockedStage && currentStage < TOTAL_STAGES) maxUnlockedStage = currentStage + 1;
+            currentStage++;
             updateCoins(50);
             initStage(currentStage);
           }
@@ -1120,7 +1125,6 @@
         let isLocked = i > maxUnlockedStage;
         let isCleared = clearedStages.includes(i);
         let isHard = i >= 570;
-
         let classNames = ['stage-card'];
         if (isLocked) classNames.push('locked');
         if (isCleared) classNames.push('cleared');
@@ -1128,7 +1132,6 @@
 
         card.className = classNames.join(' ');
         card.innerText = isLocked ? '🔒' : i;
-
         if (!isLocked) {
           card.onclick = () => {
             gameMode = 'normal';
@@ -1149,17 +1152,15 @@
       list.innerHTML = '';
       ACHIEVEMENTS.forEach(ach => {
         const item = document.createElement('div');
-        item.className = 'achieve-item';
-        
+        item.className = 'list-item';
         let isAchieved = ach.check();
         let isClaimed = claimedAchieves.includes(ach.id);
-
         item.innerHTML = `
           <div>
-            <div style="font-weight:bold; font-size:0.95rem;">${ach.title}</div>
-            <div style="font-size:0.75rem; color:#666;">${ach.desc} (報酬: 🪙${ach.reward})</div>
+            <div style="font-weight:bold; font-size:0.85rem;">${ach.title}</div>
+            <div style="font-size:0.68rem; opacity:0.7;">${ach.desc} (報酬: 🪙${ach.reward})</div>
           </div>
-          <button class="achieve-claim-btn ${isClaimed ? 'done' : ''}" ${!isAchieved || isClaimed ? 'disabled' : ''} onclick="claimAchieve('${ach.id}', ${ach.reward})">
+          <button class="action-btn ${isClaimed ? 'done' : ''}" ${!isAchieved || isClaimed ? 'disabled' : ''} onclick="claimAchieve('${ach.id}', ${ach.reward})">
             ${isClaimed ? '受取済' : (isAchieved ? '受け取る' : '未達成')}
           </button>
         `;
@@ -1176,7 +1177,47 @@
       }
     }
 
+    function renderThemeShop() {
+      const list = document.getElementById('theme-shop-list');
+      if (!list) return;
+      list.innerHTML = '';
+      THEMES.forEach(theme => {
+        const item = document.createElement('div');
+        item.className = 'list-item';
+        let isUnlocked = unlockedThemes.includes(theme.id);
+        let isCurrent = currentTheme === theme.id;
+
+        let btnHtml = '';
+        if (isCurrent) {
+          btnHtml = `<button class="action-btn active-theme" disabled>使用中</button>`;
+        } else if (isUnlocked) {
+          btnHtml = `<button class="action-btn" onclick="applyTheme('${theme.id}')">変更</button>`;
+        } else {
+          btnHtml = `<button class="action-btn" onclick="buyTheme('${theme.id}', ${theme.price})">購入(🪙${theme.price})</button>`;
+        }
+
+        item.innerHTML = `
+          <div>
+            <div style="font-weight:bold; font-size:0.85rem;">${theme.name}</div>
+            <div style="font-size:0.68rem; opacity:0.7;">${theme.price === 0 ? '初期テーマ' : `価格: 🪙${theme.price}`}</div>
+          </div>
+          ${btnHtml}
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function buyTheme(themeId, price) {
+      if (coins >= price) {
+        updateCoins(-price);
+        unlockedThemes.push(themeId);
+        applyTheme(themeId);
+        alert("🎉 新しいテーマを購入しました！");
+      } else alert("コインが足りません！");
+    }
+
     window.onload = function() {
+      applyTheme(currentTheme);
       showScreen('home-screen');
     };
   </script>
