@@ -687,7 +687,7 @@
         </div>
         <div style="padding: 10px 0;">
           <p style="font-size: 0.75rem; margin-bottom: 10px;">noteで購入したシリアルコードを入力してください</p>
-          <input type="text" id="serial-input" placeholder="例: rs001" autocomplete="off" style="width: 90%; padding: 8px; font-size: 0.9rem; border: 2px solid var(--primary-color); border-radius: 8px; margin-bottom: 12px; text-align: center;">
+          <input type="text" id="serial-input" placeholder="例: rs000" autocomplete="off" style="width: 90%; padding: 8px; font-size: 0.9rem; border: 2px solid var(--primary-color); border-radius: 8px; margin-bottom: 12px; text-align: center; text-transform: lowercase;">
           <button class="home-btn serial-btn" style="margin: 0 auto; width: 100%; padding: 8px;" onclick="submitSerialCode()">認証する</button>
         </div>
       </div>
@@ -731,30 +731,46 @@
     let history = [];
     let selectedBottleIndex = null;
 
-    /* ==========================================
-       note販売用シリアルコード在庫データ（全10個）
-       ========================================== */
-    const VALID_SERIAL_CODES = {
-      // 500コイン（125円）
-      "rs001": { coins: 500, label: "500コインパック" },
-      "rs002": { coins: 500, label: "500コインパック" },
-      "rs003": { coins: 500, label: "500コインパック" },
-      "rs004": { coins: 500, label: "500コインパック" },
-      "rs005": { coins: 500, label: "500コインパック" },
+    /* ========================================================
+       全4プラン（各100個・計400個）の一括判定ロジック
+       - 125円  : rs000 〜 rs099 (500コイン)
+       - 250円  : rs1000 〜 rs1099 (1000コイン)
+       - 625円  : rs200 〜 rs299 (2500コイン)
+       - 1250円 : rsp000 〜 rsp099 (5000コイン)
+       ======================================================== */
+    function parseAndCheckCode(code) {
+      if (!code.startsWith('rs') && !code.startsWith('rsp')) {
+        return { success: false, message: "無効なシリアルコード形式です。" };
+      }
 
-      // 1000コイン（250円）
-      "rs1001": { coins: 1000, label: "1000コインパック" },
-      "rs1002": { coins: 1000, label: "1000コインパック" },
-      "rs1003": { coins: 1000, label: "1000コインパック" },
+      // 1250円プラン (rsp000 〜 rsp099)
+      if (code.startsWith('rsp')) {
+        let num = parseInt(code.replace('rsp', ''), 10);
+        if (num >= 0 && num <= 99) {
+          return { success: true, coins: 5000, label: "5,000コインパック" };
+        }
+      }
 
-      // 2500コイン（625円）
-      "rs201": { coins: 2500, label: "2500コインパック" },
-      "rs202": { coins: 2500, label: "2500コインパック" },
+      // rsで始まるプラン
+      if (code.startsWith('rs')) {
+        let num = parseInt(code.replace('rs', ''), 10);
 
-      // 5000コイン（1250円）
-      "rsp1": { coins: 5000, label: "5000コインパック" },
-      "rsp2": { coins: 5000, label: "5000コインパック" }
-    };
+        // 125円 (rs000 〜 rs099)
+        if (num >= 0 && num <= 99) {
+          return { success: true, coins: 500, label: "500コインパック" };
+        }
+        // 625円 (rs200 〜 rs299)
+        if (num >= 200 && num <= 299) {
+          return { success: true, coins: 2500, label: "2,500コインパック" };
+        }
+        // 250円 (rs1000 〜 rs1099)
+        if (num >= 1000 && num <= 1099) {
+          return { success: true, coins: 1000, label: "1,000コインパック" };
+        }
+      }
+
+      return { success: false, message: "存在しないか、無効なシリアルコードです。" };
+    }
 
     const ACHIEVEMENTS = [
       { id: 'cleared_10', title: '🌱 ビギナーロースター', desc: '10ステージクリア', check: () => clearedStages.length >= 10, reward: 100 },
@@ -803,7 +819,7 @@
       document.getElementById('serial-modal').classList.remove('active'); 
     }
 
-    /* シリアルコード認証の実行処理 */
+    /* シリアルコード認証の実行処理（一括判定＆二重使用防止対応） */
     function submitSerialCode() {
       const inputEl = document.getElementById('serial-input');
       let userCode = inputEl.value.trim().toLowerCase();
@@ -813,26 +829,26 @@
         return;
       }
 
-      // 1. コードが有効リストにあるかチェック
-      if (!VALID_SERIAL_CODES.hasOwnProperty(userCode)) {
-        alert("❌ シリアルコードが正しくありません。");
-        return;
-      }
-
-      // 2. すでに使用済みかチェック
+      // 1. すでに使用済みかチェック
       if (usedSerialCodes.includes(userCode)) {
-        alert("⚠️ このシリアルコードはすでにこの端末で使用済みです！");
+        alert("❌ このシリアルコードはすでにこの端末で使用済みです！");
         return;
       }
 
-      // 3. 報酬を付与して保存
-      const reward = VALID_SERIAL_CODES[userCode];
-      updateCoins(reward.coins);
+      // 2. 一括判定ロジックで確認
+      const result = parseAndCheckCode(userCode);
 
+      if (!result.success) {
+        alert(`❌ ${result.message}`);
+        return;
+      }
+
+      // 3. 報酬を付与して使用済みとして記録
+      updateCoins(result.coins);
       usedSerialCodes.push(userCode);
       localStorage.setItem('roasters_used_serial_codes', JSON.stringify(usedSerialCodes));
 
-      alert(`🎉 認証成功！\n【${reward.label}】の 🪙${reward.coins} コインを獲得しました！`);
+      alert(`🎉 認証成功！\n【${result.label}】の 🪙${result.coins} コインを獲得しました！`);
       closeSerialModal();
     }
 
