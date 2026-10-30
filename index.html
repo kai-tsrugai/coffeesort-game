@@ -126,6 +126,7 @@
     .home-btn.timeattack { background: #d35400; }
     .home-btn.shop-theme { background: #8e44ad; }
     .home-btn.gacha-btn { background: #f1c40f; color: #333; }
+    .home-btn.serial-btn { background: #059669; }
 
     /* --- 2. ステージ選択画面 --- */
     #select-screen, #achieve-screen, #shop-screen {
@@ -450,7 +451,7 @@
       font-size: 0.7rem;
     }
 
-    /* --- 遊び方・チュートリアル・ガチャ --- */
+    /* --- 遊び方・チュートリアル・ガチャ・シリアルコード用モーダル --- */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -569,6 +570,7 @@
         <button class="home-btn secondary" onclick="showScreen('select-screen')">🗺 ステージ選択 (1-1500)</button>
         <button class="home-btn gacha-btn" onclick="openGachaModal()">🎁 ラッキーガチャ (🪙150)</button>
         <button class="home-btn shop-theme" onclick="showScreen('shop-screen')">🎨 着せ替えテーマショップ</button>
+        <button class="home-btn serial-btn" onclick="openSerialModal()">🔑 シリアルコード入力</button>
         <button class="home-btn bonus" onclick="startDailyChallenge()">📅 日替わりチャレンジ (🪙150)</button>
         <button class="home-btn timeattack" onclick="startTimeAttack()">⏱ タイムアタック (3分)</button>
         <button class="home-btn secondary" onclick="showScreen('achieve-screen')">🎖️ 実績・アチーブメント</button>
@@ -624,7 +626,7 @@
         </div>
       </header>
 
-      <!-- サポートアイテム＋スキップボタン（値上げ後の価格を表示） -->
+      <!-- サポートアイテム＋スキップボタン（価格改定後） -->
       <div class="shop-container">
         <button class="shop-btn" onclick="undoMove()"><span>↩️ 戻す</span><span>🪙60</span></button>
         <button class="shop-btn" onclick="showHint()"><span>💡 ヒント</span><span>🪙100</span></button>
@@ -651,10 +653,10 @@
         </div>
 
         <div class="tutorial-section">
-          <h4>✨ コインの使い道 (1・2・3)</h4>
-          <p><strong>⏩ 1. スキップ：</strong> 難所を🪙400で強制突破！<br>
-          <strong>🎨 2. テーマショップ：</strong> 貯めたコインでカフェの背景を着せ替え！<br>
-          <strong>🎁 3. ラッキーガチャ：</strong> 🪙150で運試し！大量コインゲットのチャンス！</p>
+          <h4>✨ コインの使い道</h4>
+          <p><strong>⏩ スキップ：</strong> 難所を🪙400で強制突破！<br>
+          <strong>🎨 テーマショップ：</strong> 貯めたコインでカフェの背景を着せ替え！<br>
+          <strong>🎁 ラッキーガチャ：</strong> 🪙150で運試し！</p>
         </div>
       </div>
     </div>
@@ -672,6 +674,21 @@
             1回 150コインでガチャを回せます！何が出るかな？
           </div>
           <button class="home-btn gacha-btn" style="margin: 0 auto; width: 100%; padding: 8px;" onclick="spinGacha()">回す (🪙150)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔑 シリアルコード入力モーダル -->
+    <div id="serial-modal" class="modal-overlay">
+      <div class="tutorial-card" style="text-align: center;">
+        <div class="tutorial-header-top">
+          <div class="tutorial-title">🔑 シリアルコード入力</div>
+          <button class="tutorial-close-x" onclick="closeSerialModal()">×</button>
+        </div>
+        <div style="padding: 10px 0;">
+          <p style="font-size: 0.75rem; margin-bottom: 10px;">noteで購入したシリアルコードを入力してください</p>
+          <input type="text" id="serial-input" placeholder="例: rs001" autocomplete="off" style="width: 90%; padding: 8px; font-size: 0.9rem; border: 2px solid var(--primary-color); border-radius: 8px; margin-bottom: 12px; text-align: center;">
+          <button class="home-btn serial-btn" style="margin: 0 auto; width: 100%; padding: 8px;" onclick="submitSerialCode()">認証する</button>
         </div>
       </div>
     </div>
@@ -701,6 +718,7 @@
     let isTutorialSeen = localStorage.getItem('roasters_tutorial_seen') === 'true';
     let currentTheme = localStorage.getItem('roasters_theme') || 'default';
     let unlockedThemes = JSON.parse(localStorage.getItem('roasters_unlocked_themes')) || ['default'];
+    let usedSerialCodes = JSON.parse(localStorage.getItem('roasters_used_serial_codes')) || [];
 
     let gameMode = 'normal';
     let timerInterval = null;
@@ -712,6 +730,31 @@
     let lockedBottles = [];
     let history = [];
     let selectedBottleIndex = null;
+
+    /* ==========================================
+       note販売用シリアルコード在庫データ（全10個）
+       ========================================== */
+    const VALID_SERIAL_CODES = {
+      // 500コイン（125円）
+      "rs001": { coins: 500, label: "500コインパック" },
+      "rs002": { coins: 500, label: "500コインパック" },
+      "rs003": { coins: 500, label: "500コインパック" },
+      "rs004": { coins: 500, label: "500コインパック" },
+      "rs005": { coins: 500, label: "500コインパック" },
+
+      // 1000コイン（250円）
+      "rs1001": { coins: 1000, label: "1000コインパック" },
+      "rs1002": { coins: 1000, label: "1000コインパック" },
+      "rs1003": { coins: 1000, label: "1000コインパック" },
+
+      // 2500コイン（625円）
+      "rs201": { coins: 2500, label: "2500コインパック" },
+      "rs202": { coins: 2500, label: "2500コインパック" },
+
+      // 5000コイン（1250円）
+      "rsp1": { coins: 5000, label: "5000コインパック" },
+      "rsp2": { coins: 5000, label: "5000コインパック" }
+    };
 
     const ACHIEVEMENTS = [
       { id: 'cleared_10', title: '🌱 ビギナーロースター', desc: '10ステージクリア', check: () => clearedStages.length >= 10, reward: 100 },
@@ -727,7 +770,6 @@
       { id: 'speed_15', title: '⚡ スピードスター', desc: '15秒以内でステージクリア', check: () => fastestClearTime <= 15, reward: 200 }
     ];
 
-    /* テーマショップ（値上げ後の価格設定） */
     const THEMES = [
       { id: 'default', name: '☕ カフェ・ナチュラル', price: 0, class: '' },
       { id: 'wood', name: '🪵 ウッド・ロースト', price: 750, class: 'theme-wood' },
@@ -753,7 +795,47 @@
     function openGachaModal() { document.getElementById('gacha-modal').classList.add('active'); }
     function closeGachaModal() { document.getElementById('gacha-modal').classList.remove('active'); }
 
-    /* ガチャ処理（150コインに値上げ＆報酬調整） */
+    function openSerialModal() { 
+      document.getElementById('serial-modal').classList.add('active'); 
+      document.getElementById('serial-input').value = '';
+    }
+    function closeSerialModal() { 
+      document.getElementById('serial-modal').classList.remove('active'); 
+    }
+
+    /* シリアルコード認証の実行処理 */
+    function submitSerialCode() {
+      const inputEl = document.getElementById('serial-input');
+      let userCode = inputEl.value.trim().toLowerCase();
+
+      if (!userCode) {
+        alert("⚠️ シリアルコードを入力してください。");
+        return;
+      }
+
+      // 1. コードが有効リストにあるかチェック
+      if (!VALID_SERIAL_CODES.hasOwnProperty(userCode)) {
+        alert("❌ シリアルコードが正しくありません。");
+        return;
+      }
+
+      // 2. すでに使用済みかチェック
+      if (usedSerialCodes.includes(userCode)) {
+        alert("⚠️ このシリアルコードはすでにこの端末で使用済みです！");
+        return;
+      }
+
+      // 3. 報酬を付与して保存
+      const reward = VALID_SERIAL_CODES[userCode];
+      updateCoins(reward.coins);
+
+      usedSerialCodes.push(userCode);
+      localStorage.setItem('roasters_used_serial_codes', JSON.stringify(usedSerialCodes));
+
+      alert(`🎉 認証成功！\n【${reward.label}】の 🪙${reward.coins} コインを獲得しました！`);
+      closeSerialModal();
+    }
+
     function spinGacha() {
       if (coins < 150) return alert("コインが足りません！ (🪙150必要)");
       updateCoins(-150);
@@ -1005,7 +1087,6 @@
       if (exploded) { alert("💥 💣 爆弾が爆発しました！豆がシャッフルされます！"); useShuffle(true); }
     }
 
-    /* アイテム価格更新: 1手戻す 🪙60 */
     function undoMove() {
       if (history.length === 0) return alert("戻せる手がありません！");
       if (coins >= 60) {
@@ -1017,7 +1098,6 @@
       } else alert("コインが足りません！ (🪙60必要)");
     }
 
-    /* アイテム価格更新: かき混ぜ 🪙120 */
     function stirBottle() {
       if (selectedBottleIndex === null) return alert("ボトルを先に選択してください！");
       if (coins >= 120) {
@@ -1028,7 +1108,6 @@
       } else alert("コインが足りません！ (🪙120必要)");
     }
 
-    /* アイテム価格更新: ヒント 🪙100 */
     function showHint() {
       if (coins < 100) return alert("コインが足りません！ (🪙100必要)");
       for (let i = 0; i < bottles.length; i++) {
@@ -1051,7 +1130,6 @@
       alert("移動できる場所がありません！");
     }
 
-    /* アイテム価格更新: シャッフル 🪙200 */
     function useShuffle(isFree = false) {
       if (isFree || coins >= 200) {
         if (!isFree) updateCoins(-200);
@@ -1063,7 +1141,6 @@
       } else alert("コインが足りません！ (🪙200必要)");
     }
 
-    /* アイテム価格更新: ボトル追加 🪙300 */
     function addExtraBottle() {
       if (coins >= 300) {
         updateCoins(-300);
@@ -1073,7 +1150,6 @@
       } else alert("コインが足りません！ (🪙300必要)");
     }
 
-    /* アイテム価格更新: スキップ 🪙400 */
     function skipStage() {
       if (gameMode !== 'normal') return alert("通常ステージでのみ使用できます！");
       if (coins >= 400) {
