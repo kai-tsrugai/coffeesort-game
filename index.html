@@ -17,6 +17,8 @@
     body.theme-wood { --bg-color: #3e2723; --card-bg: #4e342e; --primary-color: #d7ccc8; --accent-color: #ffb74d; --text-color: #fff; }
     body.theme-midnight { --bg-color: #1a1a2e; --card-bg: #16213e; --primary-color: #e94560; --accent-color: #0f3460; --text-color: #fff; }
     body.theme-sakura { --bg-color: #fff0f5; --card-bg: #ffe4e1; --primary-color: #c71585; --accent-color: #ff69b4; --text-color: #4a2c11; }
+    body.theme-gold { --bg-color: #2c220f; --card-bg: #3d3014; --primary-color: #f1c40f; --accent-color: #f39c12; --text-color: #fff; }
+    body.theme-galaxy { --bg-color: #0b0c10; --card-bg: #1f2833; --primary-color: #66fcf1; --accent-color: #45a29e; --text-color: #fff; }
 
     * {
       box-sizing: border-box;
@@ -34,7 +36,6 @@
       transition: background-color 0.3s;
     }
 
-    /* スマホで絶対に崩れないアプリ全体ラッパー */
     #app-wrapper {
       width: 100%;
       max-width: 480px;
@@ -63,7 +64,6 @@
       display: flex;
     }
 
-    /* --- 1. ホーム画面 (コンパクト) --- */
     #home-screen {
       justify-content: flex-start;
       padding: 10px 10px 5px 10px;
@@ -128,7 +128,6 @@
     .home-btn.gacha-btn { background: #f1c40f; color: #333; }
     .home-btn.serial-btn { background: #059669; }
 
-    /* --- 2. ステージ選択画面 --- */
     #select-screen, #achieve-screen, #shop-screen {
       padding: 10px 10px 5px 10px;
     }
@@ -227,7 +226,6 @@
       cursor: not-allowed;
     }
 
-    /* --- アチーブメント & テーマショップ --- */
     .content-list {
       width: 100%;
       display: flex;
@@ -270,7 +268,6 @@
       cursor: default;
     }
 
-    /* --- 3. パズルゲーム画面 --- */
     #game-screen {
       justify-content: flex-start;
       overflow-y: auto;
@@ -322,7 +319,6 @@
       margin-left: 2px;
     }
 
-    /* ゲーム内ショップ（価格改定後） */
     .shop-container {
       width: 100%;
       display: grid;
@@ -451,7 +447,6 @@
       font-size: 0.7rem;
     }
 
-    /* --- 遊び方・チュートリアル・ガチャ・シリアルコード用モーダル --- */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -534,7 +529,6 @@
       opacity: 0.9;
     }
 
-    /* 忍者AdMax 常駐広告エリア (50px固定) */
     .fixed-bottom-ad {
       width: 100%;
       height: 50px;
@@ -551,7 +545,6 @@
 </head>
 <body id="body-root">
 
-  <!-- スマホ対応ラッパー -->
   <div id="app-wrapper">
 
     <!-- 1. ホーム画面 -->
@@ -560,7 +553,6 @@
       <div class="subtitle">〜やり込みパズル〜</div>
       
       <div class="menu-scroll-container">
-        <!-- お問い合わせ用メールアドレス -->
         <div style="margin-bottom: 6px; padding: 6px 8px; background: rgba(255,255,255,0.7); border-radius: 10px; width: 85%; max-width: 280px; font-size: 0.68rem; text-align: center; border: 1px dashed var(--primary-color); flex-shrink: 0; color: #333;">
           <div style="font-weight: bold; color: var(--primary-color); margin-bottom: 1px;">お問い合わせ（レビュー）用アドレス</div>
           <a href="mailto:kai2026.shop@gmail.com" style="color: var(--accent-color); text-decoration: none; font-weight: bold; word-break: break-all;">kai2026.shop@gmail.com</a>
@@ -571,7 +563,7 @@
         <button class="home-btn gacha-btn" onclick="openGachaModal()">🎁 ラッキーガチャ (🪙150)</button>
         <button class="home-btn shop-theme" onclick="showScreen('shop-screen')">🎨 着せ替えテーマショップ</button>
         <button class="home-btn serial-btn" onclick="openSerialModal()">🔑 シリアルコード入力</button>
-        <button class="home-btn bonus" onclick="startDailyChallenge()">📅 日替わりチャレンジ (🪙150)</button>
+        <button class="home-btn bonus" onclick="startDailyChallenge()">📅 日替わりチャレンジ (🪙100)</button>
         <button class="home-btn timeattack" onclick="startTimeAttack()">⏱ タイムアタック (3分)</button>
         <button class="home-btn secondary" onclick="showScreen('achieve-screen')">🎖️ 実績・アチーブメント</button>
         <button class="home-btn bonus" onclick="claimDailyBonus()">🎁 デイリーボーナス</button>
@@ -626,14 +618,14 @@
         </div>
       </header>
 
-      <!-- サポートアイテム＋スキップボタン（価格改定後） -->
+      <!-- サポートアイテム＋スキップボタン（価格改定後：+50〜200増額） -->
       <div class="shop-container">
-        <button class="shop-btn" onclick="undoMove()"><span>↩️ 戻す</span><span>🪙60</span></button>
-        <button class="shop-btn" onclick="showHint()"><span>💡 ヒント</span><span>🪙100</span></button>
-        <button class="shop-btn" onclick="stirBottle()"><span>🥄 混ぜ</span><span>🪙120</span></button>
-        <button class="shop-btn" onclick="useShuffle()"><span>🔀 シャッ</span><span>🪙200</span></button>
-        <button class="shop-btn" onclick="addExtraBottle()"><span>🧪 ＋1本</span><span>🪙300</span></button>
-        <button class="shop-btn" onclick="skipStage()" style="background:#e67e22; color:#fff;"><span>⏩ スキップ</span><span>🪙400</span></button>
+        <button class="shop-btn" onclick="undoMove()"><span>↩️ 戻す</span><span>🪙150</span></button>
+        <button class="shop-btn" onclick="showHint()"><span>💡 ヒント</span><span>🪙250</span></button>
+        <button class="shop-btn" onclick="stirBottle()"><span>🥄 混ぜ</span><span>🪙300</span></button>
+        <button class="shop-btn" onclick="useShuffle()"><span>🔀 シャッ</span><span>🪙400</span></button>
+        <button class="shop-btn" onclick="addExtraBottle()"><span>🧪 ＋1本</span><span>🪙500</span></button>
+        <button class="shop-btn" onclick="skipStage()" style="background:#e67e22; color:#fff;"><span>⏩ スキップ</span><span>🪙600</span></button>
       </div>
 
       <div class="game-board" id="game-board"></div>
@@ -654,8 +646,8 @@
 
         <div class="tutorial-section">
           <h4>✨ コインの使い道</h4>
-          <p><strong>⏩ スキップ：</strong> 難所を🪙400で強制突破！<br>
-          <strong>🎨 テーマショップ：</strong> 貯めたコインでカフェの背景を着せ替え！<br>
+          <p><strong>⏩ スキップ：</strong> 難所を🪙600で強制突破！<br>
+          <strong>🎨 テーマショップ：</strong> 貯めたコインで高級カフェ背景に着せ替え！（最大🪙10,000）<br>
           <strong>🎁 ラッキーガチャ：</strong> 🪙150で運試し！</p>
         </div>
       </div>
@@ -693,7 +685,6 @@
       </div>
     </div>
 
-    <!-- 忍者AdMax 常駐広告 (50px固定) -->
     <div class="fixed-bottom-ad">
       <!-- admax -->
       <script src="https://adm.shinobi.jp/s/5235ee24a3bda74d9a1d05e10baf3d94"></script>
@@ -731,19 +722,12 @@
     let history = [];
     let selectedBottleIndex = null;
 
-    /* ========================================================
-       全4プラン（各100個・計400個）の一括判定ロジック
-       - 125円  : rs000 〜 rs099 (500コイン)
-       - 250円  : rs1000 〜 rs1099 (1000コイン)
-       - 625円  : rs200 〜 rs299 (2500コイン)
-       - 1250円 : rsp000 〜 rsp099 (5000コイン)
-       ======================================================== */
+    /* 全4プラン（各100個・計400個）の一括判定ロジック */
     function parseAndCheckCode(code) {
       if (!code.startsWith('rs') && !code.startsWith('rsp')) {
         return { success: false, message: "無効なシリアルコード形式です。" };
       }
 
-      // 1250円プラン (rsp000 〜 rsp099)
       if (code.startsWith('rsp')) {
         let num = parseInt(code.replace('rsp', ''), 10);
         if (num >= 0 && num <= 99) {
@@ -751,19 +735,14 @@
         }
       }
 
-      // rsで始まるプラン
       if (code.startsWith('rs')) {
         let num = parseInt(code.replace('rs', ''), 10);
-
-        // 125円 (rs000 〜 rs099)
         if (num >= 0 && num <= 99) {
           return { success: true, coins: 500, label: "500コインパック" };
         }
-        // 625円 (rs200 〜 rs299)
         if (num >= 200 && num <= 299) {
           return { success: true, coins: 2500, label: "2,500コインパック" };
         }
-        // 250円 (rs1000 〜 rs1099)
         if (num >= 1000 && num <= 1099) {
           return { success: true, coins: 1000, label: "1,000コインパック" };
         }
@@ -773,24 +752,27 @@
     }
 
     const ACHIEVEMENTS = [
-      { id: 'cleared_10', title: '🌱 ビギナーロースター', desc: '10ステージクリア', check: () => clearedStages.length >= 10, reward: 100 },
-      { id: 'cleared_50', title: '☕ 一人前マスター', desc: '50ステージクリア', check: () => clearedStages.length >= 50, reward: 200 },
-      { id: 'cleared_100', title: '🏪 人気カフェ店主', desc: '100ステージクリア', check: () => clearedStages.length >= 100, reward: 300 },
-      { id: 'cleared_300', title: '🏆 ベテラン焙煎士', desc: '300ステージクリア', check: () => clearedStages.length >= 300, reward: 500 },
-      { id: 'cleared_500', title: '✨ 焙煎の極み', desc: '500ステージクリア', check: () => clearedStages.length >= 500, reward: 800 },
-      { id: 'cleared_1000', title: '👑 カフェ帝国建設', desc: '1000ステージクリア', check: () => clearedStages.length >= 1000, reward: 1500 },
-      { id: 'cleared_1500', title: '🌌 伝説のグラマスター', desc: '全1500ステージ制覇！', check: () => clearedStages.length >= 1500, reward: 3000 },
-      { id: 'cleared_570', title: '🔥 HARDモード突破', desc: '570ステージ(HARD)達成', check: () => maxUnlockedStage > 570, reward: 500 },
-      { id: 'coins_500', title: '💰 貯金上手', desc: '累計500コイン獲得', check: () => totalCoinsEarned >= 500, reward: 150 },
-      { id: 'coins_2000', title: '💎 大富豪ロースター', desc: '累計2000コイン獲得', check: () => totalCoinsEarned >= 2000, reward: 500 },
-      { id: 'speed_15', title: '⚡ スピードスター', desc: '15秒以内でステージクリア', check: () => fastestClearTime <= 15, reward: 200 }
+      { id: 'cleared_10', title: '🌱 ビギナーロースター', desc: '10ステージクリア', check: () => clearedStages.length >= 10, reward: 30 },
+      { id: 'cleared_50', title: '☕ 一人前マスター', desc: '50ステージクリア', check: () => clearedStages.length >= 50, reward: 50 },
+      { id: 'cleared_100', title: '🏪 人気カフェ店主', desc: '100ステージクリア', check: () => clearedStages.length >= 100, reward: 80 },
+      { id: 'cleared_300', title: '🏆 ベテラン焙煎士', desc: '300ステージクリア', check: () => clearedStages.length >= 300, reward: 150 },
+      { id: 'cleared_500', title: '✨ 焙煎の極み', desc: '500ステージクリア', check: () => clearedStages.length >= 500, reward: 250 },
+      { id: 'cleared_1000', title: '👑 カフェ帝国建設', desc: '1000ステージクリア', check: () => clearedStages.length >= 1000, reward: 400 },
+      { id: 'cleared_1500', title: '🌌 伝説のグラマスター', desc: '全1500ステージ制覇！', check: () => clearedStages.length >= 1500, reward: 800 },
+      { id: 'cleared_570', title: '🔥 HARDモード突破', desc: '570ステージ(HARD)達成', check: () => maxUnlockedStage > 570, reward: 150 },
+      { id: 'coins_500', title: '💰 貯金上手', desc: '累計500コイン獲得', check: () => totalCoinsEarned >= 500, reward: 50 },
+      { id: 'coins_2000', title: '💎 大富豪ロースター', desc: '累計2000コイン獲得', check: () => totalCoinsEarned >= 2000, reward: 150 },
+      { id: 'speed_15', title: '⚡ スピードスター', desc: '15秒以内でステージクリア', check: () => fastestClearTime <= 15, reward: 60 }
     ];
 
+    /* 着せ替えテーマの拡充（250〜10000の価格帯に調整） */
     const THEMES = [
       { id: 'default', name: '☕ カフェ・ナチュラル', price: 0, class: '' },
-      { id: 'wood', name: '🪵 ウッド・ロースト', price: 750, class: 'theme-wood' },
-      { id: 'midnight', name: '🌙 ミッドナイト・カフェ', price: 1500, class: 'theme-midnight' },
-      { id: 'sakura', name: '🌸 サクラ・ラテ', price: 2000, class: 'theme-sakura' }
+      { id: 'wood', name: '🪵 ウッド・ロースト', price: 250, class: 'theme-wood' },
+      { id: 'midnight', name: '🌙 ミッドナイト・カフェ', price: 1000, class: 'theme-midnight' },
+      { id: 'sakura', name: '🌸 サクラ・ラテ', price: 2500, class: 'theme-sakura' },
+      { id: 'gold', name: '👑 プレミアム・ゴールド', price: 5000, class: 'theme-gold' },
+      { id: 'galaxy', name: '🌌 ギャラクシー・ロースター', price: 10000, class: 'theme-galaxy' }
     ];
 
     function applyTheme(themeId) {
@@ -819,7 +801,6 @@
       document.getElementById('serial-modal').classList.remove('active'); 
     }
 
-    /* シリアルコード認証の実行処理（一括判定＆二重使用防止対応） */
     function submitSerialCode() {
       const inputEl = document.getElementById('serial-input');
       let userCode = inputEl.value.trim().toLowerCase();
@@ -829,13 +810,11 @@
         return;
       }
 
-      // 1. すでに使用済みかチェック
       if (usedSerialCodes.includes(userCode)) {
         alert("❌ このシリアルコードはすでにこの端末で使用済みです！");
         return;
       }
 
-      // 2. 一括判定ロジックで確認
       const result = parseAndCheckCode(userCode);
 
       if (!result.success) {
@@ -843,7 +822,6 @@
         return;
       }
 
-      // 3. 報酬を付与して使用済みとして記録
       updateCoins(result.coins);
       usedSerialCodes.push(userCode);
       localStorage.setItem('roasters_used_serial_codes', JSON.stringify(usedSerialCodes));
@@ -852,23 +830,24 @@
       closeSerialModal();
     }
 
+    /* ガチャの獲得コイン量を減額調整 */
     function spinGacha() {
       if (coins < 150) return alert("コインが足りません！ (🪙150必要)");
       updateCoins(-150);
       const rand = Math.random();
       let msg = "";
       if (rand < 0.05) {
-        updateCoins(1000);
-        msg = "超大当たり！✨ 🪙1000コイン獲得！！";
+        updateCoins(300);
+        msg = "超大当たり！✨ 🪙300コイン獲得！！";
       } else if (rand < 0.25) {
-        updateCoins(500);
-        msg = "大当たり！🎉 🪙500コイン獲得！";
+        updateCoins(150);
+        msg = "大当たり！🎉 🪙150コイン獲得！";
       } else if (rand < 0.60) {
-        updateCoins(250);
-        msg = "当たり！😊 🪙250コイン獲得！";
+        updateCoins(70);
+        msg = "当たり！😊 🪙70コイン獲得！";
       } else {
-        updateCoins(100);
-        msg = "参加賞 ☕ 🪙100コイン獲得！";
+        updateCoins(30);
+        msg = "参加賞 ☕ 🪙30コイン獲得！";
       }
       document.getElementById('gacha-result-text').innerText = msg;
     }
@@ -955,14 +934,15 @@
       saveState();
     }
 
+    /* デイリーボーナス減額 (100 -> 30) */
     function claimDailyBonus() {
       const today = new Date().toDateString();
       if (localStorage.getItem('roasters_last_bonus') === today) {
         alert("本日のデイリーボーナスは受取済みです！");
       } else {
         localStorage.setItem('roasters_last_bonus', today);
-        updateCoins(100);
-        alert("🎁 デイリーボーナス！100コイン獲得！");
+        updateCoins(30);
+        alert("🎁 デイリーボーナス！30コイン獲得！");
       }
     }
 
@@ -1103,29 +1083,30 @@
       if (exploded) { alert("💥 💣 爆弾が爆発しました！豆がシャッフルされます！"); useShuffle(true); }
     }
 
+    /* サポートアイテム使用時の消費コスト引き上げ対応 */
     function undoMove() {
       if (history.length === 0) return alert("戻せる手がありません！");
-      if (coins >= 60) {
-        updateCoins(-60);
+      if (coins >= 150) {
+        updateCoins(-150);
         let lastState = JSON.parse(history.pop());
         bottles = lastState.bottles;
         lockedBottles = lastState.locked;
         renderBoard();
-      } else alert("コインが足りません！ (🪙60必要)");
+      } else alert("コインが足りません！ (🪙150必要)");
     }
 
     function stirBottle() {
       if (selectedBottleIndex === null) return alert("ボトルを先に選択してください！");
-      if (coins >= 120) {
-        updateCoins(-120);
+      if (coins >= 300) {
+        updateCoins(-300);
         bottles[selectedBottleIndex].sort(() => Math.random() - 0.5);
         selectedBottleIndex = null;
         renderBoard();
-      } else alert("コインが足りません！ (🪙120必要)");
+      } else alert("コインが足りません！ (🪙300必要)");
     }
 
     function showHint() {
-      if (coins < 100) return alert("コインが足りません！ (🪙100必要)");
+      if (coins < 250) return alert("コインが足りません！ (🪙250必要)");
       for (let i = 0; i < bottles.length; i++) {
         if (lockedBottles[i]) continue;
         for (let j = 0; j < bottles.length; j++) {
@@ -1134,7 +1115,7 @@
             let srcBean = bottles[i][bottles[i].length - 1];
             let destBean = bottles[j][bottles[j].length - 1];
             if (!srcBean.isFrozen && (bottles[j].length === 0 || srcBean.color === 'wild' || destBean.color === 'wild' || srcBean.color === destBean.color)) {
-              updateCoins(-100);
+              updateCoins(-250);
               selectedBottleIndex = i;
               renderBoard();
               alert(`💡 ヒント: ${i + 1}番目から${j + 1}番目のボトルへ！`);
@@ -1147,37 +1128,37 @@
     }
 
     function useShuffle(isFree = false) {
-      if (isFree || coins >= 200) {
-        if (!isFree) updateCoins(-200);
+      if (isFree || coins >= 400) {
+        if (!isFree) updateCoins(-400);
         let allBeans = bottles.flat();
         allBeans.sort(() => Math.random() - 0.5);
         bottles = bottles.map(() => []);
         allBeans.forEach((bean, idx) => { bottles[idx % (bottles.length - 1)].push(bean); });
         renderBoard();
-      } else alert("コインが足りません！ (🪙200必要)");
+      } else alert("コインが足りません！ (🪙400必要)");
     }
 
     function addExtraBottle() {
-      if (coins >= 300) {
-        updateCoins(-300);
+      if (coins >= 500) {
+        updateCoins(-500);
         bottles.push([]);
         lockedBottles.push(false);
         renderBoard();
-      } else alert("コインが足りません！ (🪙300必要)");
+      } else alert("コインが足りません！ (🪙500必要)");
     }
 
     function skipStage() {
       if (gameMode !== 'normal') return alert("通常ステージでのみ使用できます！");
-      if (coins >= 400) {
-        if (confirm("🪙400コインを支払って、このステージをクリア扱いにしますか？")) {
-          updateCoins(-400);
+      if (coins >= 600) {
+        if (confirm("🪙600コインを支払って、このステージをクリア扱いにしますか？")) {
+          updateCoins(-600);
           alert(`⏩ Stage ${currentStage} をスキップしました！`);
           if (!clearedStages.includes(currentStage)) clearedStages.push(currentStage);
           if (currentStage >= maxUnlockedStage && currentStage < TOTAL_STAGES) maxUnlockedStage = currentStage + 1;
           currentStage++;
           initStage(currentStage);
         }
-      } else alert("コインが足りません！ (🪙400必要)");
+      } else alert("コインが足りません！ (🪙600必要)");
     }
 
     function checkWin() {
@@ -1189,18 +1170,19 @@
 
           if (gameMode === 'daily') {
             localStorage.setItem('roasters_last_daily_challenge', new Date().toDateString());
-            alert(`🎉 日替わりチャレンジクリア！\n⏱ タイム: ${clearTimeSec}秒\n🪙 +150獲得！`);
-            updateCoins(150);
+            alert(`🎉 日替わりチャレンジクリア！\n⏱ タイム: ${clearTimeSec}秒\n🪙 +50獲得！`);
+            updateCoins(50);
             showScreen('home-screen');
           } else if (gameMode === 'timeattack') {
             taClearedCount++;
             initStage(100 + taClearedCount);
           } else {
-            alert(`🎉 Stage ${currentStage} クリア！\n⏱️ タイム: ${clearTimeSec}秒\n🪙 +50獲得！`);
+            /* 通常ステージクリア報酬を減額 (50 -> 10) */
+            alert(`🎉 Stage ${currentStage} クリア！\n⏱️ タイム: ${clearTimeSec}秒\n🪙 +10獲得！`);
             if (!clearedStages.includes(currentStage)) clearedStages.push(currentStage);
             if (currentStage >= maxUnlockedStage && currentStage < TOTAL_STAGES) maxUnlockedStage = currentStage + 1;
             currentStage++;
-            updateCoins(50);
+            updateCoins(10);
             initStage(currentStage);
           }
         }
