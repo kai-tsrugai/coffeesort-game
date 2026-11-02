@@ -447,7 +447,7 @@
       font-size: 0.7rem;
     }
 
-    /* ── 右下のこっそり通知トースト（下部50px広告の直上に配置） ── */
+    /* ── 右下のこっそり通知トースト（下部50px広告の直上に配置、広告に隠れない設計） ── */
     #toast-container {
       position: fixed;
       bottom: 60px;
@@ -758,7 +758,7 @@
     let history = [];
     let selectedBottleIndex = null;
 
-    /* 右下にこっそり通知を表示するトースト関数 */
+    /* 右下のこっそり通知を表示するトースト関数（広告の上に配置） */
     function showToast(message) {
       const container = document.getElementById('toast-container');
       if (!container) return;
@@ -1198,7 +1198,6 @@
       } else showToast("コイン不足 (🪙500)");
     }
 
-    /* 誤操作防止のため、スキップ時のみ一回だけ標準の確認ダイアログを残しています */
     function skipStage() {
       if (gameMode !== 'normal') return;
       if (coins >= 600) {
