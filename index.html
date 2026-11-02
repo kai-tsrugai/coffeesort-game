@@ -447,6 +447,37 @@
       font-size: 0.7rem;
     }
 
+    /* ── 右下のこっそり通知トースト ── */
+    #toast-container {
+      position: fixed;
+      bottom: 60px;
+      right: 12px;
+      z-index: 20000;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      pointer-events: none;
+    }
+    .toast-msg {
+      background: rgba(74, 44, 17, 0.92);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      animation: fadeInOut 2.2s forwards;
+      max-width: 220px;
+      word-break: break-all;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(10px); }
+      15% { opacity: 1; transform: translateY(0); }
+      80% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-5px); }
+    }
+
     .modal-overlay {
       display: none;
       position: fixed;
@@ -525,6 +556,7 @@
 
     .tutorial-section p {
       font-size: 0.72rem;
+-webkit-line-clamp: unset;
       line-height: 1.3;
       opacity: 0.9;
     }
@@ -544,6 +576,9 @@
   </style>
 </head>
 <body id="body-root">
+
+  <!-- 右下通知トーストを表示するコンテナ -->
+  <div id="toast-container"></div>
 
   <div id="app-wrapper">
 
@@ -618,7 +653,7 @@
         </div>
       </header>
 
-      <!-- サポートアイテム＋スキップボタン（価格改定後：+50〜200増額） -->
+      <!-- サポートアイテム＋スキップボタン -->
       <div class="shop-container">
         <button class="shop-btn" onclick="undoMove()"><span>↩️ 戻す</span><span>🪙150</span></button>
         <button class="shop-btn" onclick="showHint()"><span>💡 ヒント</span><span>🪙250</span></button>
@@ -722,6 +757,19 @@
     let history = [];
     let selectedBottleIndex = null;
 
+    /* 右下にこっそり通知を表示するトースト関数 */
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'toast-msg';
+      toast.innerText = message;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, 2200);
+    }
+
     /* 全4プラン（各100個・計400個）の一括判定ロジック */
     function parseAndCheckCode(code) {
       if (!code.startsWith('rs') && !code.startsWith('rsp')) {
@@ -765,7 +813,6 @@
       { id: 'speed_15', title: '⚡ スピードスター', desc: '15秒以内でステージクリア', check: () => fastestClearTime <= 15, reward: 60 }
     ];
 
-    /* 着せ替えテーマの拡充（250〜10000の価格帯に調整） */
     const THEMES = [
       { id: 'default', name: '☕ カフェ・ナチュラル', price: 0, class: '' },
       { id: 'wood', name: '🪵 ウッド・ロースト', price: 250, class: 'theme-wood' },
@@ -806,19 +853,19 @@
       let userCode = inputEl.value.trim().toLowerCase();
 
       if (!userCode) {
-        alert("⚠️ シリアルコードを入力してください。");
+        showToast("⚠️ コードを入力してください");
         return;
       }
 
       if (usedSerialCodes.includes(userCode)) {
-        alert("❌ このシリアルコードはすでにこの端末で使用済みです！");
+        showToast("❌ 使用済みのコードです");
         return;
       }
 
       const result = parseAndCheckCode(userCode);
 
       if (!result.success) {
-        alert(`❌ ${result.message}`);
+        showToast(`❌ ${result.message}`);
         return;
       }
 
@@ -826,28 +873,30 @@
       usedSerialCodes.push(userCode);
       localStorage.setItem('roasters_used_serial_codes', JSON.stringify(usedSerialCodes));
 
-      alert(`🎉 認証成功！\n【${result.label}】の 🪙${result.coins} コインを獲得しました！`);
+      showToast(`🎉 ${result.coins}コイン獲得！`);
       closeSerialModal();
     }
 
-    /* ガチャの獲得コイン量を減額調整 */
     function spinGacha() {
-      if (coins < 150) return alert("コインが足りません！ (🪙150必要)");
+      if (coins < 150) {
+        showToast("コインが足りません！");
+        return;
+      }
       updateCoins(-150);
       const rand = Math.random();
       let msg = "";
       if (rand < 0.05) {
         updateCoins(300);
-        msg = "超大当たり！✨ 🪙300コイン獲得！！";
+        msg = "✨ 超大当たり！300コイン";
       } else if (rand < 0.25) {
         updateCoins(150);
-        msg = "大当たり！🎉 🪙150コイン獲得！";
+        msg = "🎉 大当たり！150コイン";
       } else if (rand < 0.60) {
         updateCoins(70);
-        msg = "当たり！😊 🪙70コイン獲得！";
+        msg = "😊 当たり！70コイン";
       } else {
         updateCoins(30);
-        msg = "参加賞 ☕ 🪙30コイン獲得！";
+        msg = "☕ 参加賞 30コイン";
       }
       document.getElementById('gacha-result-text').innerText = msg;
     }
@@ -887,7 +936,10 @@
 
     function startDailyChallenge() {
       const today = new Date().toDateString();
-      if (localStorage.getItem('roasters_last_daily_challenge') === today) return alert("本日の日替わりチャレンジは挑戦済みです！");
+      if (localStorage.getItem('roasters_last_daily_challenge') === today) {
+        showToast("本日は挑戦済みです");
+        return;
+      }
       gameMode = 'daily';
       document.getElementById('timer-box').style.display = 'none';
       document.getElementById('stage-label').innerText = 'DAILY';
@@ -909,10 +961,10 @@
         document.getElementById('timer-count').innerText = timeRemaining;
         if (timeRemaining <= 0) {
           clearInterval(timerInterval);
-          alert(`⏰ タイムアップ！\nクリア数: ${taClearedCount} ステージ！`);
+          showToast(`タイムアップ！ クリア:${taClearedCount}`);
           if (taClearedCount > bestTimeAttack) {
             bestTimeAttack = taClearedCount;
-            alert(`🎉 ハイスコア更新！ (${bestTimeAttack} ステージ)`);
+            showToast(`ハイスコア更新！ (${bestTimeAttack})`);
             saveState();
           }
           showScreen('home-screen');
@@ -934,15 +986,14 @@
       saveState();
     }
 
-    /* デイリーボーナス減額 (100 -> 30) */
     function claimDailyBonus() {
       const today = new Date().toDateString();
       if (localStorage.getItem('roasters_last_bonus') === today) {
-        alert("本日のデイリーボーナスは受取済みです！");
+        showToast("本日分は受取済みです");
       } else {
         localStorage.setItem('roasters_last_bonus', today);
         updateCoins(30);
-        alert("🎁 デイリーボーナス！30コイン獲得！");
+        showToast("🎁 デイリーボーナス +30");
       }
     }
 
@@ -1039,7 +1090,7 @@
           let topBean = bottles[index][bottles[index].length - 1];
           if (topBean.isFrozen) {
             topBean.isFrozen = false;
-            alert("❄️ 氷を割りました！");
+            showToast("❄️ 氷を割った！");
             renderBoard();
             return;
           }
@@ -1074,39 +1125,38 @@
 
     function unlockKeyBottle() {
       let lockedIdx = lockedBottles.indexOf(true);
-      if (lockedIdx !== -1) { lockedBottles[lockedIdx] = false; alert("🔑 鍵を獲得！封印されたボトルが解放されました！"); }
+      if (lockedIdx !== -1) { lockedBottles[lockedIdx] = false; showToast("🔑 鍵でボトル解放！"); }
     }
 
     function updateBombTimers() {
       let exploded = false;
       bottles.forEach(b => { b.forEach(bean => { if (bean.bombTimer !== null && bean.bombTimer > 0) { bean.bombTimer--; if (bean.bombTimer === 0) exploded = true; } }); });
-      if (exploded) { alert("💥 💣 爆弾が爆発しました！豆がシャッフルされます！"); useShuffle(true); }
+      if (exploded) { showToast("💥 爆発！シャッフルします"); useShuffle(true); }
     }
 
-    /* サポートアイテム使用時の消費コスト引き上げ対応 */
     function undoMove() {
-      if (history.length === 0) return alert("戻せる手がありません！");
+      if (history.length === 0) { showToast("戻せる手がありません"); return; }
       if (coins >= 150) {
         updateCoins(-150);
         let lastState = JSON.parse(history.pop());
         bottles = lastState.bottles;
         lockedBottles = lastState.locked;
         renderBoard();
-      } else alert("コインが足りません！ (🪙150必要)");
+      } else showToast("コイン不足 (🪙150)");
     }
 
     function stirBottle() {
-      if (selectedBottleIndex === null) return alert("ボトルを先に選択してください！");
+      if (selectedBottleIndex === null) { showToast("ボトルを選んでください"); return; }
       if (coins >= 300) {
         updateCoins(-300);
         bottles[selectedBottleIndex].sort(() => Math.random() - 0.5);
         selectedBottleIndex = null;
         renderBoard();
-      } else alert("コインが足りません！ (🪙300必要)");
+      } else showToast("コイン不足 (🪙300)");
     }
 
     function showHint() {
-      if (coins < 250) return alert("コインが足りません！ (🪙250必要)");
+      if (coins < 250) { showToast("コイン不足 (🪙250)"); return; }
       for (let i = 0; i < bottles.length; i++) {
         if (lockedBottles[i]) continue;
         for (let j = 0; j < bottles.length; j++) {
@@ -1118,13 +1168,13 @@
               updateCoins(-250);
               selectedBottleIndex = i;
               renderBoard();
-              alert(`💡 ヒント: ${i + 1}番目から${j + 1}番目のボトルへ！`);
+              showToast(`💡 ヒント: ${i + 1} ➔ ${j + 1}`);
               return;
             }
           }
         }
       }
-      alert("移動できる場所がありません！");
+      showToast("移動できる場所がありません");
     }
 
     function useShuffle(isFree = false) {
@@ -1135,7 +1185,7 @@
         bottles = bottles.map(() => []);
         allBeans.forEach((bean, idx) => { bottles[idx % (bottles.length - 1)].push(bean); });
         renderBoard();
-      } else alert("コインが足りません！ (🪙400必要)");
+      } else showToast("コイン不足 (🪙400)");
     }
 
     function addExtraBottle() {
@@ -1144,21 +1194,21 @@
         bottles.push([]);
         lockedBottles.push(false);
         renderBoard();
-      } else alert("コインが足りません！ (🪙500必要)");
+      } else showToast("コイン不足 (🪙500)");
     }
 
     function skipStage() {
-      if (gameMode !== 'normal') return alert("通常ステージでのみ使用できます！");
+      if (gameMode !== 'normal') return;
       if (coins >= 600) {
-        if (confirm("🪙600コインを支払って、このステージをクリア扱いにしますか？")) {
+        if (confirm("🪙600でこのステージをスキップしますか？")) {
           updateCoins(-600);
-          alert(`⏩ Stage ${currentStage} をスキップしました！`);
+          showToast(`⏩ Stage ${currentStage} スキップ`);
           if (!clearedStages.includes(currentStage)) clearedStages.push(currentStage);
           if (currentStage >= maxUnlockedStage && currentStage < TOTAL_STAGES) maxUnlockedStage = currentStage + 1;
           currentStage++;
           initStage(currentStage);
         }
-      } else alert("コインが足りません！ (🪙600必要)");
+      } else showToast("コイン不足 (🪙600)");
     }
 
     function checkWin() {
@@ -1170,15 +1220,14 @@
 
           if (gameMode === 'daily') {
             localStorage.setItem('roasters_last_daily_challenge', new Date().toDateString());
-            alert(`🎉 日替わりチャレンジクリア！\n⏱ タイム: ${clearTimeSec}秒\n🪙 +50獲得！`);
+            showToast("🎉 デイリークリア！ ＋50");
             updateCoins(50);
             showScreen('home-screen');
           } else if (gameMode === 'timeattack') {
             taClearedCount++;
             initStage(100 + taClearedCount);
           } else {
-            /* 通常ステージクリア報酬を減額 (50 -> 10) */
-            alert(`🎉 Stage ${currentStage} クリア！\n⏱️ タイム: ${clearTimeSec}秒\n🪙 +10獲得！`);
+            showToast(`🎉 STAGE ${currentStage} クリア！ (+10)`);
             if (!clearedStages.includes(currentStage)) clearedStages.push(currentStage);
             if (currentStage >= maxUnlockedStage && currentStage < TOTAL_STAGES) maxUnlockedStage = currentStage + 1;
             currentStage++;
@@ -1246,7 +1295,7 @@
       if (!claimedAchieves.includes(id)) {
         claimedAchieves.push(id);
         updateCoins(reward);
-        alert(`🎁 実績達成！ 🪙${reward} コインを獲得しました！`);
+        showToast(`🎁 実績報酬 +${reward}`);
         renderAchieveList();
       }
     }
@@ -1286,8 +1335,8 @@
         updateCoins(-price);
         unlockedThemes.push(themeId);
         applyTheme(themeId);
-        alert("🎉 新しいテーマを購入しました！");
-      } else alert("コインが足りません！");
+        showToast("🎉 テーマを変更しました！");
+      } else showToast("コインが足りません！");
     }
 
     window.onload = function() {
