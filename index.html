@@ -292,13 +292,17 @@
       gap: 6px;
     }
 
-    .coin-display {
+    .coin-display, .ticket-display {
       background: #e06d28;
       padding: 3px 8px;
       border-radius: 15px;
       font-size: 0.75rem;
       font-weight: bold;
       white-space: nowrap;
+    }
+
+    .ticket-display {
+      background: #2980b9;
     }
 
     .timer-display {
@@ -362,7 +366,6 @@
       box-sizing: border-box;
     }
 
-    /* ボトルサイズをスリムに調整 */
     .bottle {
       width: 40px;
       height: 130px;
@@ -397,7 +400,6 @@
       top: 40%;
     }
 
-    /* 豆のサイズをスリムに調整 */
     .bean {
       width: 100%;
       height: 27px;
@@ -449,10 +451,10 @@
       font-size: 0.6rem;
     }
 
-    /* ── 【変更点】トースト通知を画面上部（アイテム購入欄の直下）に固定配置 ── */
+    /* 上部トースト通知 */
     #toast-container {
       position: fixed;
-      top: 95px; /* ヘッダー＋ショップボタン群のすぐ下 */
+      top: 95px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 20000;
@@ -585,7 +587,6 @@
 </head>
 <body id="body-root">
 
-  <!-- 上部トースト通知を表示するコンテナ -->
   <div id="toast-container"></div>
 
   <div id="app-wrapper">
@@ -602,6 +603,7 @@
         </div>
 
         <button class="home-btn" onclick="continueGame()">▶ 続きから遊ぶ</button>
+        <button class="home-btn bonus" onclick="claimDailyBonus()">🎁 デイリーログインボーナス</button>
         <button class="home-btn secondary" onclick="showScreen('select-screen')">🗺 ステージ選択 (1-1500)</button>
         <button class="home-btn gacha-btn" onclick="openGachaModal()">🎁 ラッキーガチャ (🪙150)</button>
         <button class="home-btn shop-theme" onclick="showScreen('shop-screen')">🎨 着せ替えテーマショップ</button>
@@ -609,7 +611,6 @@
         <button class="home-btn bonus" onclick="startDailyChallenge()">📅 日替わりチャレンジ (🪙100)</button>
         <button class="home-btn timeattack" onclick="startTimeAttack()">⏱ タイムアタック (3分)</button>
         <button class="home-btn secondary" onclick="showScreen('achieve-screen')">🎖️ 実績・アチーブメント</button>
-        <button class="home-btn bonus" onclick="claimDailyBonus()">🎁 デイリーボーナス</button>
         <button class="home-btn secondary" onclick="openTutorialModal()">📖 遊び方・ルール</button>
       </div>
     </div>
@@ -657,13 +658,14 @@
         </div>
         <div class="header-status">
           <div id="timer-box" class="timer-display" style="display:none;">⏳ <span id="timer-count">180</span>s</div>
+          <div class="ticket-display">🎫 <span id="ticket-count">0</span></div>
           <div class="coin-display">🪙 <span id="coin-count">100</span></div>
         </div>
       </header>
 
       <!-- サポートアイテム＋スキップボタン -->
       <div class="shop-container">
-        <button class="shop-btn" onclick="undoMove()"><span>↩️ 戻す</span><span>🪙150</span></button>
+        <button class="shop-btn" onclick="undoMove()"><span>↩️ 戻す</span><span id="undo-cost-label">🪙150</span></button>
         <button class="shop-btn" onclick="showHint()"><span>💡 ヒント</span><span>🪙250</span></button>
         <button class="shop-btn" onclick="stirBottle()"><span>🥄 混ぜ</span><span>🪙300</span></button>
         <button class="shop-btn" onclick="useShuffle()"><span>🔀 シャッ</span><span>🪙400</span></button>
@@ -688,10 +690,10 @@
         </div>
 
         <div class="tutorial-section">
-          <h4>✨ コインの使い道</h4>
-          <p><strong>⏩ スキップ：</strong> 難所を🪙600で強制突破！<br>
-          <strong>🎨 テーマショップ：</strong> 貯めたコインで高級カフェ背景に着せ替え！（最大🪙10,000）<br>
-          <strong>🎁 ラッキーガチャ：</strong> 🪙150で運試し！</p>
+          <h4>✨ コイン・チケットの使い道</h4>
+          <p><strong>🎫 無料チケット：</strong> 「1手戻す」をコイン消費なしで使用！<br>
+          <strong>⏩ スキップ：</strong> 難所を🪙600で強制突破！<br>
+          <strong>🎨 テーマショップ：</strong> 貯めたコインで高級カフェ背景に着せ替え！</p>
         </div>
       </div>
     </div>
@@ -745,6 +747,7 @@
     let maxUnlockedStage = parseInt(localStorage.getItem('roasters_max_stage')) || 1;
     let clearedStages = JSON.parse(localStorage.getItem('roasters_cleared_list')) || [];
     let coins = parseInt(localStorage.getItem('roasters_coins')) || 100;
+    let tickets = parseInt(localStorage.getItem('roasters_tickets')) || 2; // 初期無料チケット2枚
     let totalCoinsEarned = parseInt(localStorage.getItem('roasters_total_coins_earned')) || 100;
     let claimedAchieves = JSON.parse(localStorage.getItem('roasters_claimed_achieves')) || [];
     let bestTimeAttack = parseInt(localStorage.getItem('roasters_best_ta')) || 0;
@@ -765,7 +768,7 @@
     let history = [];
     let selectedBottleIndex = null;
 
-    /* 上部に綺麗に収まるトースト通知関数 */
+    /* 上部トースト通知関数 */
     function showToast(message) {
       const container = document.getElementById('toast-container');
       if (!container) return;
@@ -778,7 +781,6 @@
       }, 2200);
     }
 
-    /* 全4プラン（各100個・計400個）の一括判定ロジック */
     function parseAndCheckCode(code) {
       if (!code.startsWith('rs') && !code.startsWith('rsp')) {
         return { success: false, message: "無効なコード形式です" };
@@ -914,6 +916,7 @@
       localStorage.setItem('roasters_max_stage', maxUnlockedStage);
       localStorage.setItem('roasters_cleared_list', JSON.stringify(clearedStages));
       localStorage.setItem('roasters_coins', coins);
+      localStorage.setItem('roasters_tickets', tickets);
       localStorage.setItem('roasters_total_coins_earned', totalCoinsEarned);
       localStorage.setItem('roasters_claimed_achieves', JSON.stringify(claimedAchieves));
       localStorage.setItem('roasters_best_ta', bestTimeAttack);
@@ -988,20 +991,41 @@
     function updateCoins(amount) {
       coins += amount;
       if (amount > 0) totalCoinsEarned += amount;
-      document.getElementById('coin-count').innerText = coins;
-      const shopCoinEl = document.getElementById('shop-coin-count');
-      if (shopCoinEl) shopCoinEl.innerText = coins;
+      updateUI();
       saveState();
     }
 
+    function updateTickets(amount) {
+      tickets += amount;
+      updateUI();
+      saveState();
+    }
+
+    function updateUI() {
+      const coinEl = document.getElementById('coin-count');
+      if (coinEl) coinEl.innerText = coins;
+      const ticketEl = document.getElementById('ticket-count');
+      if (ticketEl) ticketEl.innerText = tickets;
+      const shopCoinEl = document.getElementById('shop-coin-count');
+      if (shopCoinEl) shopCoinEl.innerText = coins;
+
+      const undoCostEl = document.getElementById('undo-cost-label');
+      if (undoCostEl) {
+        if (tickets > 0) undoCostEl.innerText = '🎫1';
+        else undoCostEl.innerText = '🪙150';
+      }
+    }
+
+    /* デイリーログインボーナス（コイン50枚＋無料チケット1枚） */
     function claimDailyBonus() {
       const today = new Date().toDateString();
       if (localStorage.getItem('roasters_last_bonus') === today) {
-        showToast("本日分は受取済みです");
+        showToast("本日分は受取済みです！");
       } else {
         localStorage.setItem('roasters_last_bonus', today);
-        updateCoins(30);
-        showToast("🎁 デイリーボーナス +30");
+        updateCoins(50);
+        updateTickets(1);
+        showToast("🎁 デイリー報酬 GET! (+50コイン / +1チケット)");
       }
     }
 
@@ -1017,7 +1041,7 @@
       else if (gameMode === 'daily') document.getElementById('stage-display').innerText = 'DAY';
       else document.getElementById('stage-display').innerText = stageNum;
 
-      document.getElementById('coin-count').innerText = coins;
+      updateUI();
       const isHard = stageNum >= 570 && gameMode === 'normal';
       document.getElementById('hard-tag').style.display = isHard ? 'inline-block' : 'none';
 
@@ -1142,15 +1166,23 @@
       if (exploded) { showToast("💥 爆発！シャッフルします"); useShuffle(true); }
     }
 
+    /* 戻す操作（チケット優先使用） */
     function undoMove() {
       if (history.length === 0) { showToast("戻せる手がありません"); return; }
-      if (coins >= 150) {
+      if (tickets > 0) {
+        updateTickets(-1);
+        let lastState = JSON.parse(history.pop());
+        bottles = lastState.bottles;
+        lockedBottles = lastState.locked;
+        showToast("🎫 チケットを使用して1手戻しました");
+        renderBoard();
+      } else if (coins >= 150) {
         updateCoins(-150);
         let lastState = JSON.parse(history.pop());
         bottles = lastState.bottles;
         lockedBottles = lastState.locked;
         renderBoard();
-      } else showToast("コイン不足 (🪙150)");
+      } else showToast("コインまたはチケットが足りません");
     }
 
     function stirBottle() {
@@ -1349,6 +1381,7 @@
 
     window.onload = function() {
       applyTheme(currentTheme);
+      updateUI();
       showScreen('home-screen');
     };
   </script>
