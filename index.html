@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Roasters Sort - 1500 Stages & Step Mode</title>
+  <title>Roasters Sort - 1500 Stages & 205 Achievements</title>
   <style>
     :root {
       --bg-color: #f7f0e6;
@@ -707,7 +707,7 @@
         <button class="home-btn serial-btn" onclick="openSerialModal()">🔑 シリアルコード入力</button>
         <button class="home-btn bonus" onclick="startDailyChallenge()">📅 日替わりチャレンジ (🪙100)</button>
         <button class="home-btn timeattack" onclick="startTimeAttack()">⏱ タイムアタック (3分)</button>
-        <button class="home-btn secondary" onclick="showScreen('achieve-screen')">🎖️ 実績・アチーブメント</button>
+        <button class="home-btn secondary" onclick="showScreen('achieve-screen')">🎖️ 実績・アチーブメント (205個)</button>
         <button class="home-btn secondary" onclick="openTutorialModal()">📖 遊び方・ルール</button>
       </div>
     </div>
@@ -735,7 +735,7 @@
     <div id="achieve-screen" class="screen">
       <div class="screen-header">
         <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
-        <h2 style="font-size: 0.95rem;">実績・アチーブメント</h2>
+        <h2 style="font-size: 0.95rem;">実績 (全205個)</h2>
         <div style="width: 28px;"></div>
       </div>
       <div class="content-list" id="achieve-list"></div>
@@ -883,19 +883,18 @@
     let unlockedThemes = JSON.parse(localStorage.getItem('roasters_unlocked_themes')) || ['default'];
     let currentBottleSkin = localStorage.getItem('roasters_bottle_skin') || 'glass';
     let unlockedBottleSkins = JSON.parse(localStorage.getItem('roasters_unlocked_bottle_skins')) || ['glass'];
-    let currentShopCategory = 'theme'; // 'theme' | 'bottle'
+    let currentShopCategory = 'theme';
 
     let usedSerialCodes = JSON.parse(localStorage.getItem('roasters_used_serial_codes')) || [];
 
-    let activeGameMode = 'normal'; // 'normal' | 'step' | 'daily' | 'timeattack'
-    let selectedModeTab = 'normal'; // ホーム・選択画面で選ばれているタブ ('normal' | 'step')
+    let activeGameMode = 'normal';
+    let selectedModeTab = 'normal';
 
     let timerInterval = null;
     let timeRemaining = 180;
     let taClearedCount = 0;
     let stageStartTime = 0;
 
-    // 手数制限用変数
     let remainingSteps = 0;
     let maxSteps = 0;
 
@@ -903,6 +902,59 @@
     let lockedBottles = [];
     let history = [];
     let selectedBottleIndex = null;
+
+    /* --- 🏆 205個の実績自動生成システム --- */
+    const ACHIEVEMENTS = [];
+
+    // 1. 通常ステージクリア実績 (70個)
+    for (let i = 1; i <= 70; i++) {
+      let target = i * 20; // 20, 40 ... 1400
+      if (i === 70) target = 1500;
+      ACHIEVEMENTS.push({
+        id: `ach_norm_${i}`,
+        title: `☕ 通常STG制覇 Lv.${i}`,
+        desc: `通常モード STAGE ${target} クリア`,
+        check: () => clearedStagesNormal.length >= target,
+        reward: 20 + i * 3
+      });
+    }
+
+    // 2. 手数制限ステージクリア実績 (70個)
+    for (let i = 1; i <= 70; i++) {
+      let target = i * 20;
+      if (i === 70) target = 1500;
+      ACHIEVEMENTS.push({
+        id: `ach_step_${i}`,
+        title: `🎯 手数STG制覇 Lv.${i}`,
+        desc: `手数制限モード STEP ${target} クリア`,
+        check: () => clearedStagesStep.length >= target,
+        reward: 25 + i * 3
+      });
+    }
+
+    // 3. 累計コイン獲得実績 (45個)
+    for (let i = 1; i <= 45; i++) {
+      let target = i * 400;
+      ACHIEVEMENTS.push({
+        id: `ach_coin_${i}`,
+        title: `💰 資産家ロースター Lv.${i}`,
+        desc: `累計 ${target} コイン獲得`,
+        check: () => totalCoinsEarned >= target,
+        reward: 30 + i * 5
+      });
+    }
+
+    // 4. 特別・やり込み実績 (20個)
+    for (let i = 1; i <= 20; i++) {
+      ACHIEVEMENTS.push({
+        id: `ach_special_${i}`,
+        title: `✨ カフェの伝説 No.${i}`,
+        desc: `通算 ${i * 10} ステージクリア`,
+        check: () => (clearedStagesNormal.length + clearedStagesStep.length) >= i * 10,
+        reward: 50
+      });
+    }
+    // 合計ぴったり205個！
 
     /* 上部トースト通知関数 */
     function showToast(message) {
@@ -921,43 +973,18 @@
       if (!code.startsWith('rs') && !code.startsWith('rsp')) {
         return { success: false, message: "無効なコード形式です" };
       }
-
       if (code.startsWith('rsp')) {
         let num = parseInt(code.replace('rsp', ''), 10);
-        if (num >= 0 && num <= 99) {
-          return { success: true, coins: 5000, label: "5,000コインパック" };
-        }
+        if (num >= 0 && num <= 99) return { success: true, coins: 5000, label: "5,000コインパック" };
       }
-
       if (code.startsWith('rs')) {
         let num = parseInt(code.replace('rs', ''), 10);
-        if (num >= 0 && num <= 99) {
-          return { success: true, coins: 500, label: "500コインパック" };
-        }
-        if (num >= 200 && num <= 299) {
-          return { success: true, coins: 2500, label: "2,500コインパック" };
-        }
-        if (num >= 1000 && num <= 1099) {
-          return { success: true, coins: 1000, label: "1,000コインパック" };
-        }
+        if (num >= 0 && num <= 99) return { success: true, coins: 500, label: "500コインパック" };
+        if (num >= 200 && num <= 299) return { success: true, coins: 2500, label: "2,500コインパック" };
+        if (num >= 1000 && num <= 1099) return { success: true, coins: 1000, label: "1,000コインパック" };
       }
-
       return { success: false, message: "無効なコードです" };
     }
-
-    const ACHIEVEMENTS = [
-      { id: 'cleared_10', title: '🌱 ビギナーロースター', desc: '通算10ステージクリア', check: () => (clearedStagesNormal.length + clearedStagesStep.length) >= 10, reward: 30 },
-      { id: 'cleared_50', title: '☕ 一人前マスター', desc: '通算50ステージクリア', check: () => (clearedStagesNormal.length + clearedStagesStep.length) >= 50, reward: 50 },
-      { id: 'cleared_100', title: '🏪 人気カフェ店主', desc: '通算100ステージクリア', check: () => (clearedStagesNormal.length + clearedStagesStep.length) >= 100, reward: 80 },
-      { id: 'cleared_300', title: '🏆 ベテラン焙煎士', desc: '通算300ステージクリア', check: () => (clearedStagesNormal.length + clearedStagesStep.length) >= 300, reward: 150 },
-      { id: 'cleared_500', title: '✨ 焙煎の極み', desc: '通算500ステージクリア', check: () => (clearedStagesNormal.length + clearedStagesStep.length) >= 500, reward: 250 },
-      { id: 'cleared_1000', title: '👑 カフェ帝国建設', desc: '通算1000ステージクリア', check: () => (clearedStagesNormal.length + clearedStagesStep.length) >= 1000, reward: 400 },
-      { id: 'cleared_1500', title: '🌌 伝説のグラマスター', desc: '通常1500ステージ制覇！', check: () => clearedStagesNormal.length >= 1500, reward: 800 },
-      { id: 'cleared_step_500', title: '🎯 手数ソートの極み', desc: '手数制限500ステージクリア', check: () => clearedStagesStep.length >= 500, reward: 300 },
-      { id: 'coins_500', title: '💰 貯金上手', desc: '累計500コイン獲得', check: () => totalCoinsEarned >= 500, reward: 50 },
-      { id: 'coins_2000', title: '💎 大富豪ロースター', desc: '累計2000コイン獲得', check: () => totalCoinsEarned >= 2000, reward: 150 },
-      { id: 'speed_15', title: '⚡ スピードスター', desc: '15秒以内でステージクリア', check: () => fastestClearTime <= 15, reward: 60 }
-    ];
 
     const THEMES = [
       { id: 'default', name: '☕ カフェ・ナチュラル', price: 0, class: '' },
@@ -979,9 +1006,7 @@
       const bodyRoot = document.getElementById('body-root');
       bodyRoot.className = '';
       const tObj = THEMES.find(t => t.id === themeId);
-      if (tObj && tObj.class) {
-        bodyRoot.classList.add(tObj.class);
-      }
+      if (tObj && tObj.class) bodyRoot.classList.add(tObj.class);
       localStorage.setItem('roasters_theme', currentTheme);
       renderThemeShop();
     }
@@ -1016,60 +1041,33 @@
       document.getElementById('serial-modal').classList.add('active'); 
       document.getElementById('serial-input').value = '';
     }
-    function closeSerialModal() { 
-      document.getElementById('serial-modal').classList.remove('active'); 
-    }
+    function closeSerialModal() { document.getElementById('serial-modal').classList.remove('active'); }
 
     function submitSerialCode() {
       const inputEl = document.getElementById('serial-input');
       let userCode = inputEl.value.trim().toLowerCase();
-
-      if (!userCode) {
-        showToast("⚠️ コードを入力してください");
-        return;
-      }
-
-      if (usedSerialCodes.includes(userCode)) {
-        showToast("❌ 使用済みのコードです");
-        return;
-      }
+      if (!userCode) { showToast("⚠️ コードを入力してください"); return; }
+      if (usedSerialCodes.includes(userCode)) { showToast("❌ 使用済みのコードです"); return; }
 
       const result = parseAndCheckCode(userCode);
-
-      if (!result.success) {
-        showToast(`❌ ${result.message}`);
-        return;
-      }
+      if (!result.success) { showToast(`❌ ${result.message}`); return; }
 
       updateCoins(result.coins);
       usedSerialCodes.push(userCode);
       localStorage.setItem('roasters_used_serial_codes', JSON.stringify(usedSerialCodes));
-
       showToast(`🎉 ${result.coins}コイン獲得！`);
       closeSerialModal();
     }
 
     function spinGacha() {
-      if (coins < 150) {
-        showToast("コインが足りません！");
-        return;
-      }
+      if (coins < 150) { showToast("コインが足りません！"); return; }
       updateCoins(-150);
       const rand = Math.random();
       let msg = "";
-      if (rand < 0.05) {
-        updateCoins(300);
-        msg = "✨ 超大当たり！300コイン";
-      } else if (rand < 0.25) {
-        updateCoins(150);
-        msg = "🎉 大当たり！150コイン";
-      } else if (rand < 0.60) {
-        updateCoins(70);
-        msg = "😊 当たり！70コイン";
-      } else {
-        updateCoins(30);
-        msg = "☕ 参加賞 30コイン";
-      }
+      if (rand < 0.05) { updateCoins(300); msg = "✨ 超大当たり！300コイン"; }
+      else if (rand < 0.25) { updateCoins(150); msg = "🎉 大当たり！150コイン"; }
+      else if (rand < 0.60) { updateCoins(70); msg = "😊 当たり！70コイン"; }
+      else { updateCoins(30); msg = "☕ 参加賞 30コイン"; }
       document.getElementById('gacha-result-text').innerText = msg;
     }
 
@@ -1077,11 +1075,9 @@
       localStorage.setItem('roasters_current_stage', currentStageNormal);
       localStorage.setItem('roasters_max_stage', maxUnlockedStageNormal);
       localStorage.setItem('roasters_cleared_list', JSON.stringify(clearedStagesNormal));
-
       localStorage.setItem('roasters_current_stage_step', currentStageStep);
       localStorage.setItem('roasters_max_stage_step', maxUnlockedStageStep);
       localStorage.setItem('roasters_cleared_list_step', JSON.stringify(clearedStagesStep));
-
       localStorage.setItem('roasters_coins', coins);
       localStorage.setItem('roasters_tickets', tickets);
       localStorage.setItem('roasters_total_coins_earned', totalCoinsEarned);
@@ -1107,7 +1103,6 @@
     function continueGame() {
       activeGameMode = selectedModeTab;
       document.getElementById('timer-box').style.display = 'none';
-      
       if (activeGameMode === 'step') {
         document.getElementById('stage-label').innerText = '🎯 STEP';
         initStage(currentStageStep);
@@ -1115,17 +1110,13 @@
         document.getElementById('stage-label').innerText = 'STAGE';
         initStage(currentStageNormal);
       }
-      
       showScreen('game-screen');
       if (!isTutorialSeen) openTutorialModal();
     }
 
     function startDailyChallenge() {
       const today = new Date().toDateString();
-      if (localStorage.getItem('roasters_last_daily_challenge') === today) {
-        showToast("本日は挑戦済みです");
-        return;
-      }
+      if (localStorage.getItem('roasters_last_daily_challenge') === today) { showToast("本日は挑戦済みです"); return; }
       activeGameMode = 'daily';
       document.getElementById('timer-box').style.display = 'none';
       document.getElementById('step-display-header').style.display = 'none';
@@ -1231,7 +1222,6 @@
       let blindRate = stageNum >= 570 ? 0.45 : (stageNum >= 5 ? 0.2 : 0);
       let frozenRate = stageNum >= 570 ? 0.35 : (stageNum >= 10 ? 0.15 : 0);
 
-      // 手数制限モード設定
       if (activeGameMode === 'step') {
         maxSteps = numColors * 6 + 6;
         remainingSteps = maxSteps;
@@ -1442,7 +1432,6 @@
       if (coins >= 600) {
         if (confirm("🪙600でこのステージをスキップしますか？")) {
           updateCoins(-600);
-          
           if (activeGameMode === 'step') {
             showToast(`⏩ STEP ${currentStageStep} スキップ`);
             if (!clearedStagesStep.includes(currentStageStep)) clearedStagesStep.push(currentStageStep);
@@ -1493,12 +1482,9 @@
           return;
         }
 
-        // 手数切れ敗北判定
         if (activeGameMode === 'step' && remainingSteps <= 0) {
           showToast("❌ 手数切れです！リトライしてください");
-          setTimeout(() => {
-            initStage(currentStageStep);
-          }, 1200);
+          setTimeout(() => { initStage(currentStageStep); }, 1200);
         }
       }, 100);
     }
@@ -1543,6 +1529,8 @@
       const list = document.getElementById('achieve-list');
       if (!list) return;
       list.innerHTML = '';
+      const fragment = document.createDocumentFragment();
+
       ACHIEVEMENTS.forEach(ach => {
         const item = document.createElement('div');
         item.className = 'list-item';
@@ -1550,15 +1538,16 @@
         let isClaimed = claimedAchieves.includes(ach.id);
         item.innerHTML = `
           <div>
-            <div style="font-weight:bold; font-size:0.85rem;">${ach.title}</div>
-            <div style="font-size:0.68rem; opacity:0.7;">${ach.desc} (報酬: 🪙${ach.reward})</div>
+            <div style="font-weight:bold; font-size:0.8rem;">${ach.title}</div>
+            <div style="font-size:0.65rem; opacity:0.7;">${ach.desc} (報酬: 🪙${ach.reward})</div>
           </div>
           <button class="action-btn ${isClaimed ? 'done' : ''}" ${!isAchieved || isClaimed ? 'disabled' : ''} onclick="claimAchieve('${ach.id}', ${ach.reward})">
             ${isClaimed ? '受取済' : (isAchieved ? '受け取る' : '未達成')}
           </button>
         `;
-        list.appendChild(item);
+        fragment.appendChild(item);
       });
+      list.appendChild(fragment);
     }
 
     function claimAchieve(id, reward) {
@@ -1588,15 +1577,7 @@
           item.className = 'list-item';
           let isUnlocked = unlockedThemes.includes(theme.id);
           let isCurrent = currentTheme === theme.id;
-
-          let btnHtml = '';
-          if (isCurrent) {
-            btnHtml = `<button class="action-btn active-theme" disabled>使用中</button>`;
-          } else if (isUnlocked) {
-            btnHtml = `<button class="action-btn" onclick="applyTheme('${theme.id}')">変更</button>`;
-          } else {
-            btnHtml = `<button class="action-btn" onclick="buyTheme('${theme.id}', ${theme.price})">購入(🪙${theme.price})</button>`;
-          }
+          let btnHtml = isCurrent ? `<button class="action-btn active-theme" disabled>使用中</button>` : (isUnlocked ? `<button class="action-btn" onclick="applyTheme('${theme.id}')">変更</button>` : `<button class="action-btn" onclick="buyTheme('${theme.id}', ${theme.price})">購入(🪙${theme.price})</button>`);
 
           item.innerHTML = `
             <div>
@@ -1613,15 +1594,7 @@
           item.className = 'list-item';
           let isUnlocked = unlockedBottleSkins.includes(skin.id);
           let isCurrent = currentBottleSkin === skin.id;
-
-          let btnHtml = '';
-          if (isCurrent) {
-            btnHtml = `<button class="action-btn active-theme" disabled>装着中</button>`;
-          } else if (isUnlocked) {
-            btnHtml = `<button class="action-btn" onclick="applyBottleSkin('${skin.id}')">着替える</button>`;
-          } else {
-            btnHtml = `<button class="action-btn" onclick="buyBottleSkin('${skin.id}', ${skin.price})">購入(🪙${skin.price})</button>`;
-          }
+          let btnHtml = isCurrent ? `<button class="action-btn active-theme" disabled>装着中</button>` : (isUnlocked ? `<button class="action-btn" onclick="applyBottleSkin('${skin.id}')">着替える</button>` : `<button class="action-btn" onclick="buyBottleSkin('${skin.id}', ${skin.price})">購入(🪙${skin.price})</button>`);
 
           item.innerHTML = `
             <div>
