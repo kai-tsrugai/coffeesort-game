@@ -48,6 +48,9 @@
       font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
       position: relative;
       overflow: hidden;
+      /* 上下のバーや広告に被らないよう余白を確保 */
+      padding-top: 10px;
+      padding-bottom: 50px; 
     }
 
     .screen {
@@ -66,12 +69,12 @@
 
     #home-screen {
       justify-content: flex-start;
-      padding: 10px 10px 5px 10px;
+      padding: 5px 10px;
       text-align: center;
     }
 
     .title-logo {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: 900;
       color: var(--primary-color);
       margin-top: 2px;
@@ -81,9 +84,9 @@
     }
 
     .subtitle {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: #666;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       font-weight: bold;
       flex-shrink: 0;
     }
@@ -96,7 +99,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-bottom: 20px;
+      padding-bottom: 30px;
     }
 
     /* モード選択タブボタン */
@@ -105,13 +108,13 @@
       gap: 6px;
       width: 85%;
       max-width: 280px;
-      margin: 4px 0 8px;
+      margin: 2px 0 6px;
     }
 
     .mode-tab-btn {
       flex: 1;
-      padding: 6px 0;
-      font-size: 0.78rem;
+      padding: 5px 0;
+      font-size: 0.75rem;
       font-weight: bold;
       border: 2px solid var(--primary-color);
       border-radius: 12px;
@@ -128,9 +131,9 @@
     .home-btn {
       width: 85%;
       max-width: 280px;
-      padding: 9px;
-      margin: 4px 0;
-      font-size: 0.9rem;
+      padding: 8px;
+      margin: 3px 0;
+      font-size: 0.85rem;
       font-weight: bold;
       border: 2px solid var(--primary-color);
       border-radius: 20px;
@@ -155,7 +158,7 @@
     .home-btn.serial-btn { background: #059669; }
 
     #select-screen, #achieve-screen, #shop-screen {
-      padding: 10px 10px 5px 10px;
+      padding: 5px 10px;
     }
 
     .screen-header {
@@ -163,8 +166,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 6px 0;
-      margin-bottom: 6px;
+      padding: 4px 0;
+      margin-bottom: 4px;
       border-bottom: 2px solid var(--primary-color);
       flex-shrink: 0;
     }
@@ -173,10 +176,10 @@
       background: var(--primary-color);
       color: #fff;
       border: none;
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 15px;
       font-weight: bold;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       cursor: pointer;
     }
 
@@ -185,10 +188,10 @@
       color: #fff;
       border: 2px solid var(--primary-color);
       border-radius: 50%;
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       font-weight: bold;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -200,14 +203,14 @@
       flex: 1;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding-bottom: 15px;
+      padding-bottom: 25px;
     }
 
     .stage-grid {
       width: 100%;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+      gap: 6px;
       padding: 4px;
     }
 
@@ -234,7 +237,7 @@
       top: 2px;
       right: 4px;
       color: #27ae60;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: bold;
     }
 
@@ -252,19 +255,18 @@
       cursor: not-allowed;
     }
 
-    /* ショップのUIタブ */
     .shop-tab-bar {
       width: 100%;
       display: flex;
       gap: 4px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       flex-shrink: 0;
     }
 
     .shop-tab-btn {
       flex: 1;
-      padding: 6px 0;
-      font-size: 0.78rem;
+      padding: 5px 0;
+      font-size: 0.75rem;
       font-weight: bold;
       border: 1px solid var(--primary-color);
       border-radius: 8px;
@@ -282,18 +284,18 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       flex: 1;
-      padding-bottom: 15px;
+      padding-bottom: 25px;
     }
 
     .list-item {
       background: var(--card-bg);
       border: 2px solid var(--primary-color);
       border-radius: 10px;
-      padding: 8px 10px;
+      padding: 6px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -303,22 +305,15 @@
       background: #27ae60;
       color: #fff;
       border: none;
-      padding: 5px 10px;
+      padding: 4px 8px;
       border-radius: 12px;
       font-weight: bold;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       cursor: pointer;
     }
 
-    .action-btn.done {
-      background: #7f8c8d;
-      cursor: default;
-    }
-
-    .action-btn.active-theme {
-      background: #e67e22;
-      cursor: default;
-    }
+    .action-btn.done { background: #7f8c8d; cursor: default; }
+    .action-btn.active-theme { background: #e67e22; cursor: default; }
 
     #game-screen {
       justify-content: flex-start;
@@ -328,7 +323,7 @@
 
     header {
       width: 100%;
-      padding: 6px 10px;
+      padding: 5px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -341,36 +336,26 @@
     .header-status {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .coin-display, .ticket-display {
       background: #e06d28;
-      padding: 3px 8px;
+      padding: 2px 6px;
       border-radius: 15px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: bold;
       white-space: nowrap;
     }
 
-    .ticket-display {
-      background: #2980b9;
-    }
-
-    .timer-display {
-      background: #c0392b;
-      padding: 3px 8px;
-      border-radius: 15px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      white-space: nowrap;
-    }
+    .ticket-display { background: #2980b9; }
+    .timer-display { background: #c0392b; padding: 2px 6px; border-radius: 15px; font-size: 0.72rem; font-weight: bold; white-space: nowrap; }
 
     .difficulty-badge {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       background: #e74c3c;
       color: #fff;
-      padding: 1px 4px;
+      padding: 1px 3px;
       border-radius: 3px;
       margin-left: 2px;
     }
@@ -380,7 +365,7 @@
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 2px;
-      padding: 4px;
+      padding: 3px;
       flex-shrink: 0;
       background: rgba(255, 255, 255, 0.85);
       border-bottom: 2px solid rgba(92, 58, 33, 0.2);
@@ -389,9 +374,9 @@
     .shop-btn {
       background: #fff;
       border: 1px solid #5c3a21;
-      border-radius: 6px;
-      padding: 4px 1px;
-      font-size: 0.55rem;
+      border-radius: 5px;
+      padding: 3px 1px;
+      font-size: 0.52rem;
       font-weight: bold;
       cursor: pointer;
       display: flex;
@@ -402,99 +387,44 @@
       color: #333;
     }
 
-    .shop-btn:active {
-      transform: translateY(1px);
-      box-shadow: none;
-    }
-
     .game-board {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       align-content: flex-start;
-      gap: 8px 6px;
+      gap: 6px 4px;
       width: 100%;
-      padding: 8px 6px 35px 6px;
+      padding: 6px 4px 45px 4px;
       box-sizing: border-box;
     }
 
-    /* ボトルスキン対応 */
     .bottle {
-      width: 44px;
-      height: 135px;
+      width: 40px;
+      height: 125px;
       display: flex;
       flex-direction: column-reverse;
       align-items: center;
-      padding: 4px 2px;
+      padding: 3px 2px;
       cursor: pointer;
       position: relative;
       transition: transform 0.2s;
     }
 
-    .bottle.selected {
-      transform: translateY(-10px);
-    }
+    .bottle.selected { transform: translateY(-8px); }
 
-    .bottle.skin-glass {
-      border: 2px solid #5c3a21;
-      border-radius: 0 0 14px 14px;
-      background: rgba(255,255,255,0.85);
-      box-shadow: inset 0 0 6px rgba(0,0,0,0.05);
-    }
+    .bottle.skin-glass { border: 2px solid #5c3a21; border-radius: 0 0 12px 12px; background: rgba(255,255,255,0.85); box-shadow: inset 0 0 5px rgba(0,0,0,0.05); }
+    .bottle.skin-takeout { border: 2px solid #d4a373; border-radius: 4px 4px 12px 12px; background: rgba(255, 248, 240, 0.9); }
+    .bottle.skin-takeout::before { content: ''; position: absolute; top: -4px; width: 110%; height: 5px; background: #d4a373; border-radius: 3px; }
+    .bottle.skin-mug { border: 3px solid #6c584c; border-radius: 8px 8px 14px 14px; background: rgba(255, 255, 255, 0.95); }
+    .bottle.skin-mug::after { content: ''; position: absolute; right: -9px; top: 20px; width: 7px; height: 50px; border: 3px solid #6c584c; border-left: none; border-radius: 0 6px 6px 0; }
 
-    .bottle.skin-takeout {
-      border: 2px solid #d4a373;
-      border-radius: 4px 4px 14px 14px;
-      background: rgba(255, 248, 240, 0.9);
-    }
-    .bottle.skin-takeout::before {
-      content: '';
-      position: absolute;
-      top: -5px;
-      width: 110%;
-      height: 6px;
-      background: #d4a373;
-      border-radius: 3px;
-    }
-
-    .bottle.skin-mug {
-      border: 3px solid #6c584c;
-      border-radius: 10px 10px 16px 16px;
-      background: rgba(255, 255, 255, 0.95);
-    }
-    .bottle.skin-mug::after {
-      content: '';
-      position: absolute;
-      right: -10px;
-      top: 25px;
-      width: 8px;
-      height: 60px;
-      border: 3px solid #6c584c;
-      border-left: none;
-      border-radius: 0 8px 8px 0;
-    }
-
-    .bottle.locked-bottle {
-      background: #bdc3c7 !important;
-      border-color: #7f8c8d !important;
-      cursor: not-allowed;
-    }
-
-    .bottle.locked-bottle::after {
-      content: '🔒';
-      font-size: 1rem;
-      position: absolute;
-      top: 40%;
-      right: auto;
-      width: auto;
-      height: auto;
-      border: none;
-    }
+    .bottle.locked-bottle { background: #bdc3c7 !important; border-color: #7f8c8d !important; cursor: not-allowed; }
+    .bottle.locked-bottle::after { content: '🔒'; font-size: 0.9rem; position: absolute; top: 40%; right: auto; width: auto; height: auto; border: none; }
 
     .bean {
       width: 100%;
-      height: 27px;
-      border-radius: 5px;
+      height: 25px;
+      border-radius: 4px;
       margin-top: 2px;
       display: flex;
       justify-content: center;
@@ -502,8 +432,8 @@
       font-weight: bold;
       color: #fff;
       position: relative;
-      box-shadow: inset 0 1px 3px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.3);
-      font-size: 0.65rem;
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.4), inset 0 -2px 2px rgba(0,0,0,0.3);
+      font-size: 0.6rem;
     }
 
     .bean-light  { background: linear-gradient(135deg, #e6b88a, #c48b52); }
@@ -522,62 +452,46 @@
 
     .bean.blind { background: #7f8c8d !important; }
     .bean.blind::after { content: '❓'; }
+    .bean.frozen { border: 2px solid #00d2d3; box-shadow: 0 0 5px #00d2d3; }
+    .bean.frozen::after { content: '❄'; font-size: 0.5rem; }
 
-    .bean.frozen { border: 2px solid #00d2d3; box-shadow: 0 0 6px #00d2d3; }
-    .bean.frozen::after { content: '❄'; font-size: 0.55rem; }
+    .bean-bomb-icon { position: absolute; font-size: 0.5rem; background: rgba(0,0,0,0.75); color: #fff; padding: 1px 2px; border-radius: 4px; }
+    .has-key::before { content: '🔑'; position: absolute; left: 1px; font-size: 0.55rem; }
 
-    .bean-bomb-icon {
-      position: absolute;
-      font-size: 0.55rem;
-      background: rgba(0,0,0,0.75);
-      color: #fff;
-      padding: 1px 3px;
-      border-radius: 6px;
-    }
-
-    .has-key::before {
-      content: '🔑';
-      position: absolute;
-      left: 1px;
-      font-size: 0.6rem;
-    }
-
-    /* 上部トースト通知 */
     #toast-container {
       position: fixed;
-      top: 95px;
+      top: 80px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 20000;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       pointer-events: none;
       width: 90%;
-      max-width: 320px;
+      max-width: 300px;
     }
 
     .toast-msg {
       background: rgba(74, 44, 17, 0.95);
       color: #fff;
-      padding: 8px 14px;
+      padding: 6px 12px;
       border-radius: 20px;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: bold;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
-      animation: fadeInOutTop 2.2s forwards;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+      animation: fadeInOutTop 2s forwards;
       text-align: center;
-      word-break: break-all;
       border: 1px solid rgba(255,255,255,0.3);
       width: fit-content;
     }
 
     @keyframes fadeInOutTop {
-      0% { opacity: 0; transform: translateY(-10px); }
+      0% { opacity: 0; transform: translateY(-8px); }
       15% { opacity: 1; transform: translateY(0); }
       80% { opacity: 1; transform: translateY(0); }
-      100% { opacity: 0; transform: translateY(-6px); }
+      100% { opacity: 0; transform: translateY(-5px); }
     }
 
     .modal-overlay {
@@ -589,24 +503,22 @@
       z-index: 10000;
       justify-content: center;
       align-items: center;
-      padding: 15px;
+      padding: 10px;
     }
 
-    .modal-overlay.active {
-      display: flex;
-    }
+    .modal-overlay.active { display: flex; }
 
     .tutorial-card {
       background: var(--card-bg);
       border: 2px solid var(--primary-color);
-      border-radius: 14px;
+      border-radius: 12px;
       width: 100%;
-      max-width: 360px;
-      max-height: 80vh;
-      padding: 12px 14px;
+      max-width: 340px;
+      max-height: 75vh;
+      padding: 10px 12px;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
       overflow-y: auto;
       color: var(--text-color);
     }
@@ -615,52 +527,17 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       border-bottom: 2px dashed var(--accent-color);
-      padding-bottom: 5px;
+      padding-bottom: 4px;
       flex-shrink: 0;
     }
 
-    .tutorial-title {
-      font-size: 1.05rem;
-      font-weight: 900;
-      color: var(--primary-color);
-      margin: 0;
-    }
-
-    .tutorial-close-x {
-      background: none;
-      border: none;
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: var(--primary-color);
-      cursor: pointer;
-      line-height: 1;
-      padding: 0 4px;
-    }
-
-    .tutorial-close-x:active {
-      opacity: 0.6;
-    }
-
-    .tutorial-section {
-      margin-bottom: 8px;
-    }
-
-    .tutorial-section h4 {
-      font-size: 0.8rem;
-      color: var(--accent-color);
-      margin-bottom: 3px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .tutorial-section p {
-      font-size: 0.72rem;
-      line-height: 1.3;
-      opacity: 0.9;
-    }
+    .tutorial-title { font-size: 0.95rem; font-weight: 900; color: var(--primary-color); margin: 0; }
+    .tutorial-close-x { background: none; border: none; font-size: 1.2rem; font-weight: bold; color: var(--primary-color); cursor: pointer; padding: 0 3px; }
+    .tutorial-section { margin-bottom: 6px; }
+    .tutorial-section h4 { font-size: 0.75rem; color: var(--accent-color); margin-bottom: 2px; }
+    .tutorial-section p { font-size: 0.68rem; line-height: 1.25; opacity: 0.9; }
 
     .fixed-bottom-ad {
       width: 100%;
@@ -671,6 +548,11 @@
       justify-content: center; 
       align-items: center;
       flex-shrink: 0;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 30000;
       border-top: 1px solid #ccc;
       overflow: hidden;
     }
@@ -688,12 +570,11 @@
       <div class="subtitle">〜やり込みパズル〜</div>
       
       <div class="menu-scroll-container">
-        <div style="margin-bottom: 6px; padding: 6px 8px; background: rgba(255,255,255,0.7); border-radius: 10px; width: 85%; max-width: 280px; font-size: 0.68rem; text-align: center; border: 1px dashed var(--primary-color); flex-shrink: 0; color: #333;">
-          <div style="font-weight: bold; color: var(--primary-color); margin-bottom: 1px;">お問い合わせ（レビュー）用アドレス</div>
-          <a href="mailto:kai2026.shop@gmail.com" style="color: var(--accent-color); text-decoration: none; font-weight: bold; word-break: break-all;">kai2026.shop@gmail.com</a>
+        <div style="margin-bottom: 4px; padding: 4px 6px; background: rgba(255,255,255,0.7); border-radius: 8px; width: 85%; max-width: 280px; font-size: 0.62rem; text-align: center; border: 1px dashed var(--primary-color); flex-shrink: 0; color: #333;">
+          <div style="font-weight: bold; color: var(--primary-color);">お問い合わせ（レビュー）用アドレス</div>
+          <a href="mailto:kai2026.shop@gmail.com" style="color: var(--accent-color); text-decoration: none; word-break: break-all;">kai2026.shop@gmail.com</a>
         </div>
 
-        <!-- 🎮 モード選択タブ -->
         <div class="mode-tab-container">
           <button class="mode-tab-btn active" id="home-tab-normal" onclick="setSelectMode('normal')">通常モード</button>
           <button class="mode-tab-btn" id="home-tab-step" onclick="setSelectMode('step')">🎯 手数制限</button>
@@ -707,7 +588,7 @@
         <button class="home-btn serial-btn" onclick="openSerialModal()">🔑 シリアルコード入力</button>
         <button class="home-btn bonus" onclick="startDailyChallenge()">📅 日替わりチャレンジ (🪙100)</button>
         <button class="home-btn timeattack" onclick="startTimeAttack()">⏱ タイムアタック (3分)</button>
-        <button class="home-btn secondary" onclick="showScreen('achieve-screen')">🎖️ 実績・アチーブメント (205個)</button>
+        <button class="home-btn secondary" onclick="showScreen('achieve-screen')">🎖️ 実績 (全205個)</button>
         <button class="home-btn secondary" onclick="openTutorialModal()">📖 遊び方・ルール</button>
       </div>
     </div>
@@ -716,12 +597,11 @@
     <div id="select-screen" class="screen">
       <div class="screen-header">
         <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
-        <h2 style="font-size: 0.95rem;" id="select-title">ステージ選択 (1-1500)</h2>
+        <h2 style="font-size: 0.9rem;" id="select-title">ステージ選択 (1-1500)</h2>
         <button class="help-icon-btn" onclick="openTutorialModal()">?</button>
       </div>
       
-      <!-- ステージ選択用モードタブ -->
-      <div class="mode-tab-container" style="width: 100%; max-width: 100%; margin: 2px 0 6px;">
+      <div class="mode-tab-container" style="width: 100%; max-width: 100%; margin: 2px 0 4px;">
         <button class="mode-tab-btn active" id="select-tab-normal" onclick="setSelectMode('normal')">通常 1500STG</button>
         <button class="mode-tab-btn" id="select-tab-step" onclick="setSelectMode('step')">🎯 手数制限 1500STG</button>
       </div>
@@ -735,21 +615,20 @@
     <div id="achieve-screen" class="screen">
       <div class="screen-header">
         <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
-        <h2 style="font-size: 0.95rem;">実績 (全205個)</h2>
-        <div style="width: 28px;"></div>
+        <h2 style="font-size: 0.9rem;">実績 (全205個)</h2>
+        <div style="width: 26px;"></div>
       </div>
       <div class="content-list" id="achieve-list"></div>
     </div>
 
-    <!-- カフェショップ画面（タブ型UI） -->
+    <!-- カフェショップ画面 -->
     <div id="shop-screen" class="screen">
       <div class="screen-header">
         <button class="back-btn" onclick="showScreen('home-screen')">🏠 ホーム</button>
-        <h2 style="font-size: 0.95rem;">カフェショップ</h2>
+        <h2 style="font-size: 0.9rem;">カフェショップ</h2>
         <div class="coin-display">🪙 <span id="shop-coin-count">100</span></div>
       </div>
 
-      <!-- ショップカテゴリ切替タブ -->
       <div class="shop-tab-bar">
         <button class="shop-tab-btn active" id="shop-tab-theme" onclick="switchShopCategory('theme')">🎨 背景テーマ</button>
         <button class="shop-tab-btn" id="shop-tab-bottle" onclick="switchShopCategory('bottle')">🧴 ボトルスキン</button>
@@ -762,11 +641,11 @@
     <div id="game-screen" class="screen">
       <header>
         <button class="back-btn" onclick="exitGame()">🏠 戻る</button>
-        <div style="font-weight:bold; font-size: 0.82rem; display: flex; align-items: center; gap: 4px;">
+        <div style="font-weight:bold; font-size: 0.78rem; display: flex; align-items: center; gap: 3px;">
           <span id="stage-label">STAGE</span> <span id="stage-display">1</span>
           <span id="hard-tag" class="difficulty-badge" style="display:none;">HARD</span>
-          <span id="step-display-header" style="font-size: 0.7rem; background:#d90429; color:#fff; padding: 1px 6px; border-radius: 4px; display:none;"></span>
-          <button class="help-icon-btn" style="width:20px; height:20px; font-size:0.65rem; margin-left:2px;" onclick="openTutorialModal()">?</button>
+          <span id="step-display-header" style="font-size: 0.65rem; background:#d90429; color:#fff; padding: 1px 4px; border-radius: 3px; display:none;"></span>
+          <button class="help-icon-btn" style="width:18px; height:18px; font-size:0.6rem; margin-left:2px;" onclick="openTutorialModal()">?</button>
         </div>
         <div class="header-status">
           <div id="timer-box" class="timer-display" style="display:none;">⏳ <span id="timer-count">180</span>s</div>
@@ -775,7 +654,6 @@
         </div>
       </header>
 
-      <!-- サポートアイテム＋スキップボタン -->
       <div class="shop-container">
         <button class="shop-btn" onclick="undoMove()"><span>↩️ 戻す</span><span id="undo-cost-label">🪙150</span></button>
         <button class="shop-btn" onclick="showHint()"><span>💡 ヒント</span><span>🪙250</span></button>
@@ -822,12 +700,12 @@
           <div class="tutorial-title">🎁 ラッキーガチャ</div>
           <button class="tutorial-close-x" onclick="closeGachaModal()">×</button>
         </div>
-        <div style="padding: 10px 0;">
-          <div style="font-size: 2rem; margin-bottom: 5px;">☕✨</div>
-          <div id="gacha-result-text" style="font-size: 0.85rem; font-weight: bold; margin-bottom: 12px; min-height: 30px;">
+        <div style="padding: 6px 0;">
+          <div style="font-size: 1.6rem; margin-bottom: 4px;">☕✨</div>
+          <div id="gacha-result-text" style="font-size: 0.78rem; font-weight: bold; margin-bottom: 8px; min-height: 25px;">
             1回 150コインでガチャを回せます！何が出るかな？
           </div>
-          <button class="home-btn gacha-btn" style="margin: 0 auto; width: 100%; padding: 8px;" onclick="spinGacha()">回す (🪙150)</button>
+          <button class="home-btn gacha-btn" style="margin: 0 auto; width: 100%; padding: 6px;" onclick="spinGacha()">回す (🪙150)</button>
         </div>
       </div>
     </div>
@@ -839,10 +717,10 @@
           <div class="tutorial-title">🔑 シリアルコード入力</div>
           <button class="tutorial-close-x" onclick="closeSerialModal()">×</button>
         </div>
-        <div style="padding: 10px 0;">
-          <p style="font-size: 0.75rem; margin-bottom: 10px;">noteで購入したシリアルコードを入力してください</p>
-          <input type="text" id="serial-input" placeholder="例: rs000" autocomplete="off" style="width: 90%; padding: 8px; font-size: 0.9rem; border: 2px solid var(--primary-color); border-radius: 8px; margin-bottom: 12px; text-align: center; text-transform: lowercase;">
-          <button class="home-btn serial-btn" style="margin: 0 auto; width: 100%; padding: 8px;" onclick="submitSerialCode()">認証する</button>
+        <div style="padding: 6px 0;">
+          <p style="font-size: 0.7rem; margin-bottom: 8px;">noteで購入したシリアルコードを入力してください</p>
+          <input type="text" id="serial-input" placeholder="例: rs000" autocomplete="off" style="width: 90%; padding: 6px; font-size: 0.85rem; border: 2px solid var(--primary-color); border-radius: 6px; margin-bottom: 10px; text-align: center; text-transform: lowercase;">
+          <button class="home-btn serial-btn" style="margin: 0 auto; width: 100%; padding: 6px;" onclick="submitSerialCode()">認証する</button>
         </div>
       </div>
     </div>
@@ -860,12 +738,10 @@
     const ALL_COLORS = ['light', 'medium', 'dark', 'matcha', 'berry', 'milk'];
     const TOTAL_STAGES = 1500;
 
-    // 通常モードデータ
     let currentStageNormal = parseInt(localStorage.getItem('roasters_current_stage')) || 1;
     let maxUnlockedStageNormal = parseInt(localStorage.getItem('roasters_max_stage')) || 1;
     let clearedStagesNormal = JSON.parse(localStorage.getItem('roasters_cleared_list')) || [];
 
-    // 手数制限モードデータ (独立した1500ステージ)
     let currentStageStep = parseInt(localStorage.getItem('roasters_current_stage_step')) || 1;
     let maxUnlockedStageStep = parseInt(localStorage.getItem('roasters_max_stage_step')) || 1;
     let clearedStagesStep = JSON.parse(localStorage.getItem('roasters_cleared_list_step')) || [];
@@ -878,7 +754,6 @@
     let fastestClearTime = parseFloat(localStorage.getItem('roasters_fastest_time')) || 999;
     let isTutorialSeen = localStorage.getItem('roasters_tutorial_seen') === 'true';
     
-    // テーマ & ボトルスキン設定
     let currentTheme = localStorage.getItem('roasters_theme') || 'default';
     let unlockedThemes = JSON.parse(localStorage.getItem('roasters_unlocked_themes')) || ['default'];
     let currentBottleSkin = localStorage.getItem('roasters_bottle_skin') || 'glass';
@@ -903,60 +778,23 @@
     let history = [];
     let selectedBottleIndex = null;
 
-    /* --- 🏆 205個の実績自動生成システム --- */
     const ACHIEVEMENTS = [];
-
-    // 1. 通常ステージクリア実績 (70個)
     for (let i = 1; i <= 70; i++) {
-      let target = i * 20; // 20, 40 ... 1400
-      if (i === 70) target = 1500;
-      ACHIEVEMENTS.push({
-        id: `ach_norm_${i}`,
-        title: `☕ 通常STG制覇 Lv.${i}`,
-        desc: `通常モード STAGE ${target} クリア`,
-        check: () => clearedStagesNormal.length >= target,
-        reward: 20 + i * 3
-      });
+      let target = i * 20; if (i === 70) target = 1500;
+      ACHIEVEMENTS.push({ id: `ach_norm_${i}`, title: `☕ 通常STG制覇 Lv.${i}`, desc: `通常モード STAGE ${target} クリア`, check: () => clearedStagesNormal.length >= target, reward: 20 + i * 3 });
     }
-
-    // 2. 手数制限ステージクリア実績 (70個)
     for (let i = 1; i <= 70; i++) {
-      let target = i * 20;
-      if (i === 70) target = 1500;
-      ACHIEVEMENTS.push({
-        id: `ach_step_${i}`,
-        title: `🎯 手数STG制覇 Lv.${i}`,
-        desc: `手数制限モード STEP ${target} クリア`,
-        check: () => clearedStagesStep.length >= target,
-        reward: 25 + i * 3
-      });
+      let target = i * 20; if (i === 70) target = 1500;
+      ACHIEVEMENTS.push({ id: `ach_step_${i}`, title: `🎯 手数STG制覇 Lv.${i}`, desc: `手数制限モード STEP ${target} クリア`, check: () => clearedStagesStep.length >= target, reward: 25 + i * 3 });
     }
-
-    // 3. 累計コイン獲得実績 (45個)
     for (let i = 1; i <= 45; i++) {
       let target = i * 400;
-      ACHIEVEMENTS.push({
-        id: `ach_coin_${i}`,
-        title: `💰 資産家ロースター Lv.${i}`,
-        desc: `累計 ${target} コイン獲得`,
-        check: () => totalCoinsEarned >= target,
-        reward: 30 + i * 5
-      });
+      ACHIEVEMENTS.push({ id: `ach_coin_${i}`, title: `💰 資産家ロースター Lv.${i}`, desc: `累計 ${target} コイン獲得`, check: () => totalCoinsEarned >= target, reward: 30 + i * 5 });
     }
-
-    // 4. 特別・やり込み実績 (20個)
     for (let i = 1; i <= 20; i++) {
-      ACHIEVEMENTS.push({
-        id: `ach_special_${i}`,
-        title: `✨ カフェの伝説 No.${i}`,
-        desc: `通算 ${i * 10} ステージクリア`,
-        check: () => (clearedStagesNormal.length + clearedStagesStep.length) >= i * 10,
-        reward: 50
-      });
+      ACHIEVEMENTS.push({ id: `ach_special_${i}`, title: `✨ カフェの伝説 No.${i}`, desc: `通算 ${i * 10} ステージクリア`, check: () => (clearedStagesNormal.length + clearedStagesStep.length) >= i * 10, reward: 50 });
     }
-    // 合計ぴったり205個！
 
-    /* 上部トースト通知関数 */
     function showToast(message) {
       const container = document.getElementById('toast-container');
       if (!container) return;
@@ -964,15 +802,11 @@
       toast.className = 'toast-msg';
       toast.innerText = message;
       container.appendChild(toast);
-      setTimeout(() => {
-        toast.remove();
-      }, 2200);
+      setTimeout(() => { toast.remove(); }, 2000);
     }
 
     function parseAndCheckCode(code) {
-      if (!code.startsWith('rs') && !code.startsWith('rsp')) {
-        return { success: false, message: "無効なコード形式です" };
-      }
+      if (!code.startsWith('rs') && !code.startsWith('rsp')) return { success: false, message: "無効なコード形式です" };
       if (code.startsWith('rsp')) {
         let num = parseInt(code.replace('rsp', ''), 10);
         if (num >= 0 && num <= 99) return { success: true, coins: 5000, label: "5,000コインパック" };
@@ -1027,7 +861,6 @@
       
       const titleEl = document.getElementById('select-title');
       if (titleEl) titleEl.innerText = mode === 'step' ? '🎯 手数制限 (1-1500)' : 'ステージ選択 (1-1500)';
-      
       renderStageGrid();
     }
 
@@ -1538,8 +1371,8 @@
         let isClaimed = claimedAchieves.includes(ach.id);
         item.innerHTML = `
           <div>
-            <div style="font-weight:bold; font-size:0.8rem;">${ach.title}</div>
-            <div style="font-size:0.65rem; opacity:0.7;">${ach.desc} (報酬: 🪙${ach.reward})</div>
+            <div style="font-weight:bold; font-size:0.75rem;">${ach.title}</div>
+            <div style="font-size:0.6rem; opacity:0.7;">${ach.desc} (報酬: 🪙${ach.reward})</div>
           </div>
           <button class="action-btn ${isClaimed ? 'done' : ''}" ${!isAchieved || isClaimed ? 'disabled' : ''} onclick="claimAchieve('${ach.id}', ${ach.reward})">
             ${isClaimed ? '受取済' : (isAchieved ? '受け取る' : '未達成')}
@@ -1581,8 +1414,8 @@
 
           item.innerHTML = `
             <div>
-              <div style="font-weight:bold; font-size:0.85rem;">${theme.name}</div>
-              <div style="font-size:0.68rem; opacity:0.7;">${theme.price === 0 ? '初期テーマ' : `価格: 🪙${theme.price}`}</div>
+              <div style="font-weight:bold; font-size:0.8rem;">${theme.name}</div>
+              <div style="font-size:0.62rem; opacity:0.7;">${theme.price === 0 ? '初期テーマ' : `価格: 🪙${theme.price}`}</div>
             </div>
             ${btnHtml}
           `;
@@ -1598,8 +1431,8 @@
 
           item.innerHTML = `
             <div>
-              <div style="font-weight:bold; font-size:0.85rem;">${skin.name}</div>
-              <div style="font-size:0.68rem; opacity:0.7;">${skin.price === 0 ? '標準ボトル' : `価格: 🪙${skin.price}`}</div>
+              <div style="font-weight:bold; font-size:0.8rem;">${skin.name}</div>
+              <div style="font-size:0.62rem; opacity:0.7;">${skin.price === 0 ? '標準ボトル' : `価格: 🪙${skin.price}`}</div>
             </div>
             ${btnHtml}
           `;
